@@ -172,9 +172,11 @@
     .c-pill { font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 20px; }
     .c-plats { margin-left: auto; display: flex; gap: 3px; }
     .plat { font-size: 9px; font-weight: 700; letter-spacing: .3px; padding: 2px 6px; border-radius: 4px; }
-    .p-ig { background: rgba(225,48,108,.1); color: #e1306c; }
-    .p-tk { background: rgba(0,0,0,.06); color: #1a1a1a; }
-    .p-yt { background: rgba(255,0,0,.08); color: #ff0000; }
+    .p-ig  { background: rgba(225,48,108,.1);  color: #e1306c; }
+    .p-tk  { background: rgba(0,0,0,.06);       color: #1a1a1a; }
+    .p-yt  { background: rgba(255,0,0,.08);     color: #ff0000; }
+    .p-sh  { background: rgba(255,0,0,.05);     color: #cc0000; }
+    .p-li  { background: rgba(0,119,181,.08);   color: #0077b5; }
     .c-preview {
       padding: 0 16px 12px;
       font-size: 12.5px; line-height: 1.6; color: var(--text-2);
@@ -648,9 +650,239 @@
       cursor: pointer; transition: all .15s;
     }
     .note-cat-opt.on { background: var(--text); color: #fff; border-color: var(--text); }
+
+    /* ── LOGIN SCREEN ── */
+    #loginScreen {
+      display: none; position: fixed; inset: 0; background: var(--bg);
+      align-items: center; justify-content: center; z-index: 9999;
+    }
+    #loginScreen.visible { display: flex; }
+    .login-box {
+      background: #fff; border-radius: 20px; padding: 40px 36px;
+      width: 100%; max-width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,.12);
+    }
+    .login-logo {
+      width: 44px; height: 44px; background: var(--text); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 24px;
+    }
+    .login-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .login-sub { font-size: 13px; color: var(--text-2); margin-bottom: 28px; }
+    .login-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .login-label { font-size: 12px; font-weight: 600; color: var(--text-2); }
+    .login-inp {
+      height: 42px; padding: 0 14px; border: 1.5px solid var(--border);
+      border-radius: 10px; font-size: 14px; font-family: var(--font);
+      outline: none; transition: border-color .15s;
+    }
+    .login-inp:focus { border-color: var(--text); }
+    .login-btn {
+      width: 100%; height: 44px; background: var(--text); color: #fff;
+      border: none; border-radius: 10px; font-family: var(--font);
+      font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 8px;
+      transition: opacity .15s;
+    }
+    .login-btn:hover { opacity: .85; }
+    .login-btn:disabled { opacity: .5; cursor: not-allowed; }
+    .login-err { font-size: 12px; color: #c0392b; margin-top: 10px; text-align: center; min-height: 18px; }
+
+    /* ── ADMIN PANEL ── */
+    #adminView { display: none; }
+    .admin-tabs { display: flex; gap: 6px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
+    .admin-tab {
+      height: 36px; padding: 0 16px; background: transparent; border: none;
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+      font-family: var(--font); font-size: 13px; font-weight: 500; color: var(--text-2);
+      cursor: pointer; transition: all .15s;
+    }
+    .admin-tab.on { color: var(--text); border-bottom-color: var(--text); }
+    .admin-pane { display: none; }
+    .admin-pane.on { display: block; }
+    .client-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+    .client-row {
+      background: #fff; border-radius: 12px; padding: 14px 18px;
+      display: flex; align-items: center; gap: 14px;
+      border: 1px solid var(--border); box-shadow: var(--sh-sm);
+    }
+    .client-avatar {
+      width: 38px; height: 38px; border-radius: 10px; background: var(--text);
+      color: #fff; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .client-info { flex: 1; min-width: 0; }
+    .client-name { font-size: 14px; font-weight: 600; }
+    .client-email { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+    .btn-enter-client {
+      height: 30px; padding: 0 14px; background: var(--text); color: #fff;
+      border: none; border-radius: 7px; font-family: var(--font); font-size: 12px;
+      font-weight: 600; cursor: pointer; transition: opacity .15s; white-space: nowrap;
+    }
+    .btn-enter-client:hover { opacity: .8; }
+    .create-client-form { background: #fff; border-radius: 14px; padding: 24px; border: 1px solid var(--border); max-width: 460px; }
+    .create-client-form .form-group { margin-bottom: 14px; }
+    .btn-create-client {
+      height: 38px; padding: 0 20px; background: var(--text); color: #fff;
+      border: none; border-radius: 9px; font-family: var(--font); font-size: 13px;
+      font-weight: 600; cursor: pointer; margin-top: 6px; transition: opacity .15s;
+    }
+    .btn-create-client:hover { opacity: .85; }
+    .btn-create-client:disabled { opacity: .5; cursor: not-allowed; }
+
+    /* ── VIEWING AS banner ── */
+    #viewingBanner {
+      display: none; background: #1a1a1a; color: #fff;
+      padding: 8px 20px; font-size: 12px; font-weight: 500;
+      align-items: center; gap: 12px; position: sticky; top: 0; z-index: 50;
+    }
+    #viewingBanner.visible { display: flex; }
+    #viewingBanner span { flex: 1; }
+    .btn-exit-client {
+      height: 26px; padding: 0 12px; background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25); color: #fff;
+      border-radius: 6px; font-family: var(--font); font-size: 11px;
+      font-weight: 600; cursor: pointer; transition: all .15s;
+    }
+    .btn-exit-client:hover { background: rgba(255,255,255,.25); }
+
+    /* logout btn */
+    .sb-logout {
+      width: 36px; height: 36px; border-radius: 9px; border: 1px solid rgba(255,255,255,.1);
+      background: transparent; color: rgba(255,255,255,.5); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all .15s;
+      margin-top: 8px;
+    }
+    .sb-logout:hover { background: rgba(255,255,255,.1); color: #fff; }
+
+    /* ── RICERCA AVANZATA ── */
+    .search-advanced {
+      background: #fff; border-radius: 12px; border: 1px solid var(--border);
+      padding: 14px 16px; margin-bottom: 16px; display: none; gap: 12px; flex-wrap: wrap;
+    }
+    .search-advanced.open { display: flex; }
+    .search-adv-group { display: flex; flex-direction: column; gap: 4px; min-width: 140px; flex: 1; }
+    .search-adv-label { font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--text-3); }
+    .search-adv-inp, .search-adv-sel {
+      height: 32px; padding: 0 10px; border: 1.5px solid var(--border);
+      border-radius: 8px; font-size: 12px; font-family: var(--font); outline: none;
+      transition: border-color .15s; background: #fff;
+    }
+    .search-adv-inp:focus, .search-adv-sel:focus { border-color: var(--text); }
+    .btn-adv-search {
+      height: 32px; padding: 0 14px; background: var(--text); color: #fff;
+      border: none; border-radius: 8px; font-family: var(--font); font-size: 12px;
+      font-weight: 600; cursor: pointer; align-self: flex-end; transition: opacity .15s;
+    }
+    .btn-adv-search:hover { opacity: .85; }
+    .btn-adv-reset { height: 32px; padding: 0 12px; background: transparent;
+      border: 1px solid var(--border); border-radius: 8px; font-family: var(--font);
+      font-size: 12px; color: var(--text-2); cursor: pointer; align-self: flex-end; }
+    .search-toggle-btn {
+      height: 32px; padding: 0 12px; background: transparent;
+      border: 1px solid var(--border); border-radius: 8px; font-family: var(--font);
+      font-size: 12px; color: var(--text-2); cursor: pointer; display: flex;
+      align-items: center; gap: 5px; transition: all .15s; white-space: nowrap;
+    }
+    .search-toggle-btn.on { background: var(--text); color: #fff; border-color: var(--text); }
+
+    /* ── ETICHETTE ── */
+    .etichetta-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600;
+      letter-spacing: .3px;
+    }
+    .card-etichette { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 16px 0; }
+    .modal-etichette { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .et-opt {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+      cursor: pointer; border: 2px solid transparent; transition: all .15s; opacity: .6;
+    }
+    .et-opt.on { opacity: 1; border-color: rgba(0,0,0,.15); }
+    .et-opt:hover { opacity: 1; }
+    .et-color-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .btn-new-et {
+      height: 28px; padding: 0 12px; background: transparent;
+      border: 1.5px dashed var(--border); border-radius: 20px;
+      font-family: var(--font); font-size: 11px; color: var(--text-2);
+      cursor: pointer; transition: all .15s;
+    }
+    .btn-new-et:hover { border-color: var(--text); color: var(--text); }
+
+    /* ── MODAL ETICHETTA ── */
+    .modal-et { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1100; align-items:center; justify-content:center; padding:16px; }
+    .modal-et.open { display:flex; }
+    .modal-et-box { background:#fff; border-radius:14px; width:100%; max-width:360px; box-shadow:0 20px 60px rgba(0,0,0,.2); overflow:hidden; }
+    .color-swatches { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .color-swatch {
+      width: 28px; height: 28px; border-radius: 8px; cursor: pointer;
+      border: 2px solid transparent; transition: all .1s;
+    }
+    .color-swatch.on { border-color: #000; transform: scale(1.15); }
+
+    /* ── COMMENTI ── */
+    .comments-section { padding: 14px 16px; border-top: 1px solid var(--border); }
+    .comments-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 12px; max-height: 280px; overflow-y: auto; }
+    .comment-item { display: flex; gap: 8px; }
+    .comment-avatar {
+      width: 28px; height: 28px; border-radius: 8px; background: var(--text);
+      color: #fff; font-size: 10px; font-weight: 700; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .comment-bubble { flex: 1; background: #f8f9fa; border-radius: 0 10px 10px 10px; padding: 8px 12px; }
+    .comment-author { font-size: 11px; font-weight: 700; color: var(--text); }
+    .comment-date { font-size: 10px; color: var(--text-3); margin-left: 6px; }
+    .comment-text { font-size: 12.5px; color: var(--text-2); margin-top: 3px; line-height: 1.5; white-space: pre-wrap; }
+    .comment-input-row { display: flex; gap: 8px; }
+    .comment-inp {
+      flex: 1; padding: 8px 12px; border: 1.5px solid var(--border);
+      border-radius: 10px; font-size: 13px; font-family: var(--font);
+      outline: none; resize: none; transition: border-color .15s; min-height: 38px;
+    }
+    .comment-inp:focus { border-color: var(--text); }
+    .btn-send-comment {
+      height: 38px; padding: 0 14px; background: var(--text); color: #fff;
+      border: none; border-radius: 10px; font-family: var(--font); font-size: 12px;
+      font-weight: 600; cursor: pointer; transition: opacity .15s; white-space: nowrap;
+    }
+    .btn-send-comment:hover { opacity: .85; }
+
+    /* ── PDF export btn ── */
+    .btn-pdf {
+      height: 32px; padding: 0 14px; background: #dc2626; color: #fff;
+      border: none; border-radius: 8px; font-family: var(--font); font-size: 12px;
+      font-weight: 600; cursor: pointer; display: flex; align-items: center;
+      gap: 6px; transition: opacity .15s; white-space: nowrap;
+    }
+    .btn-pdf:hover { opacity: .85; }
   </style>
 </head>
 <body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="visible">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+    </div>
+    <div class="login-title">Calendario Editoriale</div>
+    <div class="login-sub">Accedi al tuo account</div>
+    <div class="login-field">
+      <label class="login-label">Email</label>
+      <input class="login-inp" id="loginEmail" type="email" placeholder="tuaemail@esempio.com" autocomplete="email">
+    </div>
+    <div class="login-field">
+      <label class="login-label">Password</label>
+      <input class="login-inp" id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="login-btn" id="loginBtn">Accedi</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- VIEWING AS BANNER -->
+<div id="viewingBanner">
+  <span id="viewingBannerText"></span>
+  <button class="btn-exit-client" id="exitClientBtn">← Torna al tuo account</button>
+</div>
 
 <!-- SIDEBAR (desktop) -->
 <aside class="sidebar">
@@ -670,8 +902,17 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
       <span class="sb-tip">Note</span>
     </button>
+    <button class="sb-btn" id="navAdmin" style="display:none">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span class="sb-tip">Clienti</span>
+    </button>
   </nav>
-  <div class="sb-avatar">IC</div>
+  <div style="margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:6px;padding-bottom:4px">
+    <div class="sb-avatar" id="sbAvatar">IC</div>
+    <button class="sb-logout" id="logoutBtn" title="Esci">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </button>
+  </div>
 </aside>
 
 <!-- APP -->
@@ -701,6 +942,14 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
         Nuovo
       </button>
+      <button class="search-toggle-btn" id="advSearchToggle" title="Ricerca avanzata">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Filtri
+      </button>
+      <button class="btn-pdf" id="exportPdfBtn" title="Esporta PDF">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        PDF
+      </button>
       <button class="icon-btn" id="refreshBtn" title="Aggiorna">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
       </button>
@@ -721,6 +970,46 @@
 
     <!-- CHIPS -->
     <div class="chips" id="chipsEl"></div>
+
+    <!-- RICERCA AVANZATA -->
+    <div class="search-advanced" id="searchAdvPanel">
+      <div class="search-adv-group">
+        <span class="search-adv-label">Data da</span>
+        <input class="search-adv-inp" id="adv-date-from" type="date">
+      </div>
+      <div class="search-adv-group">
+        <span class="search-adv-label">Data a</span>
+        <input class="search-adv-inp" id="adv-date-to" type="date">
+      </div>
+      <div class="search-adv-group">
+        <span class="search-adv-label">Formato</span>
+        <select class="search-adv-sel" id="adv-formato">
+          <option value="">Tutti</option>
+          <option>Reel</option><option>Video</option><option>Stories</option>
+          <option>Carosello</option><option>Short</option><option>Post</option>
+        </select>
+      </div>
+      <div class="search-adv-group">
+        <span class="search-adv-label">Piattaforma</span>
+        <select class="search-adv-sel" id="adv-piattaforma">
+          <option value="">Tutte</option>
+          <option value="ig">Instagram</option>
+          <option value="tk">TikTok</option>
+          <option value="yt_long">YouTube</option>
+          <option value="shorts">YT Shorts</option>
+          <option value="linkedin">LinkedIn</option>
+        </select>
+      </div>
+      <div class="search-adv-group">
+        <span class="search-adv-label">Stato</span>
+        <select class="search-adv-sel" id="adv-stato">
+          <option value="">Tutti</option>
+          <option>Bozza</option><option>Da Registrare</option>
+          <option>Grezzo</option><option>Editato</option><option>Pubblicato</option>
+        </select>
+      </div>
+      <button class="btn-adv-reset" id="advResetBtn">✕ Reset</button>
+    </div>
 
     <!-- GRID VIEW -->
     <div id="gridView">
@@ -752,6 +1041,74 @@
       <div class="cal-grid">
         <div class="cal-days-header" id="calHeader"></div>
         <div class="cal-days" id="calDays"></div>
+      </div>
+    </div>
+
+    <!-- ADMIN VIEW -->
+    <div id="adminView">
+      <div class="admin-tabs">
+        <button class="admin-tab on" data-atab="clienti">👥 Clienti</button>
+        <button class="admin-tab" data-atab="collaboratori">🤝 Collaboratori</button>
+        <button class="admin-tab" data-atab="crea">➕ Crea account</button>
+      </div>
+      <!-- Tab Clienti -->
+      <div class="admin-pane on" id="atab-clienti">
+        <div class="client-list" id="clientList">
+          <p style="color:var(--text-3);font-size:13px">Caricamento clienti…</p>
+        </div>
+      </div>
+      <!-- Tab Collaboratori -->
+      <div class="admin-pane" id="atab-collaboratori">
+        <div class="create-client-form" style="max-width:100%;margin-bottom:20px">
+          <p style="font-size:13px;color:var(--text-2);margin-bottom:16px">Assegna un collaboratore a un cliente e scegli il suo ruolo di accesso.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Collaboratore</label>
+              <select class="form-select" id="col-user"></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Cliente</label>
+              <select class="form-select" id="col-client"></select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ruolo</label>
+            <select class="form-select" id="col-ruolo">
+              <option value="visualizzatore">👁 Visualizzatore (solo lettura)</option>
+              <option value="editor">✏️ Editor (può modificare)</option>
+            </select>
+          </div>
+          <button class="btn-create-client" id="colAssignBtn">Assegna accesso</button>
+          <div class="login-err" id="colErr"></div>
+        </div>
+        <div id="collabList"></div>
+      </div>
+
+      <!-- Tab Crea account -->
+      <div class="admin-pane" id="atab-crea">
+        <div class="create-client-form">
+          <div class="form-group">
+            <label class="form-label">Nome</label>
+            <input class="form-inp" id="cc-nome" type="text" placeholder="Es. Mario Rossi">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-inp" id="cc-email" type="email" placeholder="email@esempio.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password temporanea</label>
+            <input class="form-inp" id="cc-pass" type="text" placeholder="Minimo 6 caratteri">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tipo account</label>
+            <select class="form-select" id="cc-tipo">
+              <option value="client">👤 Cliente</option>
+              <option value="collaborator">🤝 Collaboratore</option>
+            </select>
+          </div>
+          <button class="btn-create-client" id="ccBtn">Crea account</button>
+          <div class="login-err" id="ccErr"></div>
+        </div>
       </div>
     </div>
 
@@ -787,6 +1144,10 @@
   <button class="bn-btn" id="bnNote">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
     Note
+  </button>
+  <button class="bn-btn" id="bnAdmin" style="display:none">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Clienti
   </button>
   <button class="bn-btn" id="bnRefresh">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
@@ -879,6 +1240,8 @@
             <label class="form-check"><input type="checkbox" id="nw-ig"> Instagram</label>
             <label class="form-check"><input type="checkbox" id="nw-tk"> TikTok</label>
             <label class="form-check"><input type="checkbox" id="nw-yt"> YouTube</label>
+            <label class="form-check"><input type="checkbox" id="nw-sh"> YT Shorts</label>
+            <label class="form-check"><input type="checkbox" id="nw-li"> LinkedIn</label>
           </div>
         </div>
       </div>
@@ -905,8 +1268,16 @@
         <textarea class="form-ta" id="nw-tk-cap" placeholder="Caption per TikTok…"></textarea>
       </div>
       <div class="form-group">
-        <label class="form-label">Didascalia YouTube</label>
+        <label class="form-label">Descrizione YouTube</label>
         <textarea class="form-ta" id="nw-yt-cap" placeholder="Descrizione per YouTube…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descrizione YT Shorts</label>
+        <textarea class="form-ta" id="nw-sh-cap" placeholder="Descrizione per YouTube Shorts…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Post LinkedIn</label>
+        <textarea class="form-ta" id="nw-li-cap" placeholder="Testo per LinkedIn…"></textarea>
       </div>
       <div class="form-group">
         <label class="form-label">Note</label>
@@ -963,6 +1334,8 @@
             <label class="form-check"><input type="checkbox" id="ed-ig"> Instagram</label>
             <label class="form-check"><input type="checkbox" id="ed-tk"> TikTok</label>
             <label class="form-check"><input type="checkbox" id="ed-yt"> YouTube</label>
+            <label class="form-check"><input type="checkbox" id="ed-sh"> YT Shorts</label>
+            <label class="form-check"><input type="checkbox" id="ed-li"> LinkedIn</label>
           </div>
       </div>
       <div class="form-row">
@@ -988,8 +1361,16 @@
         <textarea class="form-ta" id="ed-tk-cap"></textarea>
       </div>
       <div class="form-group">
-        <label class="form-label">Didascalia YouTube</label>
+        <label class="form-label">Descrizione YouTube</label>
         <textarea class="form-ta" id="ed-yt-cap"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descrizione YT Shorts</label>
+        <textarea class="form-ta" id="ed-sh-cap"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Post LinkedIn</label>
+        <textarea class="form-ta" id="ed-li-cap"></textarea>
       </div>
       <div class="form-group">
         <label class="form-label">Note</label>
@@ -999,6 +1380,53 @@
     <div class="modal-footer">
       <button class="btn-cancel" id="modalEditCancel">Annulla</button>
       <button class="btn-submit" id="modalEditSubmit">Salva modifiche</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUOVA ETICHETTA -->
+<div class="modal-et" id="modalEt">
+  <div class="modal-et-box">
+    <div class="modal-head">
+      <span class="modal-title" id="etModalTitle">Nuova etichetta</span>
+      <button class="modal-close" id="modalEtClose">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Nome etichetta</label>
+        <input class="form-inp" id="et-nome" type="text" placeholder="Es. Urgente, Sponsorizzato…">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Colore</label>
+        <div class="color-swatches" id="etColorSwatches"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="modalEtCancel">Annulla</button>
+      <button class="btn-submit" id="modalEtSave">Salva</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL COMMENTI -->
+<div class="modal-overlay" id="modalComments">
+  <div class="modal-box" style="max-width:540px">
+    <div class="modal-head">
+      <span class="modal-title">Commenti <span id="commentsModalId" style="color:var(--text-3);font-weight:400"></span></span>
+      <button class="modal-close" id="modalCommentsClose">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="padding:0">
+      <div class="comments-section">
+        <div class="comments-list" id="commentsList"></div>
+        <div class="comment-input-row">
+          <textarea class="comment-inp" id="commentInp" placeholder="Scrivi un commento…" rows="1"></textarea>
+          <button class="btn-send-comment" id="sendCommentBtn">Invia</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1140,11 +1568,13 @@ function filtered() {
     // Gli altri stati richiedono uno script non vuoto
     if (getSt(r) !== 'Bozza' && !(r.script && r.script.trim())) return false;
     if (filterSt !== 'all' && getSt(r) !== filterSt) return false;
-    if (filterPl === 'ig' && !hasPl(r,'ig')) return false;
-    if (filterPl === 'tk' && !hasPl(r,'tk')) return false;
-    if (filterPl === 'yt' && !hasPl(r,'yt')) return false;
+    if (filterPl === 'ig'      && !hasPl(r,'ig'))      return false;
+    if (filterPl === 'tk'      && !hasPl(r,'tk'))      return false;
+    if (filterPl === 'yt_long' && !hasPl(r,'yt_long')) return false;
+    if (filterPl === 'shorts'  && !hasPl(r,'shorts'))  return false;
+    if (filterPl === 'linkedin'&& !hasPl(r,'linkedin'))return false;
     if (q) {
-      const hay = [r.id, r.formato, r.script, r.note, r.did_ig, r.did_tk, r.did_yt].join(' ').toLowerCase();
+      const hay = [r.id, r.formato, r.script, r.note, r.did_ig, r.did_tk, r.did_yt_long, r.did_shorts, r.did_li].join(' ').toLowerCase();
       if (!hay.includes(q)) return false;
     }
     return true;
@@ -1188,7 +1618,8 @@ function renderChips() {
     return `<button class="chip${on}" onclick="toggleStFilter('${f.key}')">${f.label}</button>`;
   }).join('');
   const plChips = [
-    {key:'all',label:'Tutte'},{key:'ig',label:'Instagram'},{key:'tk',label:'TikTok'},{key:'yt',label:'YouTube'}
+    {key:'all',label:'Tutte'},{key:'ig',label:'Instagram'},{key:'tk',label:'TikTok'},
+    {key:'yt_long',label:'YouTube'},{key:'shorts',label:'YT Shorts'},{key:'linkedin',label:'LinkedIn'}
   ].map(f => {
     const on = filterPl === f.key ? ' on' : '';
     return `<button class="chip${on}" onclick="togglePlFilter('${f.key}')">${f.label}</button>`;
@@ -1221,13 +1652,19 @@ function renderCards() {
     const edit = e.target.closest('[data-edit]');
     const exp  = e.target.closest('[data-expand]');
 
-    if (adv)  { e.stopPropagation(); doAdvance(adv.dataset.adv, adv.dataset.next); return; }
-    if (back) { e.stopPropagation(); doBack(back.dataset.back); return; }
-    if (copy) { e.stopPropagation(); doCopy(copy, copy.dataset.copy); return; }
-    if (tele) { e.stopPropagation(); openTele(tele.dataset.tele, tele.dataset.tid); return; }
-    if (fup)  { e.stopPropagation(); changeScriptSz(1); return; }
-    if (fdn)  { e.stopPropagation(); changeScriptSz(-1); return; }
-    if (edit) { e.stopPropagation(); openEditModal(edit.dataset.edit); return; }
+    const etAdd    = e.target.closest('[data-et-add]');
+    const etRemove = e.target.closest('[data-et-remove]');
+    const comments = e.target.closest('[data-comments]');
+    if (adv)      { e.stopPropagation(); doAdvance(adv.dataset.adv, adv.dataset.next); return; }
+    if (back)     { e.stopPropagation(); doBack(back.dataset.back); return; }
+    if (copy)     { e.stopPropagation(); doCopy(copy, copy.dataset.copy); return; }
+    if (tele)     { e.stopPropagation(); openTele(tele.dataset.tele, tele.dataset.tid); return; }
+    if (fup)      { e.stopPropagation(); changeScriptSz(1); return; }
+    if (fdn)      { e.stopPropagation(); changeScriptSz(-1); return; }
+    if (edit)     { e.stopPropagation(); openEditModal(edit.dataset.edit); return; }
+    if (etAdd)    { e.stopPropagation(); openEtichettePanel(etAdd.dataset.etAdd); return; }
+    if (etRemove) { e.stopPropagation(); removeEtichetta(etRemove.dataset.etRemove, etRemove.dataset.etid); return; }
+    if (comments) { e.stopPropagation(); openComments(comments.dataset.comments); return; }
     if (exp)  { toggleExpand(exp.dataset.expand); }
   });
 })();
@@ -1235,15 +1672,19 @@ function renderCards() {
 function buildCard(r) {
   const st = getSt(r), si = stInfo(st), exp = expandedId === r.id;
   const plats = [
-    hasPl(r,'ig') ? '<span class="plat p-ig">IG</span>' : '',
-    hasPl(r,'tk') ? '<span class="plat p-tk">TK</span>' : '',
-    hasPl(r,'yt') ? '<span class="plat p-yt">YT</span>' : '',
+    hasPl(r,'ig')      ? '<span class="plat p-ig">IG</span>'      : '',
+    hasPl(r,'tk')      ? '<span class="plat p-tk">TK</span>'      : '',
+    hasPl(r,'yt_long') ? '<span class="plat p-yt">YT</span>'      : '',
+    hasPl(r,'shorts')  ? '<span class="plat p-sh">Shorts</span>'  : '',
+    hasPl(r,'linkedin')? '<span class="plat p-li">LI</span>'      : '',
   ].join('');
   const next = nextSt(st), prev = prevSt(st);
   const caps = [
-    hasPl(r,'ig') && r.did_ig ? {cls:'p-ig', label:'Instagram', val:r.did_ig} : null,
-    hasPl(r,'tk') && r.did_tk ? {cls:'p-tk', label:'TikTok',    val:r.did_tk} : null,
-    hasPl(r,'yt') && r.did_yt ? {cls:'p-yt', label:'YouTube',   val:r.did_yt} : null,
+    hasPl(r,'ig')       && r.did_ig      ? {cls:'p-ig', label:'Instagram',  val:r.did_ig}      : null,
+    hasPl(r,'tk')       && r.did_tk      ? {cls:'p-tk', label:'TikTok',     val:r.did_tk}      : null,
+    hasPl(r,'yt_long')  && r.did_yt_long ? {cls:'p-yt', label:'YouTube',    val:r.did_yt_long} : null,
+    hasPl(r,'shorts')   && r.did_shorts  ? {cls:'p-sh', label:'YT Shorts',  val:r.did_shorts}  : null,
+    hasPl(r,'linkedin') && r.did_li      ? {cls:'p-li', label:'LinkedIn',   val:r.did_li}      : null,
   ].filter(Boolean);
 
   return `
@@ -1254,6 +1695,7 @@ function buildCard(r) {
       <span class="c-pill" style="background:${si.bg};color:${si.tc}">${st}</span>
       <div class="c-plats">${plats}</div>
     </div>
+    ${r._etichette && r._etichette.length ? `<div class="card-etichette">${r._etichette.map(e=>`<span class="etichetta-badge" style="background:${e.colore}22;color:${e.colore}"><span class="et-color-dot" style="background:${e.colore}"></span>${escH(e.nome)}</span>`).join('')}</div>` : ''}
     ${r.script ? `<div class="c-preview">${escH(r.script)}</div>` : ''}
     <div class="c-foot" data-expand="${escA(r.id)}">
       ${r.data_pianif  ? `<span class="c-date"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${escH(r.data_pianif)}</span>` : ''}
@@ -1314,6 +1756,25 @@ function buildCard(r) {
         <div class="c-sec-lbl">Note</div>
         <div class="note-box">${escH(r.note)}</div>
       </div>` : ''}
+      <div class="c-sec">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div class="c-sec-lbl">Etichette</div>
+          <button class="btn-new-et" data-et-add="${escA(r.id)}">+ Aggiungi</button>
+        </div>
+        <div class="modal-etichette" id="et_${escA(r.id)}">
+          ${(r._etichette||[]).map(e => `
+            <span class="etichetta-badge" style="background:${e.colore}22;color:${e.colore}"
+              data-et-remove="${escA(e.content_etichetta_id)}" data-etid="${escA(r.id)}" title="Rimuovi" style="cursor:pointer">
+              <span class="et-color-dot" style="background:${e.colore}"></span>${escH(e.nome)}
+            </span>`).join('')}
+        </div>
+      </div>
+      <div class="c-sec" style="border-top:1px solid var(--border);padding-top:12px">
+        <button class="btn-edit" data-comments="${escA(r.id)}" style="width:100%;justify-content:center;gap:6px">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Commenti ${r._commentCount ? `<span style="background:var(--text);color:#fff;border-radius:10px;padding:1px 6px;font-size:10px">${r._commentCount}</span>` : ''}
+        </button>
+      </div>
     </div>
   </div>`;
 }
@@ -1613,18 +2074,22 @@ function setView(v) {
   const navCal  = document.getElementById('navCal');
   const secTitle = document.getElementById('secTitle');
 
-  const noteEl  = document.getElementById('noteView');
-  const navNote = document.getElementById('navNote');
-  const bnNote  = document.getElementById('bnNote');
+  const noteEl   = document.getElementById('noteView');
+  const adminEl  = document.getElementById('adminView');
+  const navNote  = document.getElementById('navNote');
+  const navAdmin = document.getElementById('navAdmin');
+  const bnNote   = document.getElementById('bnNote');
+  const bnAdmin  = document.getElementById('bnAdmin');
 
   // Reset tutti
-  [navGrid, navCal, navNote].forEach(b => b && b.classList.remove('on'));
-  [nbGrid, nbCal, bnNote].forEach(b => b && b.classList.remove('on'));
+  [navGrid, navCal, navNote, navAdmin].forEach(b => b && b.classList.remove('on'));
+  [nbGrid, nbCal, bnNote, bnAdmin].forEach(b => b && b.classList.remove('on'));
   vGrid.classList.remove('on'); vCal.classList.remove('on');
-  gridEl.style.display = 'none'; calEl.classList.remove('visible'); noteEl.style.display = 'none';
+  gridEl.style.display = 'none'; calEl.classList.remove('visible');
+  noteEl.style.display = 'none'; adminEl.style.display = 'none';
   document.getElementById('chipsEl').style.display = 'none';
   document.getElementById('statsEl').style.display = 'none';
-  document.getElementById('secTitle').closest('.sec-row') && (document.querySelector('.sec-row').style.display = 'none');
+  document.querySelector('.sec-row').style.display = 'none';
 
   if (v === 'grid') {
     gridEl.style.display = 'block';
@@ -1652,6 +2117,13 @@ function setView(v) {
     secTitle.textContent = 'Note & Idee';
     document.querySelector('.sec-row').style.display = 'flex';
     renderNotes();
+  } else if (v === 'admin') {
+    adminEl.style.display = 'block';
+    navAdmin && navAdmin.classList.add('on');
+    bnAdmin && bnAdmin.classList.add('on');
+    secTitle.textContent = 'Gestione Clienti';
+    document.querySelector('.sec-row').style.display = 'flex';
+    loadClients();
   }
 }
 
@@ -1752,13 +2224,17 @@ document.getElementById('modalNewSubmit').addEventListener('click', () => {
     formato:      document.getElementById('nw-formato').value,
     ig:           document.getElementById('nw-ig').checked ? 'Sì' : '',
     tk:           document.getElementById('nw-tk').checked ? 'Sì' : '',
-    yt:           document.getElementById('nw-yt').checked ? 'Sì' : '',
+    yt_long:      document.getElementById('nw-yt').checked ? 'Sì' : '',
+    shorts:       document.getElementById('nw-sh').checked ? 'Sì' : '',
+    linkedin:     document.getElementById('nw-li').checked ? 'Sì' : '',
     data_pianif:  fromInputDate(document.getElementById('nw-pianif').value),
     data_registr: fromInputDate(document.getElementById('nw-registr').value),
     script,
     did_ig:       document.getElementById('nw-ig-cap').value.trim(),
     did_tk:       document.getElementById('nw-tk-cap').value.trim(),
-    did_yt:       document.getElementById('nw-yt-cap').value.trim(),
+    did_yt_long:  document.getElementById('nw-yt-cap').value.trim(),
+    did_shorts:   document.getElementById('nw-sh-cap').value.trim(),
+    did_li:       document.getElementById('nw-li-cap').value.trim(),
     note:         document.getElementById('nw-note').value.trim(),
   };
 
@@ -1771,14 +2247,19 @@ document.getElementById('modalNewSubmit').addEventListener('click', () => {
     formato:      payload.formato,
     ig:           payload.ig === 'Sì',
     tk:           payload.tk === 'Sì',
-    yt:           payload.yt === 'Sì',
+    yt_long:      payload.yt_long === 'Sì',
+    shorts:       payload.shorts === 'Sì',
+    linkedin:     payload.linkedin === 'Sì',
     data_pianif:  payload.data_pianif || null,
     data_registr: payload.data_registr || null,
     script:       payload.script,
     did_ig:       payload.did_ig,
     did_tk:       payload.did_tk,
-    did_yt:       payload.did_yt,
+    did_yt_long:  payload.did_yt_long,
+    did_shorts:   payload.did_shorts,
+    did_li:       payload.did_li,
     note:         payload.note,
+    user_id:      getActiveUserId(),
   }])
   .then(({ error }) => {
     if (!error) {
@@ -1808,13 +2289,17 @@ function openEditModal(id) {
   document.getElementById('ed-stato').value    = getSt(r);
   document.getElementById('ed-ig').checked     = hasPl(r, 'ig');
   document.getElementById('ed-tk').checked     = hasPl(r, 'tk');
-  document.getElementById('ed-yt').checked     = hasPl(r, 'yt');
+  document.getElementById('ed-yt').checked     = hasPl(r, 'yt_long');
+  document.getElementById('ed-sh').checked     = hasPl(r, 'shorts');
+  document.getElementById('ed-li').checked     = hasPl(r, 'linkedin');
   document.getElementById('ed-pianif').value   = toInputDate(r.data_pianif);
   document.getElementById('ed-registr').value  = toInputDate(r.data_registr);
   document.getElementById('ed-script').value   = r.script || '';
   document.getElementById('ed-ig-cap').value   = r.did_ig || '';
   document.getElementById('ed-tk-cap').value   = r.did_tk || '';
-  document.getElementById('ed-yt-cap').value   = r.did_yt || '';
+  document.getElementById('ed-yt-cap').value   = r.did_yt_long || '';
+  document.getElementById('ed-sh-cap').value   = r.did_shorts || '';
+  document.getElementById('ed-li-cap').value   = r.did_li || '';
   document.getElementById('ed-note').value     = r.note || '';
   document.getElementById('modalEditSubmit').disabled = false;
   document.getElementById('modalEditSubmit').textContent = 'Salva modifiche';
@@ -1844,13 +2329,17 @@ document.getElementById('modalEditSubmit').addEventListener('click', () => {
     formato:      document.getElementById('ed-formato').value,
     ig:           document.getElementById('ed-ig').checked ? 'Sì' : '',
     tk:           document.getElementById('ed-tk').checked ? 'Sì' : '',
-    yt:           document.getElementById('ed-yt').checked ? 'Sì' : '',
+    yt_long:      document.getElementById('ed-yt').checked ? 'Sì' : '',
+    shorts:       document.getElementById('ed-sh').checked ? 'Sì' : '',
+    linkedin:     document.getElementById('ed-li').checked ? 'Sì' : '',
     data_pianif:  fromInputDate(document.getElementById('ed-pianif').value),
     data_registr: fromInputDate(document.getElementById('ed-registr').value),
     script:       document.getElementById('ed-script').value.trim(),
     did_ig:       document.getElementById('ed-ig-cap').value.trim(),
     did_tk:       document.getElementById('ed-tk-cap').value.trim(),
-    did_yt:       document.getElementById('ed-yt-cap').value.trim(),
+    did_yt_long:  document.getElementById('ed-yt-cap').value.trim(),
+    did_shorts:   document.getElementById('ed-sh-cap').value.trim(),
+    did_li:       document.getElementById('ed-li-cap').value.trim(),
     note:         document.getElementById('ed-note').value.trim(),
   };
 
@@ -1862,13 +2351,17 @@ document.getElementById('modalEditSubmit').addEventListener('click', () => {
     formato:      payload.formato,
     ig:           payload.ig === 'Sì',
     tk:           payload.tk === 'Sì',
-    yt:           payload.yt === 'Sì',
+    yt_long:      payload.yt_long === 'Sì',
+    shorts:       payload.shorts === 'Sì',
+    linkedin:     payload.linkedin === 'Sì',
     data_pianif:  payload.data_pianif || null,
     data_registr: payload.data_registr || null,
     script:       payload.script,
     did_ig:       payload.did_ig,
     did_tk:       payload.did_tk,
-    did_yt:       payload.did_yt,
+    did_yt_long:  payload.did_yt_long,
+    did_shorts:   payload.did_shorts,
+    did_li:       payload.did_li,
     note:         payload.note,
   }).eq('id', payload.id)
   .then(({ error }) => {
@@ -1887,6 +2380,349 @@ document.getElementById('modalEditSubmit').addEventListener('click', () => {
     }
   });
 });
+
+// ─── RICERCA AVANZATA ────────────────────────
+let advFilters = { dateFrom:'', dateTo:'', formato:'', piattaforma:'', stato:'' };
+
+document.getElementById('advSearchToggle').addEventListener('click', () => {
+  const panel = document.getElementById('searchAdvPanel');
+  panel.classList.toggle('open');
+  document.getElementById('advSearchToggle').classList.toggle('on');
+});
+
+function applyAdvFilters() {
+  advFilters.dateFrom     = document.getElementById('adv-date-from').value;
+  advFilters.dateTo       = document.getElementById('adv-date-to').value;
+  advFilters.formato      = document.getElementById('adv-formato').value;
+  advFilters.piattaforma  = document.getElementById('adv-piattaforma').value;
+  advFilters.stato        = document.getElementById('adv-stato').value;
+  renderCards();
+}
+
+['adv-date-from','adv-date-to','adv-formato','adv-piattaforma','adv-stato'].forEach(id => {
+  document.getElementById(id).addEventListener('change', applyAdvFilters);
+});
+
+document.getElementById('advResetBtn').addEventListener('click', () => {
+  ['adv-date-from','adv-date-to'].forEach(id => document.getElementById(id).value = '');
+  ['adv-formato','adv-piattaforma','adv-stato'].forEach(id => document.getElementById(id).value = '');
+  advFilters = { dateFrom:'', dateTo:'', formato:'', piattaforma:'', stato:'' };
+  renderCards();
+});
+
+// Override filtered() per includere filtri avanzati
+const _filteredBase = filtered;
+filtered = function() {
+  let list = _filteredBase();
+  if (advFilters.formato)     list = list.filter(r => (r.formato||'').toLowerCase() === advFilters.formato.toLowerCase());
+  if (advFilters.piattaforma) list = list.filter(r => hasPl(r, advFilters.piattaforma));
+  if (advFilters.stato)       list = list.filter(r => getSt(r) === advFilters.stato);
+  if (advFilters.dateFrom) {
+    const from = new Date(advFilters.dateFrom);
+    list = list.filter(r => { const d = parseDate(r.data_pianif); return d && d >= from; });
+  }
+  if (advFilters.dateTo) {
+    const to = new Date(advFilters.dateTo);
+    to.setHours(23,59,59);
+    list = list.filter(r => { const d = parseDate(r.data_pianif); return d && d <= to; });
+  }
+  return list;
+};
+
+// ─── ETICHETTE ────────────────────────────────
+const ET_COLORS = ['#ef4444','#f97316','#eab308','#22c55e','#10b981','#3b82f6','#8b5cf6','#ec4899','#64748b','#1a1a1a'];
+let allEtichette = []; // etichette dell'utente corrente
+let editingEtId = null;
+let etForContentId = null; // content id a cui stiamo aggiungendo etichette
+
+async function loadEtichette() {
+  const uid = getActiveUserId();
+  if (!uid) return;
+  const { data } = await sb.from('etichette').select('*').eq('user_id', uid).order('created_at');
+  allEtichette = data || [];
+}
+
+async function loadContentEtichette() {
+  const uid = getActiveUserId();
+  if (!uid) return;
+  const { data } = await sb.from('content_etichette')
+    .select('id, content_id, etichetta:etichetta_id(id,nome,colore)')
+    .eq('user_id', uid);
+  // Raggruppa per content_id e attacca alle rows
+  const map = {};
+  (data || []).forEach(ce => {
+    if (!map[ce.content_id]) map[ce.content_id] = [];
+    map[ce.content_id].push({ ...ce.etichetta, content_etichetta_id: ce.id });
+  });
+  rows.forEach(r => { r._etichette = map[r.id] || []; });
+}
+
+async function loadCommentCounts() {
+  const uid = getActiveUserId();
+  if (!uid) return;
+  const { data } = await sb.from('comments').select('content_id').eq('content_user_id', uid);
+  const counts = {};
+  (data || []).forEach(c => { counts[c.content_id] = (counts[c.content_id] || 0) + 1; });
+  rows.forEach(r => { r._commentCount = counts[r.id] || 0; });
+}
+
+function openEtichettePanel(contentId) {
+  etForContentId = contentId;
+  renderEtichettePanel();
+}
+
+function renderEtichettePanel() {
+  const r = rows.find(r => r.id === etForContentId);
+  if (!r) return;
+  const assigned = r._etichette || [];
+  const assignedIds = assigned.map(e => e.id);
+
+  // Usa un mini popover inline dentro la card
+  const container = document.getElementById('et_' + etForContentId);
+  if (!container) return;
+
+  // Costruisci selezione
+  let html = assigned.map(e => `
+    <span class="etichetta-badge" style="background:${e.colore}22;color:${e.colore}"
+      data-et-remove="${escA(e.content_etichetta_id)}" data-etid="${escA(etForContentId)}" style="cursor:pointer">
+      <span class="et-color-dot" style="background:${e.colore}"></span>${escH(e.nome)} ✕
+    </span>`).join('');
+
+  // Aggiungi quelle non assegnate
+  allEtichette.filter(e => !assignedIds.includes(e.id)).forEach(e => {
+    html += `<span class="et-opt" style="background:${e.colore}22;color:${e.colore}" data-et-assign="${escA(e.id)}" data-etid="${escA(etForContentId)}">
+      <span class="et-color-dot" style="background:${e.colore}"></span>${escH(e.nome)}
+    </span>`;
+  });
+  html += `<button class="btn-new-et" id="btnCreateEt">+ Nuova</button>`;
+  container.innerHTML = html;
+
+  container.addEventListener('click', async e => {
+    const assignBtn = e.target.closest('[data-et-assign]');
+    const createBtn = e.target.closest('#btnCreateEt');
+    if (assignBtn) { await assignEtichetta(assignBtn.dataset.etAssign, assignBtn.dataset.etid); return; }
+    if (createBtn) { openNewEtModal(); return; }
+  });
+}
+
+async function assignEtichetta(etId, contentId) {
+  const uid = getActiveUserId();
+  const { error } = await sb.from('content_etichette').insert([{ content_id: contentId, etichetta_id: etId, user_id: uid }]);
+  if (error && !error.message.includes('unique')) { toast('Errore assegnazione', 'err'); return; }
+  await loadContentEtichette();
+  renderCards();
+}
+
+async function removeEtichetta(ceId, contentId) {
+  const { error } = await sb.from('content_etichette').delete().eq('id', ceId);
+  if (error) { toast('Errore rimozione', 'err'); return; }
+  await loadContentEtichette();
+  renderCards();
+  etForContentId = contentId;
+  setTimeout(() => renderEtichettePanel(), 50);
+}
+
+// Modal nuova etichetta
+function openNewEtModal(id) {
+  editingEtId = id || null;
+  const et = id ? allEtichette.find(e => e.id === id) : null;
+  document.getElementById('etModalTitle').textContent = et ? 'Modifica etichetta' : 'Nuova etichetta';
+  document.getElementById('et-nome').value = et ? et.nome : '';
+  // Render swatches
+  const sw = document.getElementById('etColorSwatches');
+  const selColor = et ? et.colore : ET_COLORS[0];
+  sw.innerHTML = ET_COLORS.map(c =>
+    `<div class="color-swatch${c===selColor?' on':''}" style="background:${c}" data-color="${c}"></div>`
+  ).join('');
+  sw.addEventListener('click', e => {
+    const s = e.target.closest('[data-color]');
+    if (!s) return;
+    sw.querySelectorAll('.color-swatch').forEach(x => x.classList.remove('on'));
+    s.classList.add('on');
+  });
+  document.getElementById('modalEt').classList.add('open');
+  setTimeout(() => document.getElementById('et-nome').focus(), 100);
+}
+
+document.getElementById('modalEtClose').addEventListener('click', () => document.getElementById('modalEt').classList.remove('open'));
+document.getElementById('modalEtCancel').addEventListener('click', () => document.getElementById('modalEt').classList.remove('open'));
+document.getElementById('modalEt').addEventListener('click', e => { if (e.target === document.getElementById('modalEt')) document.getElementById('modalEt').classList.remove('open'); });
+
+document.getElementById('modalEtSave').addEventListener('click', async () => {
+  const nome = document.getElementById('et-nome').value.trim();
+  if (!nome) { toast('Nome obbligatorio', 'err'); return; }
+  const colore = document.querySelector('#etColorSwatches .color-swatch.on')?.dataset.color || ET_COLORS[0];
+  const uid = getActiveUserId();
+  const btn = document.getElementById('modalEtSave');
+  btn.disabled = true;
+
+  let error;
+  if (editingEtId) {
+    ({ error } = await sb.from('etichette').update({ nome, colore }).eq('id', editingEtId));
+  } else {
+    ({ error } = await sb.from('etichette').insert([{ nome, colore, user_id: uid }]));
+  }
+  btn.disabled = false;
+  if (error) { toast('Errore salvataggio', 'err'); return; }
+  document.getElementById('modalEt').classList.remove('open');
+  await loadEtichette();
+  await loadContentEtichette();
+  renderCards();
+  toast(editingEtId ? 'Etichetta aggiornata ✓' : 'Etichetta creata ✓', 'ok');
+  // Riapri pannello se stavamo aggiungendo
+  if (etForContentId) { setTimeout(() => renderEtichettePanel(), 100); }
+});
+
+// ─── COMMENTI ─────────────────────────────────
+let commentingContentId = null;
+
+async function openComments(contentId) {
+  commentingContentId = contentId;
+  document.getElementById('commentsModalId').textContent = '#' + contentId;
+  document.getElementById('commentInp').value = '';
+  document.getElementById('modalComments').classList.add('open');
+  await loadComments(contentId);
+}
+
+async function loadComments(contentId) {
+  const uid = getActiveUserId();
+  const { data, error } = await sb.from('comments')
+    .select('*, author:author_id(nome,email)')
+    .eq('content_id', contentId)
+    .eq('content_user_id', uid)
+    .order('created_at');
+  if (error) { toast('Errore caricamento commenti', 'err'); return; }
+  const list = document.getElementById('commentsList');
+  if (!data || data.length === 0) {
+    list.innerHTML = '<p style="color:var(--text-3);font-size:13px;text-align:center;padding:20px 0">Nessun commento ancora.</p>';
+    return;
+  }
+  list.innerHTML = data.map(c => {
+    const name = c.author?.nome || c.author?.email || 'Utente';
+    const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    return `
+    <div class="comment-item">
+      <div class="comment-avatar">${initials}</div>
+      <div class="comment-bubble">
+        <span class="comment-author">${escH(name)}</span>
+        <span class="comment-date">${fmtDate(c.created_at)}</span>
+        <div class="comment-text">${escH(c.testo)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  list.scrollTop = list.scrollHeight;
+}
+
+document.getElementById('modalCommentsClose').addEventListener('click', () => {
+  document.getElementById('modalComments').classList.remove('open');
+  commentingContentId = null;
+});
+document.getElementById('modalComments').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalComments')) {
+    document.getElementById('modalComments').classList.remove('open');
+    commentingContentId = null;
+  }
+});
+
+document.getElementById('sendCommentBtn').addEventListener('click', async () => {
+  const testo = document.getElementById('commentInp').value.trim();
+  if (!testo || !commentingContentId) return;
+  const uid = getActiveUserId();
+  const btn = document.getElementById('sendCommentBtn');
+  btn.disabled = true;
+  const { error } = await sb.from('comments').insert([{
+    content_id: commentingContentId,
+    content_user_id: uid,
+    author_id: currentUser.id,
+    testo,
+  }]);
+  btn.disabled = false;
+  if (error) { toast('Errore invio commento', 'err'); return; }
+  document.getElementById('commentInp').value = '';
+  await loadComments(commentingContentId);
+  // Aggiorna contatore
+  await loadCommentCounts();
+  renderCards();
+});
+
+document.getElementById('commentInp').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); document.getElementById('sendCommentBtn').click(); }
+});
+
+// ─── ESPORTA PDF ──────────────────────────────
+document.getElementById('exportPdfBtn').addEventListener('click', exportPdf);
+
+function exportPdf() {
+  const list = filtered();
+  if (!list.length) { toast('Nessun contenuto da esportare', 'err'); return; }
+
+  const now = new Date().toLocaleDateString('it-IT', { day:'2-digit', month:'long', year:'numeric' });
+  const statusColors = {};
+  STS.forEach(s => { statusColors[s.key] = { bg: s.bg, color: s.color, tc: s.tc }; });
+
+  const rows_html = list.map(r => {
+    const st = getSt(r);
+    const sc = statusColors[st] || { bg:'#f1f5f9', color:'#64748b', tc:'#475569' };
+    const plats = [
+      hasPl(r,'ig') ? 'Instagram' : '',
+      hasPl(r,'tk') ? 'TikTok' : '',
+      hasPl(r,'yt_long') ? 'YouTube' : '',
+      hasPl(r,'shorts') ? 'YT Shorts' : '',
+      hasPl(r,'linkedin') ? 'LinkedIn' : '',
+    ].filter(Boolean).join(', ');
+    const etichette = (r._etichette||[]).map(e =>
+      `<span style="background:${e.colore}22;color:${e.colore};padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600">${e.nome}</span>`
+    ).join(' ');
+    return `
+    <div style="background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:16px;border:1px solid #e5e7eb;page-break-inside:avoid">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span style="font-size:13px;font-weight:700;color:#1a1a1a">#${r.id}</span>
+        ${r.formato ? `<span style="background:#f1f5f9;color:#475569;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:600">${r.formato}</span>` : ''}
+        <span style="background:${sc.bg};color:${sc.tc};padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700">${st}</span>
+        ${etichette}
+        <span style="margin-left:auto;font-size:11px;color:#9ca3af">${plats}</span>
+      </div>
+      ${r.data_pianif ? `<div style="font-size:11px;color:#9ca3af;margin-bottom:8px">📅 ${r.data_pianif}${r.data_registr ? ' · ✓ '+r.data_registr : ''}</div>` : ''}
+      ${r.script ? `
+      <div style="margin-bottom:12px">
+        <div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#9ca3af;margin-bottom:6px">SCRIPT</div>
+        <div style="font-size:13px;color:#374151;line-height:1.7;white-space:pre-wrap;background:#f9fafb;padding:12px;border-radius:8px">${r.script.replace(/</g,'&lt;')}</div>
+      </div>` : ''}
+      ${r.did_ig ? `<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#e1306c;margin-bottom:4px">INSTAGRAM</div><div style="font-size:12px;color:#374151;line-height:1.6">${r.did_ig.replace(/</g,'&lt;')}</div></div>` : ''}
+      ${r.did_tk ? `<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#1a1a1a;margin-bottom:4px">TIKTOK</div><div style="font-size:12px;color:#374151;line-height:1.6">${r.did_tk.replace(/</g,'&lt;')}</div></div>` : ''}
+      ${r.did_yt_long ? `<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#ff0000;margin-bottom:4px">YOUTUBE</div><div style="font-size:12px;color:#374151;line-height:1.6">${r.did_yt_long.replace(/</g,'&lt;')}</div></div>` : ''}
+      ${r.did_shorts ? `<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#cc0000;margin-bottom:4px">YT SHORTS</div><div style="font-size:12px;color:#374151;line-height:1.6">${r.did_shorts.replace(/</g,'&lt;')}</div></div>` : ''}
+      ${r.did_li ? `<div style="margin-bottom:8px"><div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#0077b5;margin-bottom:4px">LINKEDIN</div><div style="font-size:12px;color:#374151;line-height:1.6">${r.did_li.replace(/</g,'&lt;')}</div></div>` : ''}
+      ${r.note ? `<div style="margin-top:8px;padding:8px 12px;background:#fffbeb;border-radius:8px;border-left:3px solid #f59e0b"><span style="font-size:11px;font-weight:600;color:#92400e">NOTE: </span><span style="font-size:12px;color:#78350f">${r.note.replace(/</g,'&lt;')}</span></div>` : ''}
+    </div>`;
+  }).join('');
+
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>Calendario Editoriale — ${now}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; padding: 32px; color: #1a1a1a; }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .no-print { display: none; }
+      @page { margin: 20mm; }
+    }
+  </style>
+  </head><body>
+  <div style="max-width:800px;margin:0 auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #1a1a1a">
+      <div>
+        <h1 style="font-size:22px;font-weight:800">Calendario Editoriale</h1>
+        <p style="font-size:13px;color:#6b7280;margin-top:4px">Esportato il ${now} · ${list.length} contenuti</p>
+      </div>
+      <button class="no-print" onclick="window.print()" style="background:#1a1a1a;color:#fff;border:none;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer">🖨 Stampa / Salva PDF</button>
+    </div>
+    ${rows_html}
+  </div>
+  </body></html>`);
+  win.document.close();
+}
 
 // ─── NOTE ─────────────────────────────────────
 const NOTE_TABLE = 'NOTE';
@@ -1917,7 +2753,10 @@ function fmtDate(iso) {
 }
 
 async function loadNotes() {
-  const { data, error } = await sb.from(NOTE_TABLE).select('*').order('created_at', { ascending: false });
+  const uid = viewingUserId || (currentUser ? currentUser.id : null);
+  let q = sb.from(NOTE_TABLE).select('*').order('created_at', { ascending: false });
+  if (uid) q = q.eq('user_id', uid);
+  const { data, error } = await q;
   if (error) { toast('Errore caricamento note', 'err'); return; }
   noteRows = data || [];
   renderNotes();
@@ -2043,7 +2882,7 @@ document.getElementById('modalNoteSave').addEventListener('click', async () => {
 
   let error;
   if (!editingNoteId) {
-    ({ error } = await sb.from(NOTE_TABLE).insert([payload]));
+    ({ error } = await sb.from(NOTE_TABLE).insert([{ ...payload, user_id: getActiveUserId() }]));
   } else {
     ({ error } = await sb.from(NOTE_TABLE).update(payload).eq('id', editingNoteId));
   }
@@ -2064,19 +2903,28 @@ async function deleteNote(id) {
   toast('Nota eliminata', 'ok');
 }
 
-// ─── INIT ─────────────────────────────────────
-// Converte valore Supabase (boolean o stringa) → 'Sì' / ''
+// ─── AUTH & INIT ──────────────────────────────
 function sbBool(v) {
   if (v === true) return 'Sì';
   if (typeof v === 'string' && ['sì','si','1','x','yes','✓','v','true'].includes(v.toLowerCase().trim())) return 'Sì';
   return '';
 }
 
+let currentUser = null;
+let currentProfile = null;
+let viewingUserId = null; // quando admin guarda un cliente
+
 async function loadFromSupabase() {
   document.getElementById('subtitleEl').textContent = 'Caricamento…';
-  const { data, error } = await sb.from(TABLE).select('*').order('id');
+  const uid = viewingUserId || (currentUser ? currentUser.id : null);
+  let query = sb.from(TABLE).select('*').order('id');
+  if (uid && currentProfile && currentProfile.ruolo !== 'admin') {
+    query = query.eq('user_id', uid);
+  } else if (uid && viewingUserId) {
+    query = query.eq('user_id', uid);
+  }
+  const { data, error } = await query;
   if (error) {
-    console.error('Supabase error:', error);
     document.getElementById('subtitleEl').textContent = 'Errore caricamento dati';
     toast('Errore caricamento dati', 'err');
     return;
@@ -2088,26 +2936,343 @@ async function loadFromSupabase() {
     data_registr: r.data_registr || '',
     ig:           sbBool(r.ig),
     tk:           sbBool(r.tk),
-    yt:           sbBool(r.yt),
+    yt_long:      sbBool(r.yt_long),
+    shorts:       sbBool(r.shorts),
+    linkedin:     sbBool(r.linkedin),
     formato:      r.formato || '',
     script:       r.script || '',
     did_ig:       r.did_ig || '',
     did_tk:       r.did_tk || '',
-    did_yt:       r.did_yt || '',
+    did_yt_long:  r.did_yt_long || '',
+    did_shorts:   r.did_shorts || '',
+    did_li:       r.did_li || '',
     note:         r.note || '',
   }));
-
   const now = new Date();
   document.getElementById('updLbl').textContent = 'Aggiornato ' + now.toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit'});
   document.getElementById('subtitleEl').textContent = filtered().length + ' contenuti nel calendario';
+
+  // Carica etichette e commenti in parallelo
+  await Promise.all([
+    loadEtichette(),
+    loadContentEtichette(),
+    loadCommentCounts(),
+  ]);
+
   renderStats();
   renderChips();
   setView('grid');
 }
 
-loadFromSupabase();
-// Auto-refresh ogni 5 min
-setInterval(loadFromSupabase, 5 * 60 * 1000);
+// Aggiorna user_id su insert/update contenuti
+const _origInsert = sb.from.bind(sb);
+
+function getActiveUserId() {
+  return viewingUserId || (currentUser ? currentUser.id : null);
+}
+
+// ─── PERMESSI ────────────────────────────────
+// Restituisce true se l'utente corrente può modificare
+function canEdit() {
+  if (!currentProfile) return false;
+  if (currentProfile.ruolo === 'admin') return true;
+  if (currentProfile.ruolo_app === 'admin') return true;
+  // Collaboratore: controlla ruolo assegnato per questo cliente
+  if (viewingUserId && currentProfile.ruolo_app === 'collaborator') {
+    return currentProfile._collabRuolo === 'editor';
+  }
+  // Client o collaboratore sul proprio calendario
+  return true;
+}
+
+function enforceReadOnly() {
+  const readonly = !canEdit();
+  // Nascondi bottoni modifica/avanza se solo visualizzatore
+  const style = document.getElementById('readonlyStyle') || document.createElement('style');
+  style.id = 'readonlyStyle';
+  style.textContent = readonly ? `
+    [data-adv],[data-back],[data-edit],.btn-new,.btn-new-note { display:none !important; }
+  ` : '';
+  document.head.appendChild(style);
+}
+
+// ─── ADMIN: carica clienti ───────────────────
+async function loadClients() {
+  const list = document.getElementById('clientList');
+  const isAdmin = currentProfile?.ruolo === 'admin' || currentProfile?.ruolo_app === 'admin';
+  let clients = [];
+
+  if (isAdmin) {
+    const { data } = await sb.from('profiles').select('*').eq('ruolo', 'client').order('created_at');
+    clients = (data || []).map(c => ({ ...c, _ruolo: 'editor' }));
+  } else if (currentProfile?.ruolo_app === 'collaborator') {
+    // Collaboratore: mostra solo i clienti assegnati
+    const assignments = currentProfile._assignments || [];
+    clients = assignments.map(a => ({ ...a.client, _ruolo: a.ruolo }));
+  }
+
+  if (clients.length === 0) {
+    list.innerHTML = '<p style="color:var(--text-3);font-size:13px">Nessun cliente ancora.</p>';
+    return;
+  }
+  list.innerHTML = clients.map(c => {
+    const initials = (c.nome || c.email || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+    const ruoloLabel = c._ruolo === 'editor' ? '' : ' <span style="font-size:10px;color:var(--text-3)">(solo lettura)</span>';
+    const convertBtn = isAdmin ? `<button class="note-btn" data-convert="${escA(c.id)}" title="Converti in collaboratore">🤝</button>` : '';
+    return `
+    <div class="client-row">
+      <div class="client-avatar">${initials}</div>
+      <div class="client-info">
+        <div class="client-name">${escH(c.nome || '—')}${ruoloLabel}</div>
+        <div class="client-email">${escH(c.email || '')}</div>
+      </div>
+      ${convertBtn}
+      <button class="btn-enter-client" data-cid="${escA(c.id)}" data-cname="${escA(c.nome || c.email)}" data-cruolo="${escA(c._ruolo || 'visualizzatore')}">Entra →</button>
+    </div>`;
+  }).join('');
+
+  list.addEventListener('click', async e => {
+    const enterBtn   = e.target.closest('[data-cid]');
+    const convertBtn = e.target.closest('[data-convert]');
+    if (enterBtn)   enterClientView(enterBtn.dataset.cid, enterBtn.dataset.cname, enterBtn.dataset.cruolo);
+    if (convertBtn) {
+      if (!confirm('Convertire questo cliente in collaboratore? Manterrà il suo calendario personale.')) return;
+      const { error } = await sb.from('profiles').update({
+        ruolo: 'collaborator', ruolo_app: 'collaborator'
+      }).eq('id', convertBtn.dataset.convert);
+      if (error) { toast('Errore conversione', 'err'); return; }
+      toast('Account convertito in collaboratore ✓', 'ok');
+      loadClients();
+    }
+  });
+}
+
+function enterClientView(uid, name, collabRuolo) {
+  viewingUserId = uid;
+  // Salva il ruolo del collaboratore per questo cliente (se applicabile)
+  if (currentProfile && currentProfile.ruolo_app === 'collaborator') {
+    currentProfile._collabRuolo = collabRuolo || 'visualizzatore';
+  }
+  document.getElementById('viewingBanner').classList.add('visible');
+  document.getElementById('viewingBannerText').textContent = `👁 Stai visualizzando il calendario di: ${name}`;
+  enforceReadOnly();
+  loadFromSupabase();
+  loadNotes();
+}
+
+document.getElementById('exitClientBtn').addEventListener('click', () => {
+  viewingUserId = null;
+  if (currentProfile) currentProfile._collabRuolo = null;
+  document.getElementById('viewingBanner').classList.remove('visible');
+  enforceReadOnly();
+  loadFromSupabase();
+  loadNotes();
+  setView('grid');
+});
+
+// ─── ADMIN: crea cliente ──────────────────────
+document.getElementById('ccBtn').addEventListener('click', async () => {
+  const nome  = document.getElementById('cc-nome').value.trim();
+  const email = document.getElementById('cc-email').value.trim();
+  const pass  = document.getElementById('cc-pass').value.trim();
+  const tipo  = document.getElementById('cc-tipo').value; // 'client' | 'collaborator'
+  const errEl = document.getElementById('ccErr');
+  errEl.textContent = '';
+
+  if (!email || !pass) { errEl.textContent = 'Email e password obbligatorie'; return; }
+  if (pass.length < 6) { errEl.textContent = 'Password minimo 6 caratteri'; return; }
+
+  const btn = document.getElementById('ccBtn');
+  btn.disabled = true; btn.textContent = 'Creazione…';
+
+  // Usa un client separato per non toccare la sessione admin corrente
+  const { createClient: _cc } = supabase;
+  const sbTemp = _cc('https://crnixtdqlesngljdixue.supabase.co', 'sb_publishable_aIoi-Q2XxtTB9j-hncmwCw_Ms2TwUZp');
+  const { data, error } = await sbTemp.auth.signUp({ email, password: pass });
+  await sbTemp.auth.signOut();
+
+  if (error) {
+    btn.disabled = false; btn.textContent = 'Crea account';
+    errEl.textContent = 'Errore: ' + error.message;
+    return;
+  }
+
+  // Inserisci nel profilo con il tipo scelto
+  const uid = data?.user?.id;
+  if (uid) {
+    await sb.from('profiles').upsert({
+      id: uid, email, nome,
+      ruolo: tipo === 'collaborator' ? 'collaborator' : 'client',
+      ruolo_app: tipo === 'collaborator' ? 'collaborator' : 'client',
+    });
+  }
+
+  btn.disabled = false; btn.textContent = 'Crea account';
+  document.getElementById('cc-nome').value = '';
+  document.getElementById('cc-email').value = '';
+  document.getElementById('cc-pass').value = '';
+  toast('Account creato ✓', 'ok');
+  loadClients();
+  // Torna alla tab clienti
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('on', t.dataset.atab === 'clienti'));
+  document.querySelectorAll('.admin-pane').forEach(p => p.classList.toggle('on', p.id === 'atab-clienti'));
+});
+
+// ─── ADMIN: collaboratori ────────────────────
+async function loadCollaboratorsTab() {
+  // Popola select collaboratori (ruolo_app = collaborator o admin)
+  const { data: profiles } = await sb.from('profiles').select('*').neq('ruolo', 'client');
+  const colSel = document.getElementById('col-user');
+  const cliSel = document.getElementById('col-client');
+  colSel.innerHTML = (profiles || []).filter(p => p.id !== currentUser.id)
+    .map(p => `<option value="${p.id}">${escH(p.nome || p.email)}</option>`).join('');
+
+  // Popola select clienti
+  const { data: clients } = await sb.from('profiles').select('*').eq('ruolo', 'client');
+  cliSel.innerHTML = (clients || [])
+    .map(p => `<option value="${p.id}">${escH(p.nome || p.email)}</option>`).join('');
+
+  // Carica assegnazioni esistenti
+  const { data: collabs } = await sb.from('collaborators').select('*, collaborator:collaborator_id(nome,email), client:client_id(nome,email)');
+  const listEl = document.getElementById('collabList');
+  if (!collabs || collabs.length === 0) {
+    listEl.innerHTML = '<p style="color:var(--text-3);font-size:13px;margin-top:8px">Nessuna assegnazione ancora.</p>';
+    return;
+  }
+  listEl.innerHTML = `
+    <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:10px">Assegnazioni attive</div>
+    <div class="client-list">
+    ${collabs.map(c => `
+      <div class="client-row">
+        <div class="client-info">
+          <div class="client-name">${escH(c.collaborator?.nome || c.collaborator?.email || '?')}</div>
+          <div class="client-email">→ ${escH(c.client?.nome || c.client?.email || '?')} · <strong>${c.ruolo}</strong></div>
+        </div>
+        <button class="note-btn del" data-delcollab="${c.id}">Rimuovi</button>
+      </div>`).join('')}
+    </div>`;
+
+  listEl.addEventListener('click', async e => {
+    const btn = e.target.closest('[data-delcollab]');
+    if (!btn) return;
+    if (!confirm('Rimuovere questo accesso?')) return;
+    await sb.from('collaborators').delete().eq('id', btn.dataset.delcollab);
+    loadCollaboratorsTab();
+    toast('Accesso rimosso', 'ok');
+  });
+}
+
+document.getElementById('colAssignBtn').addEventListener('click', async () => {
+  const collabId = document.getElementById('col-user').value;
+  const clientId = document.getElementById('col-client').value;
+  const ruolo    = document.getElementById('col-ruolo').value;
+  const errEl    = document.getElementById('colErr');
+  errEl.textContent = '';
+  if (!collabId || !clientId) { errEl.textContent = 'Seleziona collaboratore e cliente'; return; }
+
+  const btn = document.getElementById('colAssignBtn');
+  btn.disabled = true; btn.textContent = 'Salvataggio…';
+
+  const { error } = await sb.from('collaborators').upsert(
+    { collaborator_id: collabId, client_id: clientId, ruolo },
+    { onConflict: 'collaborator_id,client_id' }
+  );
+  btn.disabled = false; btn.textContent = 'Assegna accesso';
+  if (error) { errEl.textContent = 'Errore: ' + error.message; return; }
+  toast('Accesso assegnato ✓', 'ok');
+  loadCollaboratorsTab();
+});
+
+// Admin tabs
+document.querySelectorAll('.admin-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('on'));
+    document.querySelectorAll('.admin-pane').forEach(p => p.classList.remove('on'));
+    tab.classList.add('on');
+    document.getElementById('atab-' + tab.dataset.atab).classList.add('on');
+    if (tab.dataset.atab === 'clienti') loadClients();
+    if (tab.dataset.atab === 'collaboratori') loadCollaboratorsTab();
+  });
+});
+
+// ─── LOGIN ────────────────────────────────────
+document.getElementById('loginBtn').addEventListener('click', doLogin);
+document.getElementById('loginPassword').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginErr');
+  const btn   = document.getElementById('loginBtn');
+  errEl.textContent = '';
+  if (!email || !pass) { errEl.textContent = 'Inserisci email e password'; return; }
+  btn.disabled = true; btn.textContent = 'Accesso…';
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+  btn.disabled = false; btn.textContent = 'Accedi';
+  if (error) { errEl.textContent = 'Email o password errati'; return; }
+  await onLogin(data.user);
+}
+
+async function onLogin(user) {
+  currentUser = user;
+  const { data: profile } = await sb.from('profiles').select('*').eq('id', user.id).single();
+  currentProfile = profile;
+
+  // Aggiorna avatar
+  const initials = (profile?.nome || user.email || '?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  document.getElementById('sbAvatar').textContent = initials;
+
+  // Mostra bottone admin se admin
+  const isAdmin = profile?.ruolo === 'admin' || profile?.ruolo_app === 'admin';
+  const isCollaborator = profile?.ruolo_app === 'collaborator';
+  if (isAdmin || isCollaborator) {
+    document.getElementById('navAdmin').style.display = 'flex';
+    document.getElementById('bnAdmin') && (document.getElementById('bnAdmin').style.display = 'flex');
+  }
+
+  // Se collaboratore, carica i clienti assegnati
+  if (profile?.ruolo_app === 'collaborator') {
+    const { data: assignments } = await sb.from('collaborators')
+      .select('*, client:client_id(id,nome,email)')
+      .eq('collaborator_id', user.id);
+    profile._assignments = assignments || [];
+  }
+
+  enforceReadOnly();
+
+  // Nascondi login
+  document.getElementById('loginScreen').classList.remove('visible');
+
+  // Carica dati
+  await loadFromSupabase();
+  setInterval(loadFromSupabase, 5 * 60 * 1000);
+}
+
+// Logout
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await sb.auth.signOut();
+  currentUser = null; currentProfile = null; viewingUserId = null;
+  document.getElementById('loginScreen').classList.add('visible');
+  document.getElementById('viewingBanner').classList.remove('visible');
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPassword').value = '';
+  document.getElementById('loginErr').textContent = '';
+});
+
+// Nav admin
+document.getElementById('navAdmin') && document.getElementById('navAdmin').addEventListener('click', () => setView('admin'));
+document.getElementById('bnAdmin') && document.getElementById('bnAdmin').addEventListener('click', () => setView('admin'));
+
+// ─── CHECK SESSIONE ESISTENTE ─────────────────
+(async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) {
+    await onLogin(session.user);
+  } else {
+    document.getElementById('loginScreen').classList.add('visible');
+  }
+})();
 </script>
 </body>
 </html>
