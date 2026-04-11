@@ -586,6 +586,68 @@
     .edit-sync { font-size: 11px; color: var(--text-3); margin-left: auto; }
     .edit-sync.ok { color: var(--s3t); }
     .edit-sync.err { color: #c0392b; }
+
+    /* ── NOTE VIEW ── */
+    #noteView { display: none; }
+    .note-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+    .note-cat-chips { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+    .note-chip {
+      height: 30px; padding: 0 12px; border-radius: 20px; border: 1.5px solid var(--border);
+      background: #fff; color: var(--text-2); font-size: 12px; font-family: var(--font);
+      cursor: pointer; transition: all .15s; white-space: nowrap;
+    }
+    .note-chip.on { background: var(--text); color: #fff; border-color: var(--text); }
+    .btn-new-note {
+      height: 32px; padding: 0 14px; background: var(--text); color: #fff;
+      border: none; border-radius: 8px; font-family: var(--font); font-size: 12px;
+      font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: opacity .15s;
+    }
+    .btn-new-note:hover { opacity: .85; }
+    .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 12px; align-items: start; }
+    .note-card {
+      background: var(--card); border-radius: var(--r); border: 1px solid var(--border);
+      box-shadow: var(--sh-sm); padding: 16px; display: flex; flex-direction: column; gap: 10px;
+      transition: box-shadow .15s;
+    }
+    .note-card:hover { box-shadow: var(--sh); }
+    .note-card-head { display: flex; align-items: center; gap: 8px; }
+    .note-cat-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 20px;
+    }
+    .cat-idea     { background: #fef9c3; color: #854d0e; }
+    .cat-reference{ background: #dbeafe; color: #1e40af; }
+    .cat-hook     { background: #fce7f3; color: #9d174d; }
+    .cat-altro    { background: #f1f5f9; color: #475569; }
+    .note-date { font-size: 10px; color: var(--text-3); margin-left: auto; }
+    .note-title { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4; }
+    .note-body {
+      font-size: 12.5px; color: var(--text-2); line-height: 1.65;
+      display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .note-actions { display: flex; gap: 6px; margin-top: 4px; }
+    .note-btn {
+      height: 26px; padding: 0 10px; border-radius: 6px; border: 1px solid var(--border);
+      background: transparent; color: var(--text-2); font-size: 11px; font-family: var(--font);
+      cursor: pointer; transition: all .15s;
+    }
+    .note-btn:hover { background: rgba(0,0,0,.05); color: var(--text); }
+    .note-btn.del:hover { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+    .note-empty { text-align: center; padding: 60px 20px; color: var(--text-3); }
+    .note-empty svg { opacity: .3; margin-bottom: 12px; }
+
+    /* Modal note */
+    .modal-note { display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:1000; align-items:center; justify-content:center; padding:16px; }
+    .modal-note.open { display:flex; }
+    .modal-note-box { background:#fff; border-radius:16px; width:100%; max-width:520px; box-shadow:0 20px 60px rgba(0,0,0,.2); overflow:hidden; }
+    .note-cat-select { display: flex; gap: 6px; flex-wrap: wrap; }
+    .note-cat-opt {
+      height: 28px; padding: 0 12px; border-radius: 20px; border: 1.5px solid var(--border);
+      background: #fff; color: var(--text-2); font-size: 12px; font-family: var(--font);
+      cursor: pointer; transition: all .15s;
+    }
+    .note-cat-opt.on { background: var(--text); color: #fff; border-color: var(--text); }
   </style>
 </head>
 <body>
@@ -603,6 +665,10 @@
     <button class="sb-btn" id="navCal">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
       <span class="sb-tip">Calendario</span>
+    </button>
+    <button class="sb-btn" id="navNote">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      <span class="sb-tip">Note</span>
     </button>
   </nav>
   <div class="sb-avatar">IC</div>
@@ -689,6 +755,22 @@
       </div>
     </div>
 
+    <!-- NOTE VIEW -->
+    <div id="noteView">
+      <div class="note-toolbar">
+        <div class="note-cat-chips" id="noteCatChips"></div>
+        <button class="btn-new-note" id="newNoteBtn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          Nuova nota
+        </button>
+      </div>
+      <div class="notes-grid" id="notesGrid"></div>
+      <div class="note-empty" id="noteEmptyEl" style="display:none">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <p>Nessuna nota ancora. Crea la prima!</p>
+      </div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /app -->
 
@@ -701,6 +783,10 @@
   <button class="bn-btn" id="bnCal">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
     Calendario
+  </button>
+  <button class="bn-btn" id="bnNote">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    Note
   </button>
   <button class="bn-btn" id="bnRefresh">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
@@ -780,6 +866,7 @@
         <div class="form-group">
           <label class="form-label">Stato</label>
           <select class="form-select" id="nw-stato">
+            <option>Bozza</option>
             <option>Da Registrare</option>
             <option>Grezzo</option>
             <option>Editato</option>
@@ -862,6 +949,7 @@
         <div class="form-group">
           <label class="form-label">Stato</label>
           <select class="form-select" id="ed-stato">
+            <option>Bozza</option>
             <option>Da Registrare</option>
             <option>Grezzo</option>
             <option>Editato</option>
@@ -915,6 +1003,41 @@
   </div>
 </div>
 
+<!-- MODAL NOTA -->
+<div class="modal-note" id="modalNote">
+  <div class="modal-note-box">
+    <div class="modal-head">
+      <span class="modal-title" id="noteModalTitle">Nuova nota</span>
+      <button class="modal-close" id="modalNoteClose">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Categoria</label>
+        <div class="note-cat-select" id="noteCatSelect">
+          <button class="note-cat-opt on" data-cat="Idea">💡 Idea</button>
+          <button class="note-cat-opt" data-cat="Reference">🔗 Reference</button>
+          <button class="note-cat-opt" data-cat="Hook">🎣 Hook</button>
+          <button class="note-cat-opt" data-cat="Altro">📝 Altro</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Titolo</label>
+        <input class="form-inp" id="note-titolo" type="text" placeholder="Titolo della nota…">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contenuto</label>
+        <textarea class="form-ta" id="note-contenuto" rows="6" placeholder="Scrivi qui l'idea, la reference, il hook…"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="modalNoteCancel">Annulla</button>
+      <button class="btn-submit" id="modalNoteSave">Salva nota</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════════════════════════════
      JAVASCRIPT
 ══════════════════════════════════════════ -->
@@ -933,10 +1056,11 @@ const sb = createClient(
 const TABLE = 'CALENDARIO EDITORIALE';
 
 const STS = [
-  { key:'Da Registrare', short:'Da Registrare', color:'#f59e0b', bg:'#fff8ec', tc:'#7c3f06' },
-  { key:'Grezzo',        short:'Grezzo',         color:'#8b5cf6', bg:'#f4f0ff', tc:'#3b1f85' },
-  { key:'Editato',       short:'Editato',        color:'#10b981', bg:'#edfaf4', tc:'#065535' },
-  { key:'Pubblicato',    short:'Pubblicato',     color:'#94a3b8', bg:'#f4f6f8', tc:'#3d4f63' },
+  { key:'Bozza',         short:'Bozza',          color:'#64748b', bg:'#f8fafc', tc:'#334155' },
+  { key:'Da Registrare', short:'Da Registrare',  color:'#f59e0b', bg:'#fff8ec', tc:'#7c3f06' },
+  { key:'Grezzo',        short:'Grezzo',          color:'#8b5cf6', bg:'#f4f0ff', tc:'#3b1f85' },
+  { key:'Editato',       short:'Editato',         color:'#10b981', bg:'#edfaf4', tc:'#065535' },
+  { key:'Pubblicato',    short:'Pubblicato',      color:'#94a3b8', bg:'#f4f6f8', tc:'#3d4f63' },
 ];
 
 // ─── OVERRIDES (localStorage — sopravvivono al refresh) ──────
@@ -963,6 +1087,7 @@ let calYear = new Date().getFullYear(), calMonth = new Date().getMonth();
 // Normalizza status dal foglio → chiave interna
 function normalizeStato(s) {
   const m = {
+    'bozza':         'Bozza',
     'da registrare': 'Da Registrare',
     'grezzo':        'Grezzo',
     'editato':       'Editato',
@@ -1001,10 +1126,19 @@ function counts() {
   return c;
 }
 
+// CSS colore bozza
+const style = document.createElement('style');
+style.textContent = `
+  :root { --s0c:#64748b; --s0b:#f8fafc; --s0t:#334155; }
+`;
+document.head.appendChild(style);
+
 function filtered() {
   const q = query.toLowerCase();
   return rows.filter(r => {
-    if (!(r.script && r.script.trim())) return false;
+    // Le bozze sono sempre visibili (script in lavorazione)
+    // Gli altri stati richiedono uno script non vuoto
+    if (getSt(r) !== 'Bozza' && !(r.script && r.script.trim())) return false;
     if (filterSt !== 'all' && getSt(r) !== filterSt) return false;
     if (filterPl === 'ig' && !hasPl(r,'ig')) return false;
     if (filterPl === 'tk' && !hasPl(r,'tk')) return false;
@@ -1479,22 +1613,45 @@ function setView(v) {
   const navCal  = document.getElementById('navCal');
   const secTitle = document.getElementById('secTitle');
 
+  const noteEl  = document.getElementById('noteView');
+  const navNote = document.getElementById('navNote');
+  const bnNote  = document.getElementById('bnNote');
+
+  // Reset tutti
+  [navGrid, navCal, navNote].forEach(b => b && b.classList.remove('on'));
+  [nbGrid, nbCal, bnNote].forEach(b => b && b.classList.remove('on'));
+  vGrid.classList.remove('on'); vCal.classList.remove('on');
+  gridEl.style.display = 'none'; calEl.classList.remove('visible'); noteEl.style.display = 'none';
+  document.getElementById('chipsEl').style.display = 'none';
+  document.getElementById('statsEl').style.display = 'none';
+  document.getElementById('secTitle').closest('.sec-row') && (document.querySelector('.sec-row').style.display = 'none');
+
   if (v === 'grid') {
-    gridEl.style.display = 'block'; calEl.classList.remove('visible');
-    vGrid.classList.add('on');  vCal.classList.remove('on');
-    nbGrid && nbGrid.classList.add('on'); nbCal && nbCal.classList.remove('on');
-    navGrid.classList.add('on'); navCal.classList.remove('on');
+    gridEl.style.display = 'block';
+    vGrid.classList.add('on');
+    nbGrid && nbGrid.classList.add('on');
+    navGrid.classList.add('on');
     secTitle.textContent = 'Contenuti';
     document.getElementById('chipsEl').style.display = 'flex';
+    document.getElementById('statsEl').style.display = 'grid';
+    document.querySelector('.sec-row').style.display = 'flex';
     renderCards();
-  } else {
-    gridEl.style.display = 'none'; calEl.classList.add('visible');
-    vGrid.classList.remove('on'); vCal.classList.add('on');
-    nbCal  && nbCal.classList.add('on');  nbGrid && nbGrid.classList.remove('on');
-    navCal.classList.add('on'); navGrid.classList.remove('on');
+  } else if (v === 'cal') {
+    calEl.classList.add('visible');
+    vCal.classList.add('on');
+    nbCal && nbCal.classList.add('on');
+    navCal.classList.add('on');
     secTitle.textContent = 'Calendario';
-    document.getElementById('chipsEl').style.display = 'none';
+    document.getElementById('statsEl').style.display = 'grid';
+    document.querySelector('.sec-row').style.display = 'flex';
     renderCalendar();
+  } else if (v === 'notes') {
+    noteEl.style.display = 'block';
+    navNote && navNote.classList.add('on');
+    bnNote && bnNote.classList.add('on');
+    secTitle.textContent = 'Note & Idee';
+    document.querySelector('.sec-row').style.display = 'flex';
+    renderNotes();
   }
 }
 
@@ -1502,8 +1659,10 @@ document.getElementById('vGrid').addEventListener('click', () => setView('grid')
 document.getElementById('vCal').addEventListener('click',  () => setView('cal'));
 document.getElementById('navGrid') && document.getElementById('navGrid').addEventListener('click', () => setView('grid'));
 document.getElementById('navCal')  && document.getElementById('navCal').addEventListener('click',  () => setView('cal'));
+document.getElementById('navNote') && document.getElementById('navNote').addEventListener('click', () => setView('notes'));
 document.getElementById('bnGrid')  && document.getElementById('bnGrid').addEventListener('click',  () => setView('grid'));
 document.getElementById('bnCal')   && document.getElementById('bnCal').addEventListener('click',   () => setView('cal'));
+document.getElementById('bnNote')  && document.getElementById('bnNote').addEventListener('click',  () => setView('notes'));
 
 // ─── REFRESH ─────────────────────────────────
 function doRefresh() {
@@ -1728,6 +1887,182 @@ document.getElementById('modalEditSubmit').addEventListener('click', () => {
     }
   });
 });
+
+// ─── NOTE ─────────────────────────────────────
+const NOTE_TABLE = 'NOTE';
+const NOTE_CATS = [
+  { key: 'Tutte',     cls: '',               label: 'Tutte'         },
+  { key: 'Idea',      cls: 'cat-idea',       label: '💡 Idea'       },
+  { key: 'Reference', cls: 'cat-reference',  label: '🔗 Reference'  },
+  { key: 'Hook',      cls: 'cat-hook',       label: '🎣 Hook'       },
+  { key: 'Altro',     cls: 'cat-altro',      label: '📝 Altro'      },
+];
+let noteRows = [];
+let noteCatFilter = 'Tutte';
+let editingNoteId = null;
+let selectedNoteCat = 'Idea';
+
+function catClass(cat) {
+  const c = NOTE_CATS.find(x => x.key === cat);
+  return c ? c.cls : 'cat-altro';
+}
+function catLabel(cat) {
+  const c = NOTE_CATS.find(x => x.key === cat);
+  return c ? c.label : cat;
+}
+function fmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+async function loadNotes() {
+  const { data, error } = await sb.from(NOTE_TABLE).select('*').order('created_at', { ascending: false });
+  if (error) { toast('Errore caricamento note', 'err'); return; }
+  noteRows = data || [];
+  renderNotes();
+}
+
+function filteredNotes() {
+  if (noteCatFilter === 'Tutte') return noteRows;
+  return noteRows.filter(n => n.categoria === noteCatFilter);
+}
+
+function buildNoteCard(n) {
+  const cls = catClass(n.categoria);
+  const lbl = catLabel(n.categoria);
+  return `
+  <div class="note-card" id="ncard_${n.id}">
+    <div class="note-card-head">
+      <span class="note-cat-badge ${cls}">${lbl}</span>
+      <span class="note-date">${fmtDate(n.created_at)}</span>
+    </div>
+    ${n.titolo ? `<div class="note-title">${escH(n.titolo)}</div>` : ''}
+    ${n.contenuto ? `<div class="note-body">${escH(n.contenuto)}</div>` : ''}
+    <div class="note-actions">
+      <button class="note-btn" data-nedit="${escA(n.id)}">✏️ Modifica</button>
+      <button class="note-btn del" data-ndel="${escA(n.id)}">🗑 Elimina</button>
+    </div>
+  </div>`;
+}
+
+function renderNotes() {
+  const list = filteredNotes();
+  const grid = document.getElementById('notesGrid');
+  const empty = document.getElementById('noteEmptyEl');
+  const secCount = document.getElementById('secCount');
+  if (secCount) secCount.textContent = list.length;
+
+  // Render chips categorie
+  const chipsEl = document.getElementById('noteCatChips');
+  if (chipsEl) {
+    chipsEl.innerHTML = NOTE_CATS.map(c =>
+      `<button class="note-chip${noteCatFilter===c.key?' on':''}" data-ncat="${c.key}">${c.label}</button>`
+    ).join('');
+  }
+
+  if (!list.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  grid.innerHTML = list.map(buildNoteCard).join('');
+}
+
+// Event delegation per le note
+document.getElementById('notesGrid') && document.getElementById('notesGrid').addEventListener('click', function(e) {
+  const editBtn = e.target.closest('[data-nedit]');
+  const delBtn  = e.target.closest('[data-ndel]');
+  if (editBtn) openNoteModal(editBtn.dataset.nedit);
+  if (delBtn)  deleteNote(delBtn.dataset.ndel);
+});
+document.getElementById('noteCatChips') && document.getElementById('noteCatChips').addEventListener('click', function(e) {
+  const chip = e.target.closest('[data-ncat]');
+  if (chip) { noteCatFilter = chip.dataset.ncat; renderNotes(); }
+});
+
+// Delegazione per i chips (usati dopo render)
+document.getElementById('noteView').addEventListener('click', function(e) {
+  const chip = e.target.closest('[data-ncat]');
+  const editBtn = e.target.closest('[data-nedit]');
+  const delBtn  = e.target.closest('[data-ndel]');
+  if (chip)    { noteCatFilter = chip.dataset.ncat; renderNotes(); }
+  if (editBtn) { openNoteModal(editBtn.dataset.nedit); }
+  if (delBtn)  { deleteNote(delBtn.dataset.ndel); }
+});
+
+document.getElementById('newNoteBtn').addEventListener('click', () => openNoteModal(null));
+
+// Modal nota
+function openNoteModal(id) {
+  editingNoteId = id;
+  const isNew = !id;
+  document.getElementById('noteModalTitle').textContent = isNew ? 'Nuova nota' : 'Modifica nota';
+  document.getElementById('modalNoteSave').textContent = isNew ? 'Salva nota' : 'Salva modifiche';
+
+  if (isNew) {
+    selectedNoteCat = 'Idea';
+    document.getElementById('note-titolo').value = '';
+    document.getElementById('note-contenuto').value = '';
+  } else {
+    const n = noteRows.find(x => String(x.id) === String(id));
+    if (!n) return;
+    selectedNoteCat = n.categoria || 'Idea';
+    document.getElementById('note-titolo').value = n.titolo || '';
+    document.getElementById('note-contenuto').value = n.contenuto || '';
+  }
+  // Aggiorna selezione categoria
+  document.querySelectorAll('#noteCatSelect [data-cat]').forEach(btn => {
+    btn.classList.toggle('on', btn.dataset.cat === selectedNoteCat);
+  });
+  document.getElementById('modalNote').classList.add('open');
+  setTimeout(() => document.getElementById('note-titolo').focus(), 100);
+}
+function closeNoteModal() {
+  document.getElementById('modalNote').classList.remove('open');
+  editingNoteId = null;
+}
+document.getElementById('modalNoteClose').addEventListener('click', closeNoteModal);
+document.getElementById('modalNoteCancel').addEventListener('click', closeNoteModal);
+document.getElementById('modalNote').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalNote')) closeNoteModal();
+});
+document.getElementById('noteCatSelect').addEventListener('click', e => {
+  const btn = e.target.closest('[data-cat]');
+  if (!btn) return;
+  selectedNoteCat = btn.dataset.cat;
+  document.querySelectorAll('#noteCatSelect [data-cat]').forEach(b => b.classList.toggle('on', b.dataset.cat === selectedNoteCat));
+});
+
+document.getElementById('modalNoteSave').addEventListener('click', async () => {
+  const titolo    = document.getElementById('note-titolo').value.trim();
+  const contenuto = document.getElementById('note-contenuto').value.trim();
+  if (!titolo && !contenuto) { toast('Inserisci almeno titolo o contenuto', 'err'); return; }
+
+  const btn = document.getElementById('modalNoteSave');
+  btn.disabled = true; btn.textContent = 'Salvataggio…';
+
+  const payload = { titolo, contenuto, categoria: selectedNoteCat, updated_at: new Date().toISOString() };
+
+  let error;
+  if (!editingNoteId) {
+    ({ error } = await sb.from(NOTE_TABLE).insert([payload]));
+  } else {
+    ({ error } = await sb.from(NOTE_TABLE).update(payload).eq('id', editingNoteId));
+  }
+
+  btn.disabled = false; btn.textContent = editingNoteId ? 'Salva modifiche' : 'Salva nota';
+  if (error) { toast('Errore salvataggio', 'err'); return; }
+  closeNoteModal();
+  await loadNotes();
+  toast(editingNoteId ? 'Nota aggiornata ✓' : 'Nota creata ✓', 'ok');
+});
+
+async function deleteNote(id) {
+  if (!confirm('Eliminare questa nota?')) return;
+  const { error } = await sb.from(NOTE_TABLE).delete().eq('id', id);
+  if (error) { toast('Errore eliminazione', 'err'); return; }
+  noteRows = noteRows.filter(n => String(n.id) !== String(id));
+  renderNotes();
+  toast('Nota eliminata', 'ok');
+}
 
 // ─── INIT ─────────────────────────────────────
 // Converte valore Supabase (boolean o stringa) → 'Sì' / ''
