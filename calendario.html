@@ -1298,7 +1298,6 @@
       </button>
     </div>
     <div class="modal-body">
-      <input type="hidden" id="nw-id">
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Formato</label>
@@ -2310,11 +2309,8 @@ function openNewModal() {
   ['nw-script','nw-ig-cap','nw-tk-cap','nw-yt-cap','nw-sh-cap','nw-li-cap','nw-note'].forEach(id => {
     document.getElementById(id).value = '';
   });
-  // Auto-genera ID: max esistente + 1
-  const maxId = rows.reduce((m, r) => Math.max(m, parseInt(r.id) || 0), 0);
-  document.getElementById('nw-id').value = String(maxId + 1);
   document.getElementById('nw-formato').value = '';
-  document.getElementById('nw-stato').value = 'Da Registrare';  // default
+  document.getElementById('nw-stato').value = 'Da Registrare';
   document.getElementById('nw-pianif').value = '';
   document.getElementById('nw-registr').value = '';
   document.getElementById('nw-ig').checked = false;
@@ -2326,7 +2322,7 @@ function openNewModal() {
   document.getElementById('modalNewSubmit').disabled = false;
   document.getElementById('modalNewSubmit').textContent = 'Crea contenuto';
   document.getElementById('modalNew').classList.add('open');
-  setTimeout(() => document.getElementById('nw-id').focus(), 100);
+  setTimeout(() => document.getElementById('nw-script').focus(), 100);
 }
 function closeNewModal() {
   document.getElementById('modalNew').classList.remove('open');
@@ -2361,7 +2357,7 @@ document.getElementById('modalNew').addEventListener('click', e => {
 });
 
 document.getElementById('modalNewSubmit').addEventListener('click', () => {
-  const id     = document.getElementById('nw-id').value.trim();
+  const id     = String(rows.reduce((m, r) => Math.max(m, parseInt(r.id) || 0), 0) + 1);
   const script = document.getElementById('nw-script').value.trim();
   if (!script) { toast('Script obbligatorio', 'err'); return; }
 
