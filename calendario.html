@@ -2905,9 +2905,13 @@ document.getElementById('noteView').addEventListener('click', function(e) {
 
 document.getElementById('newNoteBtn').addEventListener('click', () => openNoteModal(null));
 
+let _converting = false;
 async function convertNoteToContent(noteId) {
+  if (_converting) return;
   const n = noteRows.find(x => String(x.id) === String(noteId));
   if (!n) return;
+  if (n.content_id) { toast('Nota già convertita → contenuto #' + n.content_id, 'err'); return; }
+  _converting = true;
   const uid = getActiveUserId();
 
   // Genera un ID numerico: max esistente + 1
@@ -2921,7 +2925,7 @@ async function convertNoteToContent(noteId) {
     script:  [n.titolo, n.contenuto].filter(Boolean).join('\n\n'),
     note:    n.titolo ? 'Da nota: ' + n.titolo : '',
   }]);
-  if (error) { toast('Errore creazione contenuto', 'err'); console.error(error); return; }
+  if (error) { _converting = false; toast('Errore creazione contenuto', 'err'); console.error(error); return; }
 
   // Salva il content_id sulla nota così appare in "Realizzate"
   await sb.from(NOTE_TABLE).update({ content_id: newId }).eq('id', noteId);
@@ -2929,6 +2933,7 @@ async function convertNoteToContent(noteId) {
   toast('Contenuto #' + newId + ' creato in Bozza ✓', 'ok');
   await loadFromSupabase();
   await loadNotes();
+  _converting = false;
 
   // Vai alla griglia e apri la card creata
   document.querySelectorAll('.sb-btn[data-view]').forEach(b => b.classList.toggle('on', b.dataset.view === 'grid'));
