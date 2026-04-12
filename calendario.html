@@ -3132,15 +3132,32 @@ async function loadCollaboratorsTab() {
   cliSel.innerHTML = (clients || [])
     .map(p => `<option value="${p.id}">${escH(p.nome || p.email)}</option>`).join('');
 
-  // Carica assegnazioni esistenti
-  const { data: collabs } = await sb.from('collaborators').select('*, collaborator:collaborator_id(nome,email), client:client_id(nome,email)');
   const listEl = document.getElementById('collabList');
-  if (!collabs || collabs.length === 0) {
-    listEl.innerHTML = '<p style="color:var(--text-3);font-size:13px;margin-top:8px">Nessuna assegnazione ancora.</p>';
-    return;
+  let html = '';
+
+  // ── Lista collaboratori con "Entra →" ──
+  const collaboratorProfiles = (profiles || []).filter(p => p.id !== currentUser.id);
+  if (collaboratorProfiles.length > 0) {
+    html += `<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin:16px 0 10px">Calendari collaboratori</div>
+    <div class="client-list" id="collabEnterList">
+    ${collaboratorProfiles.map(c => {
+      const initials = (c.nome || c.email || '?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+      return `<div class="client-row">
+        <div class="client-avatar">${initials}</div>
+        <div class="client-info">
+          <div class="client-name">${escH(c.nome || '—')}</div>
+          <div class="client-email">${escH(c.email || '')}</div>
+        </div>
+        <button class="btn-enter-client" data-cid="${escA(c.id)}" data-cname="${escA(c.nome || c.email)}" data-cruolo="editor">Entra →</button>
+      </div>`;
+    }).join('')}
+    </div>`;
   }
-  listEl.innerHTML = `
-    <div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin-bottom:10px">Assegnazioni attive</div>
+
+  // ── Assegnazioni attive ──
+  const { data: collabs } = await sb.from('collaborators').select('*, collaborator:collaborator_id(nome,email), client:client_id(nome,email)');
+  if (collabs && collabs.length > 0) {
+    html += `<div style="font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-3);margin:20px 0 10px">Assegnazioni attive</div>
     <div class="client-list">
     ${collabs.map(c => `
       <div class="client-row">
@@ -3151,14 +3168,22 @@ async function loadCollaboratorsTab() {
         <button class="note-btn del" data-delcollab="${c.id}">Rimuovi</button>
       </div>`).join('')}
     </div>`;
+  } else if (collaboratorProfiles.length === 0) {
+    html = '<p style="color:var(--text-3);font-size:13px;margin-top:8px">Nessun collaboratore ancora.</p>';
+  }
+
+  listEl.innerHTML = html;
 
   listEl.addEventListener('click', async e => {
-    const btn = e.target.closest('[data-delcollab]');
-    if (!btn) return;
-    if (!confirm('Rimuovere questo accesso?')) return;
-    await sb.from('collaborators').delete().eq('id', btn.dataset.delcollab);
-    loadCollaboratorsTab();
-    toast('Accesso rimosso', 'ok');
+    const enterBtn = e.target.closest('[data-cid]');
+    const delBtn   = e.target.closest('[data-delcollab]');
+    if (enterBtn) { enterClientView(enterBtn.dataset.cid, enterBtn.dataset.cname, enterBtn.dataset.cruolo); return; }
+    if (delBtn) {
+      if (!confirm('Rimuovere questo accesso?')) return;
+      await sb.from('collaborators').delete().eq('id', delBtn.dataset.delcollab);
+      loadCollaboratorsTab();
+      toast('Accesso rimosso', 'ok');
+    }
   });
 }
 
