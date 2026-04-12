@@ -1376,6 +1376,10 @@
         <label class="form-label">Note</label>
         <textarea class="form-ta" id="ed-note"></textarea>
       </div>
+      <div class="form-group">
+        <label class="form-label">Reference (link)</label>
+        <input class="form-inp" id="ed-reference" type="url" placeholder="https://…">
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-cancel" id="modalEditCancel">Annulla</button>
@@ -1755,6 +1759,15 @@ function buildCard(r) {
       <div class="c-sec">
         <div class="c-sec-lbl">Note</div>
         <div class="note-box">${escH(r.note)}</div>
+      </div>` : ''}
+      ${r.reference ? `
+      <div class="c-sec">
+        <div class="c-sec-lbl">Reference</div>
+        <a href="${escA(r.reference)}" target="_blank" rel="noopener"
+          style="font-size:12px;color:#3b82f6;word-break:break-all;display:flex;align-items:center;gap:5px;text-decoration:none">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          ${escH(r.reference)}
+        </a>
       </div>` : ''}
       <div class="c-sec">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
@@ -2300,7 +2313,8 @@ function openEditModal(id) {
   document.getElementById('ed-yt-cap').value   = r.did_yt_long || '';
   document.getElementById('ed-sh-cap').value   = r.did_shorts || '';
   document.getElementById('ed-li-cap').value   = r.did_li || '';
-  document.getElementById('ed-note').value     = r.note || '';
+  document.getElementById('ed-note').value      = r.note || '';
+  document.getElementById('ed-reference').value = r.reference || '';
   document.getElementById('modalEditSubmit').disabled = false;
   document.getElementById('modalEditSubmit').textContent = 'Salva modifiche';
   document.getElementById('modalEdit').classList.add('open');
@@ -2341,6 +2355,7 @@ document.getElementById('modalEditSubmit').addEventListener('click', () => {
     did_shorts:   document.getElementById('ed-sh-cap').value.trim(),
     did_li:       document.getElementById('ed-li-cap').value.trim(),
     note:         document.getElementById('ed-note').value.trim(),
+    reference:    document.getElementById('ed-reference').value.trim(),
   };
 
   const btn = document.getElementById('modalEditSubmit');
@@ -2363,6 +2378,7 @@ document.getElementById('modalEditSubmit').addEventListener('click', () => {
     did_shorts:   payload.did_shorts,
     did_li:       payload.did_li,
     note:         payload.note,
+    reference:    payload.reference,
   }).eq('id', payload.id)
   .then(({ error }) => {
     if (!error) {
@@ -2780,6 +2796,7 @@ function buildNoteCard(n) {
     ${n.contenuto ? `<div class="note-body">${escH(n.contenuto)}</div>` : ''}
     <div class="note-actions">
       <button class="note-btn" data-nedit="${escA(n.id)}">✏️ Modifica</button>
+      <button class="note-btn" data-nconvert="${escA(n.id)}" style="color:#3b82f6;border-color:#3b82f640">→ Crea contenuto</button>
       <button class="note-btn del" data-ndel="${escA(n.id)}">🗑 Elimina</button>
     </div>
   </div>`;
@@ -2819,15 +2836,35 @@ document.getElementById('noteCatChips') && document.getElementById('noteCatChips
 
 // Delegazione per i chips (usati dopo render)
 document.getElementById('noteView').addEventListener('click', function(e) {
-  const chip = e.target.closest('[data-ncat]');
-  const editBtn = e.target.closest('[data-nedit]');
-  const delBtn  = e.target.closest('[data-ndel]');
-  if (chip)    { noteCatFilter = chip.dataset.ncat; renderNotes(); }
-  if (editBtn) { openNoteModal(editBtn.dataset.nedit); }
-  if (delBtn)  { deleteNote(delBtn.dataset.ndel); }
+  const chip       = e.target.closest('[data-ncat]');
+  const editBtn    = e.target.closest('[data-nedit]');
+  const delBtn     = e.target.closest('[data-ndel]');
+  const convertBtn = e.target.closest('[data-nconvert]');
+  if (chip)       { noteCatFilter = chip.dataset.ncat; renderNotes(); }
+  if (editBtn)    { openNoteModal(editBtn.dataset.nedit); }
+  if (delBtn)     { deleteNote(delBtn.dataset.ndel); }
+  if (convertBtn) { convertNoteToContent(convertBtn.dataset.nconvert); }
 });
 
 document.getElementById('newNoteBtn').addEventListener('click', () => openNoteModal(null));
+
+async function convertNoteToContent(noteId) {
+  const n = noteRows.find(x => String(x.id) === String(noteId));
+  if (!n) return;
+  const uid = getActiveUserId();
+  const { error } = await sb.from(TABLE).insert([{
+    user_id: uid,
+    stato:   'Bozza',
+    script:  [n.titolo, n.contenuto].filter(Boolean).join('\n\n'),
+    note:    'Creato da nota: ' + (n.titolo || ''),
+  }]);
+  if (error) { toast('Errore creazione contenuto', 'err'); return; }
+  toast('Contenuto creato in Bozza ✓', 'ok');
+  await loadFromSupabase();
+  // Passa alla vista calendario
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('on'));
+  setView('grid');
+}
 
 // Modal nota
 function openNoteModal(id) {
@@ -2947,6 +2984,7 @@ async function loadFromSupabase() {
     did_shorts:   r.did_shorts || '',
     did_li:       r.did_li || '',
     note:         r.note || '',
+    reference:    r.reference || '',
   }));
   const now = new Date();
   document.getElementById('updLbl').textContent = 'Aggiornato ' + now.toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit'});
