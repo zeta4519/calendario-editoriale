@@ -110,7 +110,7 @@
       padding: 18px 24px 0; flex-wrap: nowrap;
     }
     .tb-title { flex: 0 0 auto; }
-    .tb-title h1 { font-size: 22px; font-weight: 400; letter-spacing: -.3px; line-height: 1.2; }
+    .tb-title h1 { font-size: 28px; font-weight: 400; letter-spacing: -.3px; line-height: 1.2; }
     .tb-title p  { font-size: 12px; color: var(--text-2); margin-top: 2px; }
     .logo-cal  { font-family: 'Inter', system-ui, sans-serif; font-weight: 900; color: var(--text); letter-spacing: -.6px; }
     .logo-enda { font-family: 'Inter', system-ui, sans-serif; font-weight: 900; color: var(--text); letter-spacing: -.6px; }
@@ -977,16 +977,12 @@
   </div>
   <nav class="sb-nav">
     <button class="sb-btn on" id="navGrid">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      <span class="sb-tip">Griglia</span>
-    </button>
-    <button class="sb-btn" id="navCal">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      <span class="sb-tip">Calendario</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="sb-tip">Home</span>
     </button>
     <button class="sb-btn" id="navNote">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-      <span class="sb-tip">Note</span>
+      <span class="sb-tip">Idee</span>
     </button>
     <button class="sb-btn" id="navAdmin" style="display:none">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -1234,16 +1230,12 @@
 <!-- BOTTOM NAV (mobile) -->
 <nav class="bottom-nav">
   <button class="bn-btn on" id="bnGrid">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-    Griglia
-  </button>
-  <button class="bn-btn" id="bnCal">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-    Calendario
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
   </button>
   <button class="bn-btn" id="bnNote">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-    Note
+    Idee
   </button>
   <button class="bn-btn" id="bnAdmin" style="display:none">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -2199,7 +2191,6 @@ function setView(v) {
   const nbGrid = document.getElementById('bnGrid');
   const nbCal  = document.getElementById('bnCal');
   const navGrid = document.getElementById('navGrid');
-  const navCal  = document.getElementById('navCal');
   const secTitle = document.getElementById('secTitle');
 
   const noteEl   = document.getElementById('noteView');
@@ -2212,8 +2203,8 @@ function setView(v) {
   const bnAdmin  = document.getElementById('bnAdmin');
 
   // Reset tutti
-  [navGrid, navCal, navNote, navAdmin, navNotif].forEach(b => b && b.classList.remove('on'));
-  [nbGrid, nbCal, bnNote, bnAdmin].forEach(b => b && b.classList.remove('on'));
+  [navGrid, navNote, navAdmin, navNotif].forEach(b => b && b.classList.remove('on'));
+  [nbGrid, bnNote, bnAdmin].forEach(b => b && b.classList.remove('on'));
   vGrid.classList.remove('on'); vCal.classList.remove('on');
   gridEl.style.display = 'none'; calEl.classList.remove('visible');
   noteEl.style.display = 'none'; adminEl.style.display = 'none';
@@ -2227,17 +2218,18 @@ function setView(v) {
     vGrid.classList.add('on');
     nbGrid && nbGrid.classList.add('on');
     navGrid.classList.add('on');
-    secTitle.textContent = 'Contenuti';
+    secTitle.textContent = 'Home';
     document.getElementById('chipsEl').style.display = 'flex';
     document.getElementById('statsEl').style.display = 'grid';
     document.querySelector('.sec-row').style.display = 'flex';
     renderCards();
   } else if (v === 'cal') {
+    gridEl.style.display = 'block';
     calEl.classList.add('visible');
     vCal.classList.add('on');
-    nbCal && nbCal.classList.add('on');
-    navCal.classList.add('on');
-    secTitle.textContent = 'Calendario';
+    navGrid.classList.add('on');
+    nbGrid && nbGrid.classList.add('on');
+    secTitle.textContent = 'Home';
     document.getElementById('statsEl').style.display = 'grid';
     document.querySelector('.sec-row').style.display = 'flex';
     renderCalendar();
@@ -2245,7 +2237,7 @@ function setView(v) {
     noteEl.style.display = 'block';
     navNote && navNote.classList.add('on');
     bnNote && bnNote.classList.add('on');
-    secTitle.textContent = 'Note & Idee';
+    secTitle.textContent = 'Idee';
     document.querySelector('.sec-row').style.display = 'flex';
     renderNotes();
   } else if (v === 'admin') {
@@ -2267,10 +2259,8 @@ function setView(v) {
 document.getElementById('vGrid').addEventListener('click', () => setView('grid'));
 document.getElementById('vCal').addEventListener('click',  () => setView('cal'));
 document.getElementById('navGrid') && document.getElementById('navGrid').addEventListener('click', () => setView('grid'));
-document.getElementById('navCal')  && document.getElementById('navCal').addEventListener('click',  () => setView('cal'));
 document.getElementById('navNote') && document.getElementById('navNote').addEventListener('click', () => setView('notes'));
 document.getElementById('bnGrid')  && document.getElementById('bnGrid').addEventListener('click',  () => setView('grid'));
-document.getElementById('bnCal')   && document.getElementById('bnCal').addEventListener('click',   () => setView('cal'));
 document.getElementById('bnNote')  && document.getElementById('bnNote').addEventListener('click',  () => setView('notes'));
 
 // ─── REFRESH ─────────────────────────────────
@@ -2437,7 +2427,8 @@ document.getElementById('modalNewSubmit').addEventListener('click', () => {
       }
     } else {
       btn.disabled = false; btn.textContent = 'Crea contenuto';
-      toast('Errore dal server', 'err');
+      const msg = error?.message || error?.code || JSON.stringify(error);
+      toast('Errore: ' + msg, 'err');
       console.error('Create error:', error);
     }
   });
@@ -2568,7 +2559,8 @@ document.getElementById('modalEditSubmit').addEventListener('click', () => {
       toast('Modifiche salvate ✓', 'ok');
     } else {
       btn.disabled = false; btn.textContent = 'Salva modifiche';
-      toast('Errore dal server', 'err');
+      const msg = error?.message || error?.code || JSON.stringify(error);
+      toast('Errore: ' + msg, 'err');
       console.error('Edit error:', error);
     }
   });
