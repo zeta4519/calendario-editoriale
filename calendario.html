@@ -2293,7 +2293,7 @@ function fromInputDate(s) {
 // ─── MODAL NUOVO ─────────────────────────────
 function openNewModal() {
   // Reset form
-  ['nw-id','nw-script','nw-ig-cap','nw-tk-cap','nw-yt-cap','nw-note'].forEach(id => {
+  ['nw-id','nw-script','nw-ig-cap','nw-tk-cap','nw-yt-cap','nw-sh-cap','nw-li-cap','nw-note'].forEach(id => {
     document.getElementById(id).value = '';
   });
   document.getElementById('nw-formato').value = '';
@@ -2953,8 +2953,7 @@ function buildNoteCard(n) {
   const linkedRow = n.content_id ? rows.find(r => r.id === String(n.content_id)) : null;
   const linkedSt  = linkedRow ? getSt(linkedRow) : null;
   const linkedSi  = linkedSt  ? stInfo(linkedSt) : null;
-  const embed     = getLinkEmbed(n.link);
-  const embedH    = embed ? (embed.type === 'ig' ? 480 : embed.type === 'tt' ? 560 : 200) : 0;
+  const embed = getLinkEmbed(n.link);
   return `
   <div class="note-card" id="ncard_${n.id}">
     <div class="note-card-head">
@@ -2969,7 +2968,7 @@ function buildNoteCard(n) {
         ${escH(n.link.replace(/^https?:\/\//,'').slice(0,60))}
       </a>
       ${embed ? `<div style="margin-top:8px;border-radius:10px;overflow:hidden;background:#000;position:relative;padding-bottom:${embed.type==='yt'?'56.25':embed.type==='ig'?'120':'125'}%">
-        <iframe src="${embed.src}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" allowfullscreen allow="autoplay;encrypted-media" loading="lazy"></iframe>
+        <iframe src="${escA(embed.src)}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" allowfullscreen allow="autoplay;encrypted-media" loading="lazy"></iframe>
       </div>` : ''}
     </div>` : ''}
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
@@ -3114,6 +3113,7 @@ async function convertNoteToContent(noteId) {
   // Vai alla griglia e apri la card creata
   document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('on'));
   document.getElementById('navGrid')?.classList.add('on');
+  expandedId = null;
   setView('grid');
   setTimeout(() => {
     toggleExpand(newId);
