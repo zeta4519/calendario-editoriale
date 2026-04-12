@@ -3623,8 +3623,10 @@ async function loadNotifications() {
     return `<div class="notif-item${n.read?'':' unread'}" data-notif-id="${n.id}">
       <div class="notif-avatar">${initials}</div>
       <div class="notif-body">
-        <div class="notif-text"><strong>${escH(n.actor_name)}</strong> ${escH(n.action)}${n.subject ? ': <em>'+escH(n.subject)+'</em>' : ''}</div>
+        <div class="notif-text"><strong>${escH(n.actor_name)}</strong> ${escH(n.action)}${n.subject ? `<br><span style="color:var(--text-2);font-style:italic">"${escH(n.subject)}"</span>` : ''}</div>
         <div class="notif-time">${fmtDate(n.created_at)}</div>
+        ${n.note_id ? `<button class="note-btn" data-notif-reply="${escA(n.note_id)}" style="margin-top:6px;color:#6366f1;border-color:#c7d2fe">↩ Rispondi</button>` : ''}
+        ${n.content_id ? `<button class="note-btn" data-notif-goto="${escA(n.content_id)}" style="margin-top:6px;color:#3b82f6;border-color:#bfdbfe">→ Vai al contenuto</button>` : ''}
       </div>
       ${!n.read ? '<div class="notif-unread-dot"></div>' : ''}
     </div>`;
@@ -3651,6 +3653,42 @@ async function refreshNotifBadge() {
   const { count } = await sb.from('notifications').select('id', { count: 'exact', head: true }).eq('read', false);
   updateNotifBadge(count || 0);
 }
+
+// Click su Rispondi / Vai al contenuto dentro le notifiche
+document.getElementById('notifList').addEventListener('click', e => {
+  const replyBtn = e.target.closest('[data-notif-reply]');
+  const gotoBtn  = e.target.closest('[data-notif-goto]');
+  if (replyBtn) {
+    const noteId = replyBtn.dataset.notifReply;
+    noteCatFilter = 'Tutte';
+    document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('on'));
+    document.getElementById('navNote')?.classList.add('on');
+    setView('notes');
+    setTimeout(async () => {
+      await loadNotes();
+      const panel = document.getElementById('nchat_' + noteId);
+      if (panel) {
+        panel.style.display = 'block';
+        await loadNoteComments(noteId);
+        const card = document.getElementById('ncard_' + noteId);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => document.getElementById('nchat_inp_' + noteId)?.focus(), 300);
+      }
+    }, 150);
+  }
+  if (gotoBtn) {
+    const cid = gotoBtn.dataset.notifGoto;
+    document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('on'));
+    document.getElementById('navGrid')?.classList.add('on');
+    expandedId = null;
+    setView('grid');
+    setTimeout(() => {
+      toggleExpand(cid);
+      const el = document.getElementById('card_' + cid);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 200);
+  }
+});
 
 document.getElementById('markAllReadBtn').addEventListener('click', async () => {
   await sb.from('notifications').update({ read: true }).eq('user_id', currentUser.id);
@@ -3713,8 +3751,9 @@ async function sendNoteComment(noteId) {
   await loadNoteComments(noteId);
   // Notifica al proprietario della nota se diverso
   if (n?.user_id && n.user_id !== currentUser.id) {
-    await createNotification(n.user_id, authorName, 'ha commentato un\'idea',
-      n.titolo || n.contenuto?.slice(0,40), null, String(noteId));
+    const preview = testo.length > 60 ? testo.slice(0, 60) + '…' : testo;
+    await createNotification(n.user_id, authorName, 'ha scritto nella chat',
+      preview, null, String(noteId));
   }
 }
 
