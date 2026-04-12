@@ -620,7 +620,8 @@
     .cat-idea     { background: #fef9c3; color: #854d0e; }
     .cat-reference{ background: #dbeafe; color: #1e40af; }
     .cat-hook     { background: #fce7f3; color: #9d174d; }
-    .cat-altro    { background: #f1f5f9; color: #475569; }
+    .cat-altro      { background: #f1f5f9; color: #475569; }
+    .cat-realizzate { background: #dcfce7; color: #166534; }
     .note-date { font-size: 10px; color: var(--text-3); margin-left: auto; }
     .note-title { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4; }
     .note-body {
@@ -1659,6 +1660,7 @@ function renderCards() {
     const etAdd    = e.target.closest('[data-et-add]');
     const etRemove = e.target.closest('[data-et-remove]');
     const comments = e.target.closest('[data-comments]');
+    const del      = e.target.closest('[data-delete]');
     if (adv)      { e.stopPropagation(); doAdvance(adv.dataset.adv, adv.dataset.next); return; }
     if (back)     { e.stopPropagation(); doBack(back.dataset.back); return; }
     if (copy)     { e.stopPropagation(); doCopy(copy, copy.dataset.copy); return; }
@@ -1669,6 +1671,7 @@ function renderCards() {
     if (etAdd)    { e.stopPropagation(); openEtichettePanel(etAdd.dataset.etAdd); return; }
     if (etRemove) { e.stopPropagation(); removeEtichetta(etRemove.dataset.etRemove, etRemove.dataset.etid); return; }
     if (comments) { e.stopPropagation(); openComments(comments.dataset.comments); return; }
+    if (del)      { e.stopPropagation(); deleteContent(del.dataset.delete); return; }
     if (exp)  { toggleExpand(exp.dataset.expand); }
   });
 })();
@@ -1751,6 +1754,10 @@ function buildCard(r) {
           <button class="btn-edit" data-edit="${escA(r.id)}" style="margin-left:auto">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             Modifica
+          </button>
+          <button class="btn-back" data-delete="${escA(r.id)}" style="color:#ef4444;border-color:#fca5a5">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            Elimina
           </button>
           <span class="sync-lbl" id="sync_${escA(r.id)}"></span>
         </div>
@@ -2289,6 +2296,28 @@ document.getElementById('modalNewSubmit').addEventListener('click', () => {
   });
 });
 
+// ─── ELIMINA CONTENUTO ───────────────────────
+async function deleteContent(id) {
+  const r = rows.find(r => r.id === id);
+  if (!r) return;
+
+  // Prima conferma
+  const ok1 = confirm(`Eliminare il contenuto #${id}?\nQuesta azione è irreversibile.`);
+  if (!ok1) return;
+
+  // Seconda conferma: scrivere "ELIMINA"
+  const typed = prompt('Scrivi ELIMINA per confermare:');
+  if (typed !== 'ELIMINA') { toast('Eliminazione annullata', 'err'); return; }
+
+  const { error } = await sb.from(TABLE).delete().eq('id', id);
+  if (error) { toast('Errore eliminazione', 'err'); console.error(error); return; }
+
+  rows = rows.filter(r => r.id !== id);
+  expandedId = null;
+  renderStats(); renderChips(); renderCards();
+  toast('Contenuto #' + id + ' eliminato', 'ok');
+}
+
 // ─── MODAL MODIFICA ──────────────────────────
 let editingId = null;
 
@@ -2743,11 +2772,12 @@ function exportPdf() {
 // ─── NOTE ─────────────────────────────────────
 const NOTE_TABLE = 'NOTE';
 const NOTE_CATS = [
-  { key: 'Tutte',     cls: '',               label: 'Tutte'         },
-  { key: 'Idea',      cls: 'cat-idea',       label: '💡 Idea'       },
-  { key: 'Reference', cls: 'cat-reference',  label: '🔗 Reference'  },
-  { key: 'Hook',      cls: 'cat-hook',       label: '🎣 Hook'       },
-  { key: 'Altro',     cls: 'cat-altro',      label: '📝 Altro'      },
+  { key: 'Tutte',      cls: '',                label: 'Tutte'          },
+  { key: 'Idea',       cls: 'cat-idea',        label: '💡 Idea'        },
+  { key: 'Reference',  cls: 'cat-reference',   label: '🔗 Reference'   },
+  { key: 'Hook',       cls: 'cat-hook',        label: '🎣 Hook'        },
+  { key: 'Altro',      cls: 'cat-altro',       label: '📝 Altro'       },
+  { key: 'Realizzate', cls: 'cat-realizzate',  label: '✅ Realizzate'  },
 ];
 let noteRows = [];
 let noteCatFilter = 'Tutte';
@@ -2779,13 +2809,18 @@ async function loadNotes() {
 }
 
 function filteredNotes() {
-  if (noteCatFilter === 'Tutte') return noteRows;
+  if (noteCatFilter === 'Tutte')      return noteRows;
+  if (noteCatFilter === 'Realizzate') return noteRows.filter(n => n.content_id);
   return noteRows.filter(n => n.categoria === noteCatFilter);
 }
 
 function buildNoteCard(n) {
   const cls = catClass(n.categoria);
   const lbl = catLabel(n.categoria);
+  // Se la nota è già stata convertita, mostra lo stato del contenuto collegato
+  const linkedRow = n.content_id ? rows.find(r => r.id === String(n.content_id)) : null;
+  const linkedSt  = linkedRow ? getSt(linkedRow) : null;
+  const linkedSi  = linkedSt  ? stInfo(linkedSt) : null;
   return `
   <div class="note-card" id="ncard_${n.id}">
     <div class="note-card-head">
@@ -2794,12 +2829,18 @@ function buildNoteCard(n) {
     </div>
     ${n.titolo ? `<div class="note-title">${escH(n.titolo)}</div>` : ''}
     ${n.contenuto ? `<div class="note-body">${escH(n.contenuto)}</div>` : ''}
+    ${linkedSt ? `
+    <div style="display:flex;align-items:center;gap:6px;padding:6px 0;border-top:1px solid var(--border);margin-top:4px">
+      <span style="font-size:11px;color:var(--text-3)">Contenuto #${n.content_id}</span>
+      <span style="background:${linkedSi.bg};color:${linkedSi.tc};padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">${linkedSt}</span>
+      <button class="note-btn" data-goto="${escA(n.content_id)}" style="margin-left:auto;font-size:10px;padding:2px 8px">→ Vai</button>
+    </div>` : `
     <div class="note-actions">
       <button class="note-btn" data-nconvert="${escA(n.id)}" style="flex:1;justify-content:center;background:#eff6ff;color:#2563eb;border-color:#bfdbfe;font-weight:600">
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
         Crea contenuto
       </button>
-    </div>
+    </div>`}
     <div class="note-actions" style="margin-top:4px">
       <button class="note-btn" data-nedit="${escA(n.id)}">✏️ Modifica</button>
       <button class="note-btn del" data-ndel="${escA(n.id)}">🗑 Elimina</button>
@@ -2845,10 +2886,21 @@ document.getElementById('noteView').addEventListener('click', function(e) {
   const editBtn    = e.target.closest('[data-nedit]');
   const delBtn     = e.target.closest('[data-ndel]');
   const convertBtn = e.target.closest('[data-nconvert]');
+  const gotoBtn    = e.target.closest('[data-goto]');
   if (chip)       { noteCatFilter = chip.dataset.ncat; renderNotes(); }
   if (editBtn)    { openNoteModal(editBtn.dataset.nedit); }
   if (delBtn)     { deleteNote(delBtn.dataset.ndel); }
   if (convertBtn) { convertNoteToContent(convertBtn.dataset.nconvert); }
+  if (gotoBtn)    {
+    const cid = gotoBtn.dataset.goto;
+    document.querySelectorAll('.sb-btn[data-view]').forEach(b => b.classList.toggle('on', b.dataset.view === 'grid'));
+    setView('grid');
+    setTimeout(() => {
+      toggleExpand(cid);
+      const el = document.getElementById('card_' + cid);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 200);
+  }
 });
 
 document.getElementById('newNoteBtn').addEventListener('click', () => openNoteModal(null));
@@ -2870,9 +2922,22 @@ async function convertNoteToContent(noteId) {
     note:    n.titolo ? 'Da nota: ' + n.titolo : '',
   }]);
   if (error) { toast('Errore creazione contenuto', 'err'); console.error(error); return; }
+
+  // Salva il content_id sulla nota così appare in "Realizzate"
+  await sb.from(NOTE_TABLE).update({ content_id: newId }).eq('id', noteId);
+
   toast('Contenuto #' + newId + ' creato in Bozza ✓', 'ok');
   await loadFromSupabase();
+  await loadNotes();
+
+  // Vai alla griglia e apri la card creata
+  document.querySelectorAll('.sb-btn[data-view]').forEach(b => b.classList.toggle('on', b.dataset.view === 'grid'));
   setView('grid');
+  setTimeout(() => {
+    toggleExpand(newId);
+    const el = document.getElementById('card_' + newId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 300);
 }
 
 // Modal nota
