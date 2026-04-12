@@ -2356,8 +2356,8 @@ document.getElementById('modalNew').addEventListener('click', e => {
   if (e.target === document.getElementById('modalNew')) closeNewModal();
 });
 
-document.getElementById('modalNewSubmit').addEventListener('click', () => {
-  const id     = String(rows.reduce((m, r) => Math.max(m, parseInt(r.id) || 0), 0) + 1);
+document.getElementById('modalNewSubmit').addEventListener('click', async () => {
+  const id     = await generateNextId();
   const script = document.getElementById('nw-script').value.trim();
   if (!script) { toast('Script obbligatorio', 'err'); return; }
 
@@ -3095,9 +3095,8 @@ async function convertNoteToContent(noteId) {
   _converting = true;
   const uid = getActiveUserId();
 
-  // Genera un ID numerico: max esistente + 1
-  const maxId = rows.reduce((m, r) => Math.max(m, parseInt(r.id) || 0), 0);
-  const newId = String(maxId + 1);
+  // Genera un ID univoco globale dal DB
+  const newId = await generateNextId();
 
   const { error } = await sb.from(TABLE).insert([{
     id:        newId,
@@ -3234,6 +3233,14 @@ async function deleteNote(id) {
 }
 
 // ─── AUTH & INIT ──────────────────────────────
+// Genera un ID univoco globale interrogando il DB (non solo i rows locali)
+async function generateNextId() {
+  const { data } = await sb.from(TABLE).select('id').order('id', { ascending: false }).limit(1);
+  const lastId = data?.[0]?.id ? parseInt(data[0].id) || 0 : 0;
+  const localMax = rows.reduce((m, r) => Math.max(m, parseInt(r.id) || 0), 0);
+  return String(Math.max(lastId, localMax) + 1);
+}
+
 function sbBool(v) {
   if (v === true) return 'Sì';
   if (typeof v === 'string' && ['sì','si','1','x','yes','✓','v','true'].includes(v.toLowerCase().trim())) return 'Sì';
@@ -3853,6 +3860,16 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
 
 // ─── CHECK SESSIONE ESISTENTE ─────────────────
 (async () => {
+  // Modalità preview: ?preview nella URL mostra la home senza login
+  if (new URLSearchParams(location.search).has('preview')) {
+    currentUser    = { id: 'preview-user', email: 'preview@calenda.app' };
+    currentProfile = { id: 'preview-user', nome: 'Preview', ruolo: 'admin', ruolo_app: 'admin' };
+    document.getElementById('sbAvatar').textContent = 'PR';
+    document.getElementById('loginScreen').classList.remove('visible');
+    rows = [];
+    renderStats(); renderChips(); setView('grid');
+    return;
+  }
   const { data: { session } } = await sb.auth.getSession();
   if (session?.user) {
     await onLogin(session.user);
