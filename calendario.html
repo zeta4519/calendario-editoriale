@@ -1333,23 +1333,23 @@
         <label class="form-label">Script *</label>
         <textarea class="form-ta tall" id="nw-script" placeholder="Scrivi lo script del contenuto…"></textarea>
       </div>
-      <div class="form-group">
+      <div class="form-group" id="nw-ig-cap-group" style="display:none">
         <label class="form-label">Didascalia Instagram</label>
         <textarea class="form-ta" id="nw-ig-cap" placeholder="Caption per Instagram…"></textarea>
       </div>
-      <div class="form-group">
+      <div class="form-group" id="nw-tk-cap-group" style="display:none">
         <label class="form-label">Didascalia TikTok</label>
         <textarea class="form-ta" id="nw-tk-cap" placeholder="Caption per TikTok…"></textarea>
       </div>
-      <div class="form-group">
+      <div class="form-group" id="nw-yt-cap-group" style="display:none">
         <label class="form-label">Descrizione YouTube</label>
         <textarea class="form-ta" id="nw-yt-cap" placeholder="Descrizione per YouTube…"></textarea>
       </div>
-      <div class="form-group">
+      <div class="form-group" id="nw-sh-cap-group" style="display:none">
         <label class="form-label">Descrizione YT Shorts</label>
         <textarea class="form-ta" id="nw-sh-cap" placeholder="Descrizione per YouTube Shorts…"></textarea>
       </div>
-      <div class="form-group">
+      <div class="form-group" id="nw-li-cap-group" style="display:none">
         <label class="form-label">Post LinkedIn</label>
         <textarea class="form-ta" id="nw-li-cap" placeholder="Testo per LinkedIn…"></textarea>
       </div>
@@ -1426,23 +1426,23 @@
         <label class="form-label">Script</label>
         <textarea class="form-ta tall" id="ed-script"></textarea>
       </div>
-      <div class="form-group">
+      <div class="form-group" id="ed-ig-cap-group" style="display:none">
         <label class="form-label">Didascalia Instagram</label>
         <textarea class="form-ta" id="ed-ig-cap"></textarea>
       </div>
-      <div class="form-group">
+      <div class="form-group" id="ed-tk-cap-group" style="display:none">
         <label class="form-label">Didascalia TikTok</label>
         <textarea class="form-ta" id="ed-tk-cap"></textarea>
       </div>
-      <div class="form-group">
+      <div class="form-group" id="ed-yt-cap-group" style="display:none">
         <label class="form-label">Descrizione YouTube</label>
         <textarea class="form-ta" id="ed-yt-cap"></textarea>
       </div>
-      <div class="form-group">
+      <div class="form-group" id="ed-sh-cap-group" style="display:none">
         <label class="form-label">Descrizione YT Shorts</label>
         <textarea class="form-ta" id="ed-sh-cap"></textarea>
       </div>
-      <div class="form-group">
+      <div class="form-group" id="ed-li-cap-group" style="display:none">
         <label class="form-label">Post LinkedIn</label>
         <textarea class="form-ta" id="ed-li-cap"></textarea>
       </div>
@@ -1533,8 +1533,12 @@
         <input class="form-inp" id="note-titolo" type="text" placeholder="Titolo della nota…">
       </div>
       <div class="form-group">
-        <label class="form-label">Contenuto</label>
-        <textarea class="form-ta" id="note-contenuto" rows="6" placeholder="Scrivi qui l'idea, la reference, il hook…"></textarea>
+        <label class="form-label">Note</label>
+        <textarea class="form-ta" id="note-contenuto" rows="5" placeholder="Scrivi qui l'idea, la reference, il hook…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Link (YouTube, Instagram, TikTok…)</label>
+        <input class="form-inp" id="note-link" type="url" placeholder="https://…">
       </div>
     </div>
     <div class="modal-footer">
@@ -2299,6 +2303,9 @@ function openNewModal() {
   document.getElementById('nw-ig').checked = false;
   document.getElementById('nw-tk').checked = false;
   document.getElementById('nw-yt').checked = false;
+  document.getElementById('nw-sh').checked = false;
+  document.getElementById('nw-li').checked = false;
+  syncCapGroups('nw');
   document.getElementById('modalNewSubmit').disabled = false;
   document.getElementById('modalNewSubmit').textContent = 'Crea contenuto';
   document.getElementById('modalNew').classList.add('open');
@@ -2307,6 +2314,27 @@ function openNewModal() {
 function closeNewModal() {
   document.getElementById('modalNew').classList.remove('open');
 }
+
+// mostra/nasconde i campi didascalia in base alle piattaforme spuntate
+function syncCapGroups(prefix) {
+  const map = [
+    { cb: `${prefix}-ig`, grp: `${prefix}-ig-cap-group` },
+    { cb: `${prefix}-tk`, grp: `${prefix}-tk-cap-group` },
+    { cb: `${prefix}-yt`, grp: `${prefix}-yt-cap-group` },
+    { cb: `${prefix}-sh`, grp: `${prefix}-sh-cap-group` },
+    { cb: `${prefix}-li`, grp: `${prefix}-li-cap-group` },
+  ];
+  map.forEach(({ cb, grp }) => {
+    const el = document.getElementById(grp);
+    if (el) el.style.display = document.getElementById(cb)?.checked ? '' : 'none';
+  });
+}
+['nw-ig','nw-tk','nw-yt','nw-sh','nw-li'].forEach(id => {
+  document.getElementById(id)?.addEventListener('change', () => syncCapGroups('nw'));
+});
+['ed-ig','ed-tk','ed-yt','ed-sh','ed-li'].forEach(id => {
+  document.getElementById(id)?.addEventListener('change', () => syncCapGroups('ed'));
+});
 
 document.getElementById('newBtn').addEventListener('click', openNewModal);
 document.getElementById('modalNewClose').addEventListener('click', closeNewModal);
@@ -2434,6 +2462,7 @@ function openEditModal(id) {
   document.getElementById('ed-reference').value = r.reference || '';
   document.getElementById('modalEditSubmit').disabled = false;
   document.getElementById('modalEditSubmit').textContent = 'Salva modifiche';
+  syncCapGroups('ed');
   document.getElementById('modalEdit').classList.add('open');
   setTimeout(() => document.getElementById('ed-script').focus(), 100);
 }
@@ -2903,6 +2932,20 @@ function filteredNotes() {
   return noteRows.filter(n => n.categoria === noteCatFilter);
 }
 
+function getLinkEmbed(url) {
+  if (!url) return null;
+  // YouTube
+  const ytMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  if (ytMatch) return { type: 'yt', src: `https://www.youtube.com/embed/${ytMatch[1]}` };
+  // Instagram
+  const igMatch = url.match(/instagram\.com\/(?:p|reel|tv)\/([A-Za-z0-9_-]+)/);
+  if (igMatch) return { type: 'ig', src: `https://www.instagram.com/p/${igMatch[1]}/embed/` };
+  // TikTok
+  const ttMatch = url.match(/tiktok\.com\/@[^/]+\/video\/(\d+)/);
+  if (ttMatch) return { type: 'tt', src: `https://www.tiktok.com/embed/v2/${ttMatch[1]}` };
+  return null;
+}
+
 function buildNoteCard(n) {
   const cls = catClass(n.categoria);
   const lbl = catLabel(n.categoria);
@@ -2910,6 +2953,8 @@ function buildNoteCard(n) {
   const linkedRow = n.content_id ? rows.find(r => r.id === String(n.content_id)) : null;
   const linkedSt  = linkedRow ? getSt(linkedRow) : null;
   const linkedSi  = linkedSt  ? stInfo(linkedSt) : null;
+  const embed     = getLinkEmbed(n.link);
+  const embedH    = embed ? (embed.type === 'ig' ? 480 : embed.type === 'tt' ? 560 : 200) : 0;
   return `
   <div class="note-card" id="ncard_${n.id}">
     <div class="note-card-head">
@@ -2918,6 +2963,15 @@ function buildNoteCard(n) {
     </div>
     ${n.titolo ? `<div class="note-title">${escH(n.titolo)}</div>` : ''}
     ${n.contenuto ? `<div class="note-body">${escH(n.contenuto)}</div>` : ''}
+    ${n.link ? `<div style="margin-top:6px">
+      <a href="${escA(n.link)}" target="_blank" rel="noopener" style="font-size:11px;color:#3b82f6;word-break:break-all;display:flex;align-items:center;gap:4px;text-decoration:none">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        ${escH(n.link.replace(/^https?:\/\//,'').slice(0,60))}
+      </a>
+      ${embed ? `<div style="margin-top:8px;border-radius:10px;overflow:hidden;background:#000;position:relative;padding-bottom:${embed.type==='yt'?'56.25':embed.type==='ig'?'120':'125'}%">
+        <iframe src="${embed.src}" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" allowfullscreen allow="autoplay;encrypted-media" loading="lazy"></iframe>
+      </div>` : ''}
+    </div>` : ''}
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
       ${n.created_by_name ? `<span style="font-size:10px;color:var(--text-3)">✍️ Creata da <strong>${escH(n.created_by_name)}</strong></span>` : ''}
       ${n.updated_by_name && n.updated_by_name !== n.created_by_name ? `<span style="font-size:10px;color:var(--text-3)">· Modificata da <strong>${escH(n.updated_by_name)}</strong></span>` : ''}
@@ -3033,11 +3087,12 @@ async function convertNoteToContent(noteId) {
   const newId = String(maxId + 1);
 
   const { error } = await sb.from(TABLE).insert([{
-    id:      newId,
-    user_id: uid,
-    stato:   'Bozza',
-    script:  [n.titolo, n.contenuto].filter(Boolean).join('\n\n'),
-    note:    n.titolo ? 'Da nota: ' + n.titolo : '',
+    id:        newId,
+    user_id:   uid,
+    stato:     'Bozza',
+    script:    n.titolo || '',
+    note:      n.contenuto || '',
+    reference: n.link || '',
   }]);
   if (error) { _converting = false; toast('Errore creazione contenuto', 'err'); console.error(error); return; }
 
@@ -3078,12 +3133,14 @@ function openNoteModal(id) {
     selectedNoteCat = 'Idea';
     document.getElementById('note-titolo').value = '';
     document.getElementById('note-contenuto').value = '';
+    document.getElementById('note-link').value = '';
   } else {
     const n = noteRows.find(x => String(x.id) === String(id));
     if (!n) return;
     selectedNoteCat = n.categoria || 'Idea';
     document.getElementById('note-titolo').value = n.titolo || '';
     document.getElementById('note-contenuto').value = n.contenuto || '';
+    document.getElementById('note-link').value = n.link || '';
   }
   // Aggiorna selezione categoria
   document.querySelectorAll('#noteCatSelect [data-cat]').forEach(btn => {
@@ -3117,7 +3174,19 @@ document.getElementById('modalNoteSave').addEventListener('click', async () => {
   btn.disabled = true; btn.textContent = 'Salvataggio…';
 
   const authorName = currentProfile?.nome || currentUser?.email || 'Sconosciuto';
-  const payload = { titolo, contenuto, categoria: selectedNoteCat, updated_at: new Date().toISOString() };
+  const link = document.getElementById('note-link').value.trim();
+
+  // Titolo univoco: se esiste già una nota con lo stesso titolo, aggiunge (1), (2)…
+  let titoloFinale = titolo;
+  if (!editingNoteId && titolo) {
+    const existing = noteRows.filter(n => {
+      const base = (n.titolo || '').replace(/\s*\(\d+\)$/, '');
+      return base === titolo;
+    });
+    if (existing.length > 0) titoloFinale = `${titolo} (${existing.length})`;
+  }
+
+  const payload = { titolo: titoloFinale, contenuto, link, categoria: selectedNoteCat, updated_at: new Date().toISOString() };
 
   let error;
   if (!editingNoteId) {
