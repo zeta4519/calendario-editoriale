@@ -2795,8 +2795,13 @@ function buildNoteCard(n) {
     ${n.titolo ? `<div class="note-title">${escH(n.titolo)}</div>` : ''}
     ${n.contenuto ? `<div class="note-body">${escH(n.contenuto)}</div>` : ''}
     <div class="note-actions">
+      <button class="note-btn" data-nconvert="${escA(n.id)}" style="flex:1;justify-content:center;background:#eff6ff;color:#2563eb;border-color:#bfdbfe;font-weight:600">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        Crea contenuto
+      </button>
+    </div>
+    <div class="note-actions" style="margin-top:4px">
       <button class="note-btn" data-nedit="${escA(n.id)}">✏️ Modifica</button>
-      <button class="note-btn" data-nconvert="${escA(n.id)}" style="color:#3b82f6;border-color:#3b82f640">→ Crea contenuto</button>
       <button class="note-btn del" data-ndel="${escA(n.id)}">🗑 Elimina</button>
     </div>
   </div>`;
@@ -2852,17 +2857,21 @@ async function convertNoteToContent(noteId) {
   const n = noteRows.find(x => String(x.id) === String(noteId));
   if (!n) return;
   const uid = getActiveUserId();
+
+  // Genera un ID numerico: max esistente + 1
+  const maxId = rows.reduce((m, r) => Math.max(m, parseInt(r.id) || 0), 0);
+  const newId = String(maxId + 1);
+
   const { error } = await sb.from(TABLE).insert([{
+    id:      newId,
     user_id: uid,
     stato:   'Bozza',
     script:  [n.titolo, n.contenuto].filter(Boolean).join('\n\n'),
-    note:    'Creato da nota: ' + (n.titolo || ''),
+    note:    n.titolo ? 'Da nota: ' + n.titolo : '',
   }]);
-  if (error) { toast('Errore creazione contenuto', 'err'); return; }
-  toast('Contenuto creato in Bozza ✓', 'ok');
+  if (error) { toast('Errore creazione contenuto', 'err'); console.error(error); return; }
+  toast('Contenuto #' + newId + ' creato in Bozza ✓', 'ok');
   await loadFromSupabase();
-  // Passa alla vista calendario
-  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('on'));
   setView('grid');
 }
 
