@@ -3676,7 +3676,7 @@ async function createNotification(userId, actorName, action, subject, contentId,
 
 async function loadNotifications() {
   const { data } = await sb.from('notifications')
-    .select('*').order('created_at', { ascending: false }).limit(50);
+    .select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false }).limit(50);
   const list = document.getElementById('notifList');
   if (!data || data.length === 0) {
     list.innerHTML = '<p style="color:var(--text-3);font-size:13px">Nessuna notifica.</p>';
@@ -3700,7 +3700,7 @@ async function loadNotifications() {
   // Segna come lette dopo la visualizzazione
   const unreadIds = data.filter(n=>!n.read).map(n=>n.id);
   if (unreadIds.length) {
-    await sb.from('notifications').update({ read: true }).in('id', unreadIds);
+    await sb.from('notifications').update({ read: true }).in('id', unreadIds).eq('user_id', currentUser.id);
     updateNotifBadge(0);
   }
 }
@@ -3716,7 +3716,7 @@ function updateNotifBadge(count) {
 }
 
 async function refreshNotifBadge() {
-  const { count } = await sb.from('notifications').select('id', { count: 'exact', head: true }).eq('read', false);
+  const { count } = await sb.from('notifications').select('id', { count: 'exact', head: true }).eq('user_id', currentUser.id).eq('read', false);
   updateNotifBadge(count || 0);
 }
 
