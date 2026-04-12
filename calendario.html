@@ -2895,6 +2895,7 @@ document.getElementById('noteView').addEventListener('click', function(e) {
     const cid = gotoBtn.dataset.goto;
     document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('on'));
     document.getElementById('navGrid')?.classList.add('on');
+    expandedId = null; // reset così toggleExpand apre sempre
     setView('grid');
     setTimeout(() => {
       toggleExpand(cid);
