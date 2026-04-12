@@ -2893,7 +2893,8 @@ document.getElementById('noteView').addEventListener('click', function(e) {
   if (convertBtn) { convertNoteToContent(convertBtn.dataset.nconvert); }
   if (gotoBtn)    {
     const cid = gotoBtn.dataset.goto;
-    document.querySelectorAll('.sb-btn[data-view]').forEach(b => b.classList.toggle('on', b.dataset.view === 'grid'));
+    document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('on'));
+    document.getElementById('navGrid')?.classList.add('on');
     setView('grid');
     setTimeout(() => {
       toggleExpand(cid);
@@ -2936,7 +2937,8 @@ async function convertNoteToContent(noteId) {
   _converting = false;
 
   // Vai alla griglia e apri la card creata
-  document.querySelectorAll('.sb-btn[data-view]').forEach(b => b.classList.toggle('on', b.dataset.view === 'grid'));
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('navGrid')?.classList.add('on');
   setView('grid');
   setTimeout(() => {
     toggleExpand(newId);
