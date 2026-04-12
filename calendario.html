@@ -686,6 +686,46 @@
     .login-btn:disabled { opacity: .5; cursor: not-allowed; }
     .login-err { font-size: 12px; color: #c0392b; margin-top: 10px; text-align: center; min-height: 18px; }
 
+    /* ── NOTIFICHE ── */
+    #notifView { display: none; }
+    .notif-badge {
+      position: absolute; top: 4px; right: 4px;
+      background: #ef4444; color: #fff; font-size: 9px; font-weight: 700;
+      min-width: 16px; height: 16px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; padding: 0 3px;
+      pointer-events: none;
+    }
+    .notif-item {
+      display: flex; gap: 10px; padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg,#f59e0b,#8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .notif-body { flex: 1; min-width: 0; }
+    .notif-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+    .notif-time { font-size: 11px; color: var(--text-3); margin-top: 3px; }
+    .notif-item.unread { background: #f8f9ff; border-radius: 8px; padding: 12px; margin: 0 -4px; }
+    .notif-unread-dot { width: 7px; height: 7px; background: #3b82f6; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+
+    /* ── NOTE CHAT ── */
+    .note-chat { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 10px; }
+    .note-chat-list { display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; margin-bottom: 8px; }
+    .note-chat-bubble { display: flex; gap: 7px; }
+    .note-chat-avatar { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg,#f59e0b,#8b5cf6); display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .note-chat-content { background: #f1f5f9; border-radius: 0 8px 8px 8px; padding: 6px 10px; max-width: 85%; }
+    .note-chat-author { font-size: 10px; font-weight: 700; color: var(--text-2); margin-bottom: 2px; }
+    .note-chat-text { font-size: 12px; color: var(--text); line-height: 1.5; }
+    .note-chat-time { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+    .note-chat-input { display: flex; gap: 6px; }
+    .note-chat-inp { flex: 1; height: 32px; border: 1px solid var(--border); border-radius: 8px; font-family: var(--font); font-size: 12px; padding: 0 10px; outline: none; background: var(--card); }
+    .note-chat-inp:focus { border-color: rgba(0,0,0,.2); }
+    .note-chat-send { height: 32px; padding: 0 12px; background: var(--text); color: #fff; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font); }
+
     /* ── ADMIN PANEL ── */
     #adminView { display: none; }
     .admin-tabs { display: flex; gap: 6px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 0; }
@@ -907,6 +947,11 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       <span class="sb-tip">Clienti</span>
     </button>
+    <button class="sb-btn" id="navNotif" style="position:relative">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="notif-badge" id="notifBadge" style="display:none">0</span>
+      <span class="sb-tip">Notifiche</span>
+    </button>
   </nav>
   <div style="margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:6px;padding-bottom:4px">
     <div class="sb-avatar" id="sbAvatar">IC</div>
@@ -1111,6 +1156,15 @@
           <div class="login-err" id="ccErr"></div>
         </div>
       </div>
+    </div>
+
+    <!-- NOTIF VIEW -->
+    <div id="notifView">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <h2 style="font-size:16px;font-weight:700">Notifiche</h2>
+        <button class="note-btn" id="markAllReadBtn">✓ Segna tutte come lette</button>
+      </div>
+      <div id="notifList"><p style="color:var(--text-3);font-size:13px">Nessuna notifica.</p></div>
     </div>
 
     <!-- NOTE VIEW -->
@@ -2096,17 +2150,20 @@ function setView(v) {
 
   const noteEl   = document.getElementById('noteView');
   const adminEl  = document.getElementById('adminView');
+  const notifEl  = document.getElementById('notifView');
   const navNote  = document.getElementById('navNote');
   const navAdmin = document.getElementById('navAdmin');
+  const navNotif = document.getElementById('navNotif');
   const bnNote   = document.getElementById('bnNote');
   const bnAdmin  = document.getElementById('bnAdmin');
 
   // Reset tutti
-  [navGrid, navCal, navNote, navAdmin].forEach(b => b && b.classList.remove('on'));
+  [navGrid, navCal, navNote, navAdmin, navNotif].forEach(b => b && b.classList.remove('on'));
   [nbGrid, nbCal, bnNote, bnAdmin].forEach(b => b && b.classList.remove('on'));
   vGrid.classList.remove('on'); vCal.classList.remove('on');
   gridEl.style.display = 'none'; calEl.classList.remove('visible');
   noteEl.style.display = 'none'; adminEl.style.display = 'none';
+  notifEl.style.display = 'none';
   document.getElementById('chipsEl').style.display = 'none';
   document.getElementById('statsEl').style.display = 'none';
   document.querySelector('.sec-row').style.display = 'none';
@@ -2144,6 +2201,12 @@ function setView(v) {
     secTitle.textContent = 'Gestione Clienti';
     document.querySelector('.sec-row').style.display = 'flex';
     loadClients();
+  } else if (v === 'notif') {
+    notifEl.style.display = 'block';
+    navNotif && navNotif.classList.add('on');
+    secTitle.textContent = 'Notifiche';
+    document.querySelector('.sec-row').style.display = 'flex';
+    loadNotifications();
   }
 }
 
@@ -2288,6 +2351,11 @@ document.getElementById('modalNewSubmit').addEventListener('click', () => {
       closeNewModal();
       renderStats(); renderChips(); renderCards();
       toast('Contenuto creato ✓', 'ok');
+      if (viewingUserId && viewingUserId !== currentUser?.id) {
+        const actorName = currentProfile?.nome || currentUser?.email || 'Qualcuno';
+        createNotification(viewingUserId, actorName, 'ha aggiunto un nuovo contenuto',
+          payload.script?.slice(0,40) || '', payload.id, null);
+      }
     } else {
       btn.disabled = false; btn.textContent = 'Crea contenuto';
       toast('Errore dal server', 'err');
@@ -2847,7 +2915,17 @@ function buildNoteCard(n) {
     </div>`}
     <div class="note-actions" style="margin-top:4px">
       <button class="note-btn" data-nedit="${escA(n.id)}">✏️ Modifica</button>
+      <button class="note-btn" data-note-chat="${escA(n.id)}" style="color:#6366f1;border-color:#c7d2fe">
+        💬 ${n._commentCount ? n._commentCount : ''} Chat
+      </button>
       <button class="note-btn del" data-ndel="${escA(n.id)}">🗑 Elimina</button>
+    </div>
+    <div class="note-chat" id="nchat_${escA(n.id)}" style="display:none">
+      <div class="note-chat-list" id="nchat_list_${escA(n.id)}"></div>
+      <div class="note-chat-input">
+        <input class="note-chat-inp" id="nchat_inp_${escA(n.id)}" placeholder="Scrivi un messaggio…" type="text">
+        <button class="note-chat-send" data-note-send="${escA(n.id)}">Invia</button>
+      </div>
     </div>
   </div>`;
 }
@@ -2891,10 +2969,14 @@ document.getElementById('noteView').addEventListener('click', function(e) {
   const delBtn     = e.target.closest('[data-ndel]');
   const convertBtn = e.target.closest('[data-nconvert]');
   const gotoBtn    = e.target.closest('[data-goto]');
+  const chatBtn    = e.target.closest('[data-note-chat]');
+  const sendBtn    = e.target.closest('[data-note-send]');
   if (chip)       { noteCatFilter = chip.dataset.ncat; renderNotes(); }
   if (editBtn)    { openNoteModal(editBtn.dataset.nedit); }
   if (delBtn)     { deleteNote(delBtn.dataset.ndel); }
   if (convertBtn) { convertNoteToContent(convertBtn.dataset.nconvert); }
+  if (chatBtn)    { toggleNoteChat(chatBtn.dataset.noteChat); }
+  if (sendBtn)    { sendNoteComment(sendBtn.dataset.noteSend); }
   if (gotoBtn)    {
     const cid = gotoBtn.dataset.goto;
     document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('on'));
@@ -2932,6 +3014,13 @@ async function convertNoteToContent(noteId) {
     note:    n.titolo ? 'Da nota: ' + n.titolo : '',
   }]);
   if (error) { _converting = false; toast('Errore creazione contenuto', 'err'); console.error(error); return; }
+
+  // Notifica al proprietario del calendario se diverso da chi agisce
+  if (viewingUserId && viewingUserId !== currentUser?.id) {
+    const actorName = currentProfile?.nome || currentUser?.email || 'Qualcuno';
+    await createNotification(viewingUserId, actorName, 'ha creato un nuovo contenuto da un\'idea',
+      n.titolo || n.contenuto?.slice(0,40), newId, null);
+  }
 
   // Salva il content_id sulla nota così appare in "Realizzate"
   await sb.from(NOTE_TABLE).update({ content_id: newId }).eq('id', noteId);
@@ -3405,7 +3494,9 @@ async function onLogin(user) {
   // Carica dati
   await loadFromSupabase();
   await loadNotes();
+  await refreshNotifBadge();
   setInterval(loadFromSupabase, 5 * 60 * 1000);
+  setInterval(refreshNotifBadge, 60 * 1000); // controlla nuove notifiche ogni minuto
 }
 
 // Logout
@@ -3422,6 +3513,133 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
 // Nav admin
 document.getElementById('navAdmin') && document.getElementById('navAdmin').addEventListener('click', () => setView('admin'));
 document.getElementById('bnAdmin') && document.getElementById('bnAdmin').addEventListener('click', () => setView('admin'));
+// Nav notifiche
+document.getElementById('navNotif').addEventListener('click', () => setView('notif'));
+
+// ─── NOTIFICHE ───────────────────────────────
+async function createNotification(userId, actorName, action, subject, contentId, noteId) {
+  if (!userId || userId === (currentUser?.id)) return; // non notificare se stesso
+  await sb.from('notifications').insert([{
+    user_id: userId, actor_name: actorName, action, subject,
+    content_id: contentId || null, note_id: noteId || null,
+  }]);
+}
+
+async function loadNotifications() {
+  const { data } = await sb.from('notifications')
+    .select('*').order('created_at', { ascending: false }).limit(50);
+  const list = document.getElementById('notifList');
+  if (!data || data.length === 0) {
+    list.innerHTML = '<p style="color:var(--text-3);font-size:13px">Nessuna notifica.</p>';
+    updateNotifBadge(0); return;
+  }
+  const unread = data.filter(n => !n.read).length;
+  updateNotifBadge(unread);
+  list.innerHTML = data.map(n => {
+    const initials = (n.actor_name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    return `<div class="notif-item${n.read?'':' unread'}" data-notif-id="${n.id}">
+      <div class="notif-avatar">${initials}</div>
+      <div class="notif-body">
+        <div class="notif-text"><strong>${escH(n.actor_name)}</strong> ${escH(n.action)}${n.subject ? ': <em>'+escH(n.subject)+'</em>' : ''}</div>
+        <div class="notif-time">${fmtDate(n.created_at)}</div>
+      </div>
+      ${!n.read ? '<div class="notif-unread-dot"></div>' : ''}
+    </div>`;
+  }).join('');
+  // Segna come lette dopo la visualizzazione
+  const unreadIds = data.filter(n=>!n.read).map(n=>n.id);
+  if (unreadIds.length) {
+    await sb.from('notifications').update({ read: true }).in('id', unreadIds);
+    updateNotifBadge(0);
+  }
+}
+
+function updateNotifBadge(count) {
+  const badge = document.getElementById('notifBadge');
+  if (count > 0) { badge.textContent = count > 9 ? '9+' : count; badge.style.display = 'flex'; }
+  else badge.style.display = 'none';
+}
+
+async function refreshNotifBadge() {
+  const { count } = await sb.from('notifications').select('id', { count: 'exact', head: true }).eq('read', false);
+  updateNotifBadge(count || 0);
+}
+
+document.getElementById('markAllReadBtn').addEventListener('click', async () => {
+  await sb.from('notifications').update({ read: true }).eq('user_id', currentUser.id);
+  updateNotifBadge(0);
+  loadNotifications();
+});
+
+// ─── NOTE CHAT ───────────────────────────────
+async function toggleNoteChat(noteId) {
+  const panel = document.getElementById('nchat_' + noteId);
+  if (!panel) return;
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  if (!isOpen) await loadNoteComments(noteId);
+}
+
+async function loadNoteComments(noteId) {
+  const n = noteRows.find(x => String(x.id) === String(noteId));
+  const uid = n?.user_id || getActiveUserId();
+  const { data } = await sb.from('note_comments')
+    .select('*').eq('note_id', noteId).order('created_at');
+  const listEl = document.getElementById('nchat_list_' + noteId);
+  if (!listEl) return;
+  if (!data || data.length === 0) {
+    listEl.innerHTML = '<p style="color:var(--text-3);font-size:11px;text-align:center;padding:8px 0">Nessun messaggio ancora.</p>';
+    return;
+  }
+  listEl.innerHTML = data.map(c => {
+    const initials = (c.author_name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const isMe = c.author_id === currentUser?.id;
+    return `<div class="note-chat-bubble" style="${isMe ? 'flex-direction:row-reverse' : ''}">
+      <div class="note-chat-avatar" style="${isMe ? 'background:linear-gradient(135deg,#10b981,#3b82f6)' : ''}">${initials}</div>
+      <div class="note-chat-content" style="${isMe ? 'background:#e0f2fe;border-radius:8px 0 8px 8px' : ''}">
+        ${!isMe ? `<div class="note-chat-author">${escH(c.author_name||'?')}</div>` : ''}
+        <div class="note-chat-text">${escH(c.testo)}</div>
+        <div class="note-chat-time">${fmtDate(c.created_at)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  listEl.scrollTop = listEl.scrollHeight;
+  // aggiorna contatore
+  noteRows.forEach(r => { if (String(r.id)===String(noteId)) r._commentCount = data.length; });
+}
+
+async function sendNoteComment(noteId) {
+  const inp = document.getElementById('nchat_inp_' + noteId);
+  const testo = inp?.value.trim();
+  if (!testo) return;
+  const n = noteRows.find(x => String(x.id) === String(noteId));
+  const authorName = currentProfile?.nome || currentUser?.email || 'Sconosciuto';
+  const { error } = await sb.from('note_comments').insert([{
+    note_id:      String(noteId),
+    note_user_id: n?.user_id || getActiveUserId(),
+    author_id:    currentUser.id,
+    author_name:  authorName,
+    testo,
+  }]);
+  if (error) { toast('Errore invio', 'err'); return; }
+  inp.value = '';
+  await loadNoteComments(noteId);
+  // Notifica al proprietario della nota se diverso
+  if (n?.user_id && n.user_id !== currentUser.id) {
+    await createNotification(n.user_id, authorName, 'ha commentato un\'idea',
+      n.titolo || n.contenuto?.slice(0,40), null, String(noteId));
+  }
+}
+
+// Enter per inviare commento nota
+document.getElementById('noteView').addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter' || e.shiftKey) return;
+  const inp = e.target.closest('.note-chat-inp');
+  if (!inp) return;
+  e.preventDefault();
+  const noteId = inp.id.replace('nchat_inp_', '');
+  sendNoteComment(noteId);
+});
 
 // ─── CHECK SESSIONE ESISTENTE ─────────────────
 (async () => {
