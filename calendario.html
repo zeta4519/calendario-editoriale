@@ -1298,11 +1298,8 @@
       </button>
     </div>
     <div class="modal-body">
+      <input type="hidden" id="nw-id">
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">ID contenuto *</label>
-          <input class="form-inp" id="nw-id" type="text" placeholder="es. 007">
-        </div>
         <div class="form-group">
           <label class="form-label">Formato</label>
           <select class="form-select" id="nw-formato">
@@ -2310,9 +2307,12 @@ function fromInputDate(s) {
 // ─── MODAL NUOVO ─────────────────────────────
 function openNewModal() {
   // Reset form
-  ['nw-id','nw-script','nw-ig-cap','nw-tk-cap','nw-yt-cap','nw-sh-cap','nw-li-cap','nw-note'].forEach(id => {
+  ['nw-script','nw-ig-cap','nw-tk-cap','nw-yt-cap','nw-sh-cap','nw-li-cap','nw-note'].forEach(id => {
     document.getElementById(id).value = '';
   });
+  // Auto-genera ID: max esistente + 1
+  const maxId = rows.reduce((m, r) => Math.max(m, parseInt(r.id) || 0), 0);
+  document.getElementById('nw-id').value = String(maxId + 1);
   document.getElementById('nw-formato').value = '';
   document.getElementById('nw-stato').value = 'Da Registrare';  // default
   document.getElementById('nw-pianif').value = '';
@@ -2363,7 +2363,6 @@ document.getElementById('modalNew').addEventListener('click', e => {
 document.getElementById('modalNewSubmit').addEventListener('click', () => {
   const id     = document.getElementById('nw-id').value.trim();
   const script = document.getElementById('nw-script').value.trim();
-  if (!id)     { toast('ID obbligatorio', 'err'); return; }
   if (!script) { toast('Script obbligatorio', 'err'); return; }
 
   const payload = {
