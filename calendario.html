@@ -175,8 +175,8 @@
     .sec-title { font-size: 14px; font-weight: 600; }
     .sec-count { font-size: 12px; color: var(--text-3); background: rgba(0,0,0,.05); padding: 2px 8px; border-radius: 20px; }
 
-    /* ── CHIPS ── */
-    .chips { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+    /* ── CHIPS / FILTRI ── */
+    .chips { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
     .chip-sep { width: 1px; height: 18px; background: var(--border); align-self: center; margin: 0 2px; }
     .chip {
       height: 28px; padding: 0 13px; border-radius: 20px;
@@ -186,6 +186,39 @@
     }
     .chip:hover { color: var(--text); border-color: rgba(0,0,0,.15); }
     .chip.on { background: var(--text); color: #fff; border-color: var(--text); }
+
+    /* filtri panel */
+    .filter-btn {
+      height: 28px; padding: 0 13px; border-radius: 20px;
+      border: 1px solid var(--border); background: var(--card);
+      color: var(--text-2); font-size: 12px; font-weight: 500; font-family: var(--font);
+      cursor: pointer; display: flex; align-items: center; gap: 5px; box-shadow: var(--sh-sm);
+      transition: all .15s; position: relative;
+    }
+    .filter-btn.active { background: var(--text); color: #fff; border-color: var(--text); }
+    .filter-dot {
+      width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; display: none;
+    }
+    .filter-btn.active .filter-dot { display: block; background: #fff; }
+    .filter-panel {
+      position: absolute; top: calc(100% + 8px); left: 0; z-index: 200;
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.12); padding: 16px; min-width: 280px;
+      display: none;
+    }
+    .filter-panel.open { display: block; }
+    .filter-group { margin-bottom: 14px; }
+    .filter-group:last-child { margin-bottom: 0; }
+    .filter-group-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--text-3); margin-bottom: 7px; }
+    .filter-group-chips { display: flex; gap: 5px; flex-wrap: wrap; }
+    .filter-chip {
+      height: 26px; padding: 0 11px; border-radius: 20px;
+      border: 1px solid var(--border); background: var(--bg);
+      color: var(--text-2); font-size: 11px; font-weight: 500; font-family: var(--font);
+      cursor: pointer; transition: all .15s;
+    }
+    .filter-chip:hover { border-color: rgba(0,0,0,.2); color: var(--text); }
+    .filter-chip.on { background: var(--text); color: #fff; border-color: var(--text); }
 
     /* ── GRID ── */
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px,1fr)); gap: 10px; align-items: start; }
@@ -1055,8 +1088,30 @@
       <span class="sec-count" id="secCount">0</span>
     </div>
 
-    <!-- CHIPS -->
-    <div class="chips" id="chipsEl"></div>
+    <!-- FILTRI -->
+    <div class="chips" id="chipsEl">
+      <div style="position:relative">
+        <button class="filter-btn" id="filterToggleBtn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+          Filtri
+          <span class="filter-dot" id="filterActiveDot"></span>
+        </button>
+        <div class="filter-panel" id="filterPanel">
+          <div class="filter-group">
+            <div class="filter-group-label">Stato</div>
+            <div class="filter-group-chips" id="fcStato"></div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group-label">Piattaforma</div>
+            <div class="filter-group-chips" id="fcPiattaforma"></div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-group-label">Formato</div>
+            <div class="filter-group-chips" id="fcFormato"></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- RICERCA AVANZATA -->
     <div class="search-advanced" id="searchAdvPanel">
@@ -1603,7 +1658,7 @@ function clearOverride(id) {
 let rows = [];
 let expandedId = null;
 let overrides = getOverrides(); // caricati da localStorage
-let filterSt = 'all', filterPl = 'all', query = '';
+let filterSt = 'all', filterPl = 'all', filterFmt = 'all', query = '';
 let scriptSz = 13.5, teleSz = 32;
 let currentView = 'grid'; // 'grid' | 'cal'
 let calYear = new Date().getFullYear(), calMonth = new Date().getMonth();
@@ -1670,6 +1725,7 @@ function filtered() {
     if (filterPl === 'yt_long' && !hasPl(r,'yt_long')) return false;
     if (filterPl === 'shorts'  && !hasPl(r,'shorts'))  return false;
     if (filterPl === 'linkedin'&& !hasPl(r,'linkedin'))return false;
+    if (filterFmt !== 'all' && (r.formato || '') !== filterFmt) return false;
     if (q) {
       const hay = [r.id, r.formato, r.script, r.note, r.did_ig, r.did_tk, r.did_yt_long, r.did_shorts, r.did_li].join(' ').toLowerCase();
       if (!hay.includes(q)) return false;
@@ -1710,18 +1766,27 @@ function stSvg(s) {
 
 // ─── RENDER CHIPS ────────────────────────────
 function renderChips() {
-  const stChips = [{key:'all',label:'Tutti'}, ...STS.map(s=>({key:s.key,label:s.short}))].map(f => {
-    const on = filterSt === f.key ? ' on' : '';
-    return `<button class="chip${on}" onclick="toggleStFilter('${f.key}')">${f.label}</button>`;
-  }).join('');
-  const plChips = [
-    {key:'all',label:'Tutte'},{key:'ig',label:'Instagram'},{key:'tk',label:'TikTok'},
-    {key:'yt_long',label:'YouTube'},{key:'shorts',label:'YT Shorts'},{key:'linkedin',label:'LinkedIn'}
-  ].map(f => {
-    const on = filterPl === f.key ? ' on' : '';
-    return `<button class="chip${on}" onclick="togglePlFilter('${f.key}')">${f.label}</button>`;
-  }).join('');
-  document.getElementById('chipsEl').innerHTML = stChips + '<div class="chip-sep"></div>' + plChips;
+  // Stato
+  const stItems = [{key:'all',label:'Tutti'}, ...STS.map(s=>({key:s.key,label:s.short}))];
+  document.getElementById('fcStato').innerHTML = stItems.map(f =>
+    `<button class="filter-chip${filterSt===f.key?' on':''}" onclick="toggleStFilter('${f.key}')">${f.label}</button>`
+  ).join('');
+  // Piattaforma
+  const plItems = [{key:'all',label:'Tutte'},{key:'ig',label:'Instagram'},{key:'tk',label:'TikTok'},
+    {key:'yt_long',label:'YouTube'},{key:'shorts',label:'YT Shorts'},{key:'linkedin',label:'LinkedIn'}];
+  document.getElementById('fcPiattaforma').innerHTML = plItems.map(f =>
+    `<button class="filter-chip${filterPl===f.key?' on':''}" onclick="togglePlFilter('${f.key}')">${f.label}</button>`
+  ).join('');
+  // Formato
+  const fmtItems = [{key:'all',label:'Tutti'},'Reel','Video','Stories','Carosello','Short','Post'].map(f =>
+    typeof f === 'string' ? {key:f,label:f} : f);
+  document.getElementById('fcFormato').innerHTML = fmtItems.map(f =>
+    `<button class="filter-chip${filterFmt===f.key?' on':''}" onclick="toggleFmtFilter('${f.key}')">${f.label}</button>`
+  ).join('');
+  // Dot attivo se almeno un filtro è impostato
+  const anyActive = filterSt !== 'all' || filterPl !== 'all' || filterFmt !== 'all';
+  document.getElementById('filterActiveDot').style.display = anyActive ? 'block' : 'none';
+  document.getElementById('filterToggleBtn').classList.toggle('active', anyActive);
 }
 
 // ─── RENDER CARDS ────────────────────────────
@@ -1925,6 +1990,11 @@ function toggleStFilter(s) {
 
 function togglePlFilter(p) {
   filterPl = filterPl === p ? 'all' : p;
+  renderChips(); renderCards();
+}
+
+function toggleFmtFilter(f) {
+  filterFmt = filterFmt === f ? 'all' : f;
   renderChips(); renderCards();
 }
 
@@ -3753,6 +3823,17 @@ document.getElementById('notifList').addEventListener('click', e => {
       const el = document.getElementById('card_' + cid);
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }, 200);
+  }
+});
+
+document.getElementById('filterToggleBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  document.getElementById('filterPanel').classList.toggle('open');
+});
+document.addEventListener('click', (e) => {
+  const panel = document.getElementById('filterPanel');
+  if (panel && panel.classList.contains('open') && !panel.contains(e.target) && e.target.id !== 'filterToggleBtn') {
+    panel.classList.remove('open');
   }
 });
 
