@@ -2357,21 +2357,22 @@ document.getElementById('modalNew').addEventListener('click', e => {
 });
 
 document.getElementById('modalNewSubmit').addEventListener('click', async () => {
-  const id     = await generateNextId();
   const script = document.getElementById('nw-script').value.trim();
   if (!script) { toast('Script obbligatorio', 'err'); return; }
 
-  const payload = {
-    id,
+  const btn = document.getElementById('modalNewSubmit');
+  btn.disabled = true; btn.textContent = 'Invio…';
+
+  const insertData = {
     stato:        document.getElementById('nw-stato').value,
     formato:      document.getElementById('nw-formato').value,
-    ig:           document.getElementById('nw-ig').checked ? 'Sì' : '',
-    tk:           document.getElementById('nw-tk').checked ? 'Sì' : '',
-    yt_long:      document.getElementById('nw-yt').checked ? 'Sì' : '',
-    shorts:       document.getElementById('nw-sh').checked ? 'Sì' : '',
-    linkedin:     document.getElementById('nw-li').checked ? 'Sì' : '',
-    data_pianif:  fromInputDate(document.getElementById('nw-pianif').value),
-    data_registr: fromInputDate(document.getElementById('nw-registr').value),
+    ig:           document.getElementById('nw-ig').checked,
+    tk:           document.getElementById('nw-tk').checked,
+    yt_long:      document.getElementById('nw-yt').checked,
+    shorts:       document.getElementById('nw-sh').checked,
+    linkedin:     document.getElementById('nw-li').checked,
+    data_pianif:  fromInputDate(document.getElementById('nw-pianif').value) || null,
+    data_registr: fromInputDate(document.getElementById('nw-registr').value) || null,
     script,
     did_ig:       document.getElementById('nw-ig-cap').value.trim(),
     did_tk:       document.getElementById('nw-tk-cap').value.trim(),
@@ -2379,50 +2380,27 @@ document.getElementById('modalNewSubmit').addEventListener('click', async () => 
     did_shorts:   document.getElementById('nw-sh-cap').value.trim(),
     did_li:       document.getElementById('nw-li-cap').value.trim(),
     note:         document.getElementById('nw-note').value.trim(),
+    user_id:      getActiveUserId(),
   };
 
-  const btn = document.getElementById('modalNewSubmit');
-  btn.disabled = true; btn.textContent = 'Invio…';
-
-  sb.from(TABLE).insert([{
-    id:           payload.id,
-    stato:        payload.stato,
-    formato:      payload.formato,
-    ig:           payload.ig === 'Sì',
-    tk:           payload.tk === 'Sì',
-    yt_long:      payload.yt_long === 'Sì',
-    shorts:       payload.shorts === 'Sì',
-    linkedin:     payload.linkedin === 'Sì',
-    data_pianif:  payload.data_pianif || null,
-    data_registr: payload.data_registr || null,
-    script:       payload.script,
-    did_ig:       payload.did_ig,
-    did_tk:       payload.did_tk,
-    did_yt_long:  payload.did_yt_long,
-    did_shorts:   payload.did_shorts,
-    did_li:       payload.did_li,
-    note:         payload.note,
-    user_id:      getActiveUserId(),
-  }])
-  .then(({ error }) => {
-    if (!error) {
-      // Aggiungi localmente subito, senza aspettare il reload
-      rows.unshift(payload);
-      closeNewModal();
-      renderStats(); renderChips(); renderCards();
-      toast('Contenuto creato ✓', 'ok');
-      if (viewingUserId && viewingUserId !== currentUser?.id) {
-        const actorName = currentProfile?.nome || currentUser?.email || 'Qualcuno';
-        createNotification(viewingUserId, actorName, 'ha aggiunto un nuovo contenuto',
-          payload.script?.slice(0,40) || '', payload.id, null);
-      }
-    } else {
-      btn.disabled = false; btn.textContent = 'Crea contenuto';
-      const msg = error?.message || error?.code || JSON.stringify(error);
-      toast('Errore: ' + msg, 'err');
-      console.error('Create error:', error);
+  const { data: inserted, error } = await sb.from(TABLE).insert([insertData]).select().single();
+  if (!error && inserted) {
+    const newRow = { ...insertData, id: String(inserted.id), ig: sbBool(inserted.ig), tk: sbBool(inserted.tk), yt_long: sbBool(inserted.yt_long), shorts: sbBool(inserted.shorts), linkedin: sbBool(inserted.linkedin) };
+    rows.unshift(newRow);
+    closeNewModal();
+    renderStats(); renderChips(); renderCards();
+    toast('Contenuto creato ✓', 'ok');
+    if (viewingUserId && viewingUserId !== currentUser?.id) {
+      const actorName = currentProfile?.nome || currentUser?.email || 'Qualcuno';
+      createNotification(viewingUserId, actorName, 'ha aggiunto un nuovo contenuto',
+        script?.slice(0,40) || '', String(inserted.id), null);
     }
-  });
+  } else {
+    btn.disabled = false; btn.textContent = 'Crea contenuto';
+    const msg = error?.message || error?.code || JSON.stringify(error);
+    toast('Errore: ' + msg, 'err');
+    console.error('Create error:', error);
+  }
 });
 
 // ─── ELIMINA CONTENUTO ───────────────────────
@@ -3095,18 +3073,15 @@ async function convertNoteToContent(noteId) {
   _converting = true;
   const uid = getActiveUserId();
 
-  // Genera un ID univoco globale dal DB
-  const newId = await generateNextId();
-
-  const { error } = await sb.from(TABLE).insert([{
-    id:        newId,
+  const { data: inserted, error } = await sb.from(TABLE).insert([{
     user_id:   uid,
     stato:     'Bozza',
     script:    n.titolo || '',
     note:      n.contenuto || '',
     reference: n.link || '',
-  }]);
-  if (error) { _converting = false; toast('Errore creazione contenuto', 'err'); console.error(error); return; }
+  }]).select().single();
+  if (error || !inserted) { _converting = false; toast('Errore creazione contenuto', 'err'); console.error(error); return; }
+  const newId = String(inserted.id);
 
   // Notifica al proprietario del calendario se diverso da chi agisce
   if (viewingUserId && viewingUserId !== currentUser?.id) {
