@@ -2829,6 +2829,10 @@ function buildNoteCard(n) {
     </div>
     ${n.titolo ? `<div class="note-title">${escH(n.titolo)}</div>` : ''}
     ${n.contenuto ? `<div class="note-body">${escH(n.contenuto)}</div>` : ''}
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
+      ${n.created_by_name ? `<span style="font-size:10px;color:var(--text-3)">✍️ Creata da <strong>${escH(n.created_by_name)}</strong></span>` : ''}
+      ${n.updated_by_name && n.updated_by_name !== n.created_by_name ? `<span style="font-size:10px;color:var(--text-3)">· Modificata da <strong>${escH(n.updated_by_name)}</strong></span>` : ''}
+    </div>
     ${linkedSt ? `
     <div style="display:flex;align-items:center;gap:6px;padding:6px 0;border-top:1px solid var(--border);margin-top:4px">
       <span style="font-size:11px;color:var(--text-3)">Contenuto #${n.content_id}</span>
@@ -2997,13 +3001,22 @@ document.getElementById('modalNoteSave').addEventListener('click', async () => {
   const btn = document.getElementById('modalNoteSave');
   btn.disabled = true; btn.textContent = 'Salvataggio…';
 
+  const authorName = currentProfile?.nome || currentUser?.email || 'Sconosciuto';
   const payload = { titolo, contenuto, categoria: selectedNoteCat, updated_at: new Date().toISOString() };
 
   let error;
   if (!editingNoteId) {
-    ({ error } = await sb.from(NOTE_TABLE).insert([{ ...payload, user_id: getActiveUserId() }]));
+    ({ error } = await sb.from(NOTE_TABLE).insert([{
+      ...payload,
+      user_id:          getActiveUserId(),
+      created_by_name:  authorName,
+      updated_by_name:  authorName,
+    }]));
   } else {
-    ({ error } = await sb.from(NOTE_TABLE).update(payload).eq('id', editingNoteId));
+    ({ error } = await sb.from(NOTE_TABLE).update({
+      ...payload,
+      updated_by_name: authorName,
+    }).eq('id', editingNoteId));
   }
 
   btn.disabled = false; btn.textContent = editingNoteId ? 'Salva modifiche' : 'Salva nota';
