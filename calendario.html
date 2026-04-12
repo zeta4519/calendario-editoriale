@@ -420,12 +420,12 @@
       .bottom-nav {
         display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
         background: var(--sidebar); border-top: 1px solid #2a2a2a;
-        padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+        padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
       }
       .bn-btn {
-        flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
-        padding: 6px 8px; background: none; border: none; color: #555; cursor: pointer;
-        font-size: 9px; font-weight: 500; font-family: var(--font); letter-spacing: .3px;
+        flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px;
+        padding: 8px 6px; background: none; border: none; color: #555; cursor: pointer;
+        font-size: 11px; font-weight: 500; font-family: var(--font); letter-spacing: .3px;
         text-transform: uppercase; transition: color .15s;
       }
       .bn-btn.on { color: #fff; }
@@ -711,6 +711,19 @@
     .notif-time { font-size: 11px; color: var(--text-3); margin-top: 3px; }
     .notif-item.unread { background: #f8f9ff; border-radius: 8px; padding: 12px; margin: 0 -4px; }
     .notif-unread-dot { width: 7px; height: 7px; background: #3b82f6; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+
+    /* ── REAZIONI NOTE ── */
+    .note-reactions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+    .reaction-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+      border: 1.5px solid var(--border); background: var(--card); cursor: pointer;
+      font-family: var(--font); transition: all .15s; color: var(--text-2);
+    }
+    .reaction-btn:hover { border-color: #94a3b8; }
+    .reaction-btn.like-on  { background: #ecfdf5; border-color: #10b981; color: #065f46; }
+    .reaction-btn.dislike-on { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
+    .reaction-names { font-size: 10px; color: var(--text-3); margin-top: 3px; width: 100%; }
 
     /* ── NOTE CHAT ── */
     .note-chat { border-top: 1px solid var(--border); margin-top: 8px; padding-top: 10px; }
@@ -1204,8 +1217,13 @@
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
     Clienti
   </button>
+  <button class="bn-btn" id="bnNotif" style="position:relative">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <span class="notif-badge" id="notifBadgeMobile" style="display:none;top:2px;right:calc(50% - 16px)">0</span>
+    Notifiche
+  </button>
   <button class="bn-btn" id="bnRefresh">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
     Aggiorna
   </button>
 </nav>
@@ -2226,6 +2244,7 @@ function doRefresh() {
 }
 document.getElementById('refreshBtn').addEventListener('click', doRefresh);
 document.getElementById('bnRefresh') && document.getElementById('bnRefresh').addEventListener('click', doRefresh);
+document.getElementById('bnNotif')  && document.getElementById('bnNotif').addEventListener('click',  () => setView('notif'));
 
 // ─── SEARCH ──────────────────────────────────
 let searchTimer;
@@ -2873,6 +2892,7 @@ async function loadNotes() {
   const { data, error } = await q;
   if (error) { toast('Errore caricamento note', 'err'); return; }
   noteRows = data || [];
+  await loadNoteReactions();
   renderNotes();
 }
 
@@ -2900,6 +2920,9 @@ function buildNoteCard(n) {
     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
       ${n.created_by_name ? `<span style="font-size:10px;color:var(--text-3)">✍️ Creata da <strong>${escH(n.created_by_name)}</strong></span>` : ''}
       ${n.updated_by_name && n.updated_by_name !== n.created_by_name ? `<span style="font-size:10px;color:var(--text-3)">· Modificata da <strong>${escH(n.updated_by_name)}</strong></span>` : ''}
+    </div>
+    <div class="note-reactions" id="nreact_${escA(n.id)}">
+      ${buildReactionBtns(n)}
     </div>
     ${linkedSt ? `
     <div style="display:flex;align-items:center;gap:6px;padding:6px 0;border-top:1px solid var(--border);margin-top:4px">
@@ -2977,6 +3000,8 @@ document.getElementById('noteView').addEventListener('click', function(e) {
   if (convertBtn) { convertNoteToContent(convertBtn.dataset.nconvert); }
   if (chatBtn)    { toggleNoteChat(chatBtn.dataset.noteChat); }
   if (sendBtn)    { sendNoteComment(sendBtn.dataset.noteSend); }
+  const reactBtn = e.target.closest('[data-react]');
+  if (reactBtn)   { toggleReaction(reactBtn.dataset.react, reactBtn.dataset.rtype); }
   if (gotoBtn)    {
     const cid = gotoBtn.dataset.goto;
     document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('on'));
@@ -3516,6 +3541,64 @@ document.getElementById('bnAdmin') && document.getElementById('bnAdmin').addEven
 // Nav notifiche
 document.getElementById('navNotif').addEventListener('click', () => setView('notif'));
 
+// ─── REAZIONI NOTE ───────────────────────────
+function buildReactionBtns(n) {
+  const likes    = (n._reactions || []).filter(r => r.type === 'like');
+  const dislikes = (n._reactions || []).filter(r => r.type === 'dislike');
+  const myReact  = (n._reactions || []).find(r => r.user_id === (window._currentUserId));
+  const likeNames    = likes.map(r => r.user_name).join(', ');
+  const dislikeNames = dislikes.map(r => r.user_name).join(', ');
+  return `
+    <button class="reaction-btn${myReact?.type==='like'?' like-on':''}" data-react="${escA(n.id)}" data-rtype="like">
+      👍 ${likes.length || ''}
+    </button>
+    <button class="reaction-btn${myReact?.type==='dislike'?' dislike-on':''}" data-react="${escA(n.id)}" data-rtype="dislike">
+      👎 ${dislikes.length || ''}
+    </button>
+    ${likeNames    ? `<span class="reaction-names">👍 ${escH(likeNames)}</span>`    : ''}
+    ${dislikeNames ? `<span class="reaction-names">👎 ${escH(dislikeNames)}</span>` : ''}
+  `;
+}
+
+async function loadNoteReactions() {
+  const uid = getActiveUserId();
+  if (!uid) return;
+  const noteIds = noteRows.map(n => String(n.id));
+  if (!noteIds.length) return;
+  const { data } = await sb.from('note_reactions').select('*').in('note_id', noteIds);
+  noteRows.forEach(n => { n._reactions = (data||[]).filter(r => r.note_id === String(n.id)); });
+  window._currentUserId = currentUser?.id;
+}
+
+async function toggleReaction(noteId, type) {
+  const n = noteRows.find(x => String(x.id) === String(noteId));
+  if (!n) return;
+  const userName = currentProfile?.nome || currentUser?.email || 'Sconosciuto';
+  const uid = currentUser?.id;
+  const existing = (n._reactions||[]).find(r => r.user_id === uid);
+
+  if (existing) {
+    if (existing.type === type) {
+      // rimuovi reazione
+      await sb.from('note_reactions').delete().eq('id', existing.id);
+    } else {
+      // cambia tipo
+      await sb.from('note_reactions').update({ type, user_name: userName }).eq('id', existing.id);
+    }
+  } else {
+    await sb.from('note_reactions').insert([{
+      note_id: String(noteId),
+      user_id: uid,
+      user_name: userName,
+      type,
+    }]);
+  }
+  await loadNoteReactions();
+  // Aggiorna solo il blocco reazioni senza re-render completo
+  const el = document.getElementById('nreact_' + noteId);
+  if (el) el.innerHTML = buildReactionBtns(n);
+}
+
 // ─── NOTIFICHE ───────────────────────────────
 async function createNotification(userId, actorName, action, subject, contentId, noteId) {
   if (!userId || userId === (currentUser?.id)) return; // non notificare se stesso
@@ -3555,9 +3638,13 @@ async function loadNotifications() {
 }
 
 function updateNotifBadge(count) {
-  const badge = document.getElementById('notifBadge');
-  if (count > 0) { badge.textContent = count > 9 ? '9+' : count; badge.style.display = 'flex'; }
-  else badge.style.display = 'none';
+  const label = count > 9 ? '9+' : count;
+  ['notifBadge','notifBadgeMobile'].forEach(id => {
+    const b = document.getElementById(id);
+    if (!b) return;
+    if (count > 0) { b.textContent = label; b.style.display = 'flex'; }
+    else b.style.display = 'none';
+  });
 }
 
 async function refreshNotifBadge() {
