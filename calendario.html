@@ -1639,7 +1639,7 @@ const getSt  = r  => getOverrides()[r.id] || normalizeStato(r.stato) || 'Da Regi
 const stInfo = k  => STS.find(s => s.key === k) || STS[0];
 const nextSt = k  => { const i = STS.findIndex(s => s.key === k); return i < STS.length-1 ? STS[i+1].key : null; };
 const prevSt = k  => { const i = STS.findIndex(s => s.key === k); return i > 0 ? STS[i-1].key : null; };
-const hasPl  = (r,p) => ['sì','si','1','x','yes','✓','v','true'].includes((r[p]||'').toLowerCase().trim());
+const hasPl  = (r,p) => { const v = r[p]; if (v === true) return true; if (!v) return false; return ['sì','si','1','x','yes','✓','v','true'].includes(String(v).toLowerCase().trim()); };
 const escH   = s  => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const escA   = s  => (s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 
@@ -3217,24 +3217,24 @@ document.getElementById('modalNoteSave').addEventListener('click', async () => {
   }
 
   const payload = { titolo: titoloFinale, contenuto, link, categoria: selectedNoteCat, updated_at: new Date().toISOString() };
+  const payloadNoLink = { titolo: titoloFinale, contenuto, categoria: selectedNoteCat, updated_at: payload.updated_at };
 
   let error;
-  if (!editingNoteId) {
-    ({ error } = await sb.from(NOTE_TABLE).insert([{
-      ...payload,
-      user_id:          getActiveUserId(),
-      created_by_name:  authorName,
-      updated_by_name:  authorName,
-    }]));
-  } else {
-    ({ error } = await sb.from(NOTE_TABLE).update({
-      ...payload,
-      updated_by_name: authorName,
-    }).eq('id', editingNoteId));
+  // Tenta con link; se la colonna non esiste ancora, riprova senza
+  async function doSave(p) {
+    if (!editingNoteId) {
+      return sb.from(NOTE_TABLE).insert([{ ...p, user_id: getActiveUserId(), created_by_name: authorName, updated_by_name: authorName }]);
+    } else {
+      return sb.from(NOTE_TABLE).update({ ...p, updated_by_name: authorName }).eq('id', editingNoteId);
+    }
+  }
+  ({ error } = await doSave(payload));
+  if (error && (error.code === 'PGRST204' || error.message?.includes('link'))) {
+    ({ error } = await doSave(payloadNoLink));
   }
 
   btn.disabled = false; btn.textContent = editingNoteId ? 'Salva modifiche' : 'Salva nota';
-  if (error) { toast('Errore salvataggio', 'err'); return; }
+  if (error) { toast('Errore salvataggio: ' + (error.message || error.code), 'err'); console.error(error); return; }
   closeNoteModal();
   await loadNotes();
   toast(editingNoteId ? 'Nota aggiornata ✓' : 'Nota creata ✓', 'ok');
