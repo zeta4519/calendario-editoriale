@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Calenda</title>
   <link rel="icon" id="dynamicFavicon" type="image/png" href="">
   <link rel="apple-touch-icon" id="appleTouchIcon" href="">
@@ -61,7 +61,8 @@
       --s4c:#94a3b8; --s4b:#f4f6f8; --s4t:#3d4f63;
     }
     html { font-size: 15px; }
-    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; touch-action: manipulation; }
+    input, textarea, select { font-size: 16px !important; }
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.15); border-radius: 4px; }
