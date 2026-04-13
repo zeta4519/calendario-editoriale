@@ -143,9 +143,10 @@
       border-radius: var(--r-sm); overflow: hidden; box-shadow: var(--sh-sm);
     }
     .view-btn {
-      width: 36px; height: 36px; border: none; background: transparent;
+      height: 36px; padding: 0 14px; border: none; background: transparent;
       color: var(--text-3); cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: all .15s;
+      gap: 6px; font-family: var(--font); font-size: 12px; font-weight: 600;
+      transition: all .15s; white-space: nowrap;
     }
     .view-btn.on { background: var(--text); color: #fff; }
     .view-btn:not(.on):hover { color: var(--text); }
@@ -1051,12 +1052,18 @@
     </div>
     <div class="tb-right">
       <span class="upd-lbl" id="updLbl"></span>
+      <button class="btn-new" id="newBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        Nuovo
+      </button>
       <div class="view-toggle" id="viewToggle">
         <button class="view-btn on" id="vGrid" title="Griglia">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Grid
         </button>
         <button class="view-btn" id="vCal" title="Calendario">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          Calendario
         </button>
       </div>
       <button class="search-toggle-btn" id="advSearchToggle" title="Ricerca avanzata">
@@ -1085,10 +1092,6 @@
         <span class="sec-title" id="secTitle">Home</span>
         <span class="sec-count" id="secCount">0 contenuti</span>
       </div>
-      <button class="btn-new" id="newBtn">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-        Nuovo
-      </button>
     </div>
 
     <!-- FILTRI -->
