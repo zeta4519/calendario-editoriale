@@ -109,7 +109,8 @@
       display: flex; align-items: center; gap: 12px;
       padding: 18px 24px 0; flex-wrap: nowrap;
     }
-    .tb-title { flex: 0 0 auto; }
+    .tb-title { flex: 0 0 auto; display: flex; align-items: flex-start; gap: 12px; }
+    .tb-title-text { display: flex; flex-direction: column; }
     .tb-title h1 { font-size: 28px; font-weight: 400; letter-spacing: -.3px; line-height: 1.2; }
     .tb-title p  { font-size: 12px; color: var(--text-2); margin-top: 2px; }
     .logo-cal  { font-family: 'Inter', system-ui, sans-serif; font-weight: 900; color: var(--text); letter-spacing: -.6px; }
@@ -504,7 +505,10 @@
       .topbar {
         padding: 14px 16px 0; flex-wrap: wrap; gap: 10px;
       }
+      .tb-title { flex: 0 0 100%; justify-content: space-between; align-items: center; }
+      .tb-title-text { flex-direction: row; align-items: baseline; gap: 8px; }
       .tb-title h1 { font-size: 16px; }
+      .tb-title p { margin-top: 0; }
       .tb-search { max-width: 100%; order: 3; flex: 0 0 100%; }
       .tb-right { gap: 6px; }
       .upd-lbl { display: none; }
@@ -1043,8 +1047,14 @@
   <!-- TOPBAR -->
   <div class="topbar">
     <div class="tb-title">
-      <h1><span class="logo-cal">cal</span><span class="logo-enda">enda</span><span class="logo-enda" style="color:#f59e0b">.</span></h1>
-      <p id="subtitleEl">Gestisci il tuo flusso di contenuti</p>
+      <div class="tb-title-text">
+        <h1><span class="logo-cal">cal</span><span class="logo-enda">enda</span><span class="logo-enda" style="color:#f59e0b">.</span></h1>
+        <p id="subtitleEl">Gestisci il tuo flusso di contenuti</p>
+      </div>
+      <button class="btn-new" id="newBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        Nuovo
+      </button>
     </div>
     <div class="tb-search">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -1052,10 +1062,6 @@
     </div>
     <div class="tb-right">
       <span class="upd-lbl" id="updLbl"></span>
-      <button class="btn-new" id="newBtn">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-        Nuovo
-      </button>
       <div class="view-toggle" id="viewToggle">
         <button class="view-btn on" id="vGrid" title="Griglia">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
