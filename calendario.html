@@ -4401,7 +4401,7 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
 })();
 
 // ═══════════════════════════════════════════════
-// ── ADV MODULE ──────────────────────────────────
+// ── ADV MODULE (Supabase) ───────────────────────
 // ═══════════════════════════════════════════════
 (function() {
   /* ─── Constants ─── */
@@ -4411,9 +4411,9 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
   const ADV_RATING_CLS = { green:'adv-r-green', amber:'adv-r-amber', red:'adv-r-red' };
   const ADV_PLT_LBL = { ig:'IG', fb:'FB', yt:'YT', google:'Goo', tk:'TK', li:'LI' };
   const ADV_PLT_CLS = { ig:'adv-plt-ig', fb:'adv-plt-fb', yt:'adv-plt-yt', google:'adv-plt-google', tk:'adv-plt-tk', li:'adv-plt-li' };
-  const LS_CAMPS  = 'calenda_adv_campaigns';
-  const LS_IDEAS  = 'calenda_adv_ideas';
-  const LS_CHATS  = 'calenda_adv_chats';
+  const T_CAMPS = 'adv_campaigns';
+  const T_IDEAS = 'adv_ideas';
+  const T_CHATS = 'adv_chats';
 
   /* ─── State ─── */
   let advCampaigns = [], advIdeas = [], advChats = {};
@@ -4423,40 +4423,37 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
   let advCurrentPeriod = 'all';
   let advFStato = 'all', advFRating = 'all', advFPiatt = 'all';
 
-  /* ─── Persistence ─── */
-  function advLoad() {
+  /* ─── Supabase Persistence ─── */
+  async function advLoad() {
+    const uid = getActiveUserId();
+    if (!uid) return;
     try {
-      advCampaigns = JSON.parse(localStorage.getItem(LS_CAMPS) || '[]');
-      advIdeas     = JSON.parse(localStorage.getItem(LS_IDEAS) || '[]');
-      advChats     = JSON.parse(localStorage.getItem(LS_CHATS) || '{}');
-    } catch(e) { advCampaigns = []; advIdeas = []; advChats = {}; }
-    // Seed mock data se vuoti
-    if (!advCampaigns.length && !advIdeas.length) advSeedMock();
-  }
-  function advSave() {
-    localStorage.setItem(LS_CAMPS, JSON.stringify(advCampaigns));
-    localStorage.setItem(LS_IDEAS, JSON.stringify(advIdeas));
-    localStorage.setItem(LS_CHATS, JSON.stringify(advChats));
-  }
-  function advSeedMock() {
-    const now = new Date();
-    const d = (daysAgo) => { const d = new Date(now); d.setDate(d.getDate()-daysAgo); return d.toISOString().slice(0,10); };
-    advCampaigns = [
-      { id: 1001, titolo:'Hai 70k follower ma nessuno compra?', formato:'Video', stato:'con', piattaforme:['ig','fb'], obiettivo:'Conversioni', lancio:d(30), fine:d(23), budget:120, imp:45000, click:1800, ctr:4, conv:38, cpr:3.16, rating:'green', script:'Hook: Stai investendo ore sui social ma i tuoi follower non comprano nulla?\nAgita: Il problema non sono i follower, è il messaggio sbagliato.\nSoluzione: In questo video ti mostro come trasformare follower in clienti con 3 cambiamenti nel copy.', headline:'Trasforma follower in clienti', cta:'Scopri come', pos:'Ottimo CPR, hook molto forte', neg:'Testare audience fredda', tags:'corso, copy' },
-      { id: 1002, titolo:'Errore #1 degli imprenditori sui social', formato:'Video', stato:'con', piattaforme:['ig'], obiettivo:'Traffico', lancio:d(20), fine:d(13), budget:80, imp:22000, click:880, ctr:4, conv:0, cpr:null, rating:'amber', script:'Hook: Se stai facendo questo errore, stai buttando soldi in ADV.', headline:'Smetti di fare questo errore', cta:'Leggi di più', pos:'Buone impression', neg:'CTR basso, copy da rivedere', tags:'social, errori' },
-      { id: 1003, titolo:'3 tool che uso ogni giorno per crescere', formato:'Grafico', stato:'pub', piattaforme:['google','yt'], obiettivo:'Lead', lancio:d(7), fine:null, budget:60, imp:0, click:0, ctr:0, conv:0, cpr:null, rating:null, script:'', headline:'I miei 3 tool segreti', cta:'Scarica la lista', pos:'', neg:'', tags:'tool, produttività' },
-      { id: 1004, titolo:'Offerta lancio — corso pricing', formato:'Video', stato:'idea', piattaforme:['tk'], obiettivo:'Vendite', lancio:null, fine:null, budget:0, imp:0, click:0, ctr:0, conv:0, cpr:null, rating:null, script:'', headline:'', cta:'', pos:'', neg:'', tags:'' },
-    ];
-    advIdeas = [
-      { id: 2001, titolo:'Ad con testimonianza cliente', contenuto:'Usare il video di Marco che racconta la sua trasformazione. Obiettivo: awareness + conversioni. Target: imprenditori 25-45.', link:'', realizzata:false, createdAt:new Date(now.getTime()-86400000*3).toISOString() },
-      { id: 2002, titolo:'Carousel "5 motivi per cui non vendi"', contenuto:'Carosello IG con 5 slide. Ogni slide un errore comune. CTA finale: prenota una call.', link:'', realizzata:false, createdAt:new Date(now.getTime()-86400000*7).toISOString() },
-    ];
-    advSave();
+      const [campsRes, ideasRes, chatsRes] = await Promise.all([
+        sb.from(T_CAMPS).select('*').eq('user_id', uid).order('created_at', { ascending: false }),
+        sb.from(T_IDEAS).select('*').eq('user_id', uid).order('created_at', { ascending: false }),
+        sb.from(T_CHATS).select('*').eq('user_id', uid).order('created_at', { ascending: true }),
+      ]);
+      advCampaigns = (campsRes.data || []).map(c => ({
+        ...c, piattaforme: c.piattaforme || [], createdAt: c.created_at
+      }));
+      advIdeas = (ideasRes.data || []).map(i => ({
+        ...i, createdAt: i.created_at
+      }));
+      // Raggruppa chat per idea_id
+      advChats = {};
+      (chatsRes.data || []).forEach(m => {
+        if (!advChats[m.idea_id]) advChats[m.idea_id] = [];
+        advChats[m.idea_id].push({ id: m.id, author: m.author_name, author_id: m.author_id, testo: m.testo, at: m.created_at });
+      });
+    } catch(e) {
+      console.error('ADV load error:', e);
+      advCampaigns = []; advIdeas = []; advChats = {};
+    }
   }
 
   /* ─── Init ─── */
-  window.advRenderAll = function() {
-    advLoad();
+  window.advRenderAll = async function() {
+    await advLoad();
     advSetMainView(advMainView);
     advRenderStats();
     advRenderFilters();
@@ -4646,28 +4643,32 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
   };
 
   /* ─── Chat ─── */
-  window.advToggleChat = function(e, ideaId) {
+  window.advToggleChat = async function(e, ideaId) {
     e.stopPropagation();
     const panel = document.getElementById('advChat_' + ideaId);
     if (!panel) return;
     const isOpen = panel.style.display !== 'none';
     panel.style.display = isOpen ? 'none' : 'block';
-    if (!isOpen) advRenderChatMessages(ideaId);
+    if (!isOpen) {
+      // Carica messaggi freschi da Supabase
+      const { data: msgs } = await sb.from(T_CHATS).select('*').eq('idea_id', ideaId).order('created_at');
+      advChats[ideaId] = (msgs || []).map(m => ({ id: m.id, author: m.author_name, author_id: m.author_id, testo: m.testo, at: m.created_at }));
+      advRenderChatMessages(ideaId);
+    }
   };
 
   function advRenderChatMessages(ideaId) {
     const msgs  = advChats[ideaId] || [];
     const listEl = document.getElementById('advChatList_' + ideaId);
     if (!listEl) return;
-    const myName = (typeof currentProfile !== 'undefined' && currentProfile?.nome) || 'Tu';
     listEl.innerHTML = msgs.map(m => {
-      const isMine = m.author === myName;
+      const isMine = m.author_id === currentUser?.id;
       const initials = (m.author||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
       return `<div class="adv-chat-bubble${isMine?' mine':''}">
         <div class="adv-chat-avatar">${initials}</div>
         <div class="adv-chat-content">
           <div class="adv-chat-author">${m.author}</div>
-          <div class="adv-chat-text">${m.testo}</div>
+          <div class="adv-chat-text">${escH(m.testo)}</div>
           <div class="adv-chat-time">${advTimeAgo(m.at)}</div>
         </div>
       </div>`;
@@ -4675,31 +4676,35 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
     listEl.scrollTop = listEl.scrollHeight;
   }
 
-  window.advSendChat = function(ideaId) {
+  window.advSendChat = async function(ideaId) {
     const inp = document.getElementById('advChatInp_' + ideaId);
     const testo = inp?.value.trim();
     if (!testo) return;
     const myName = (typeof currentProfile !== 'undefined' && currentProfile?.nome) || 'Tu';
-    if (!advChats[ideaId]) advChats[ideaId] = [];
-    advChats[ideaId].push({ author: myName, testo, at: new Date().toISOString() });
+    const { error } = await sb.from(T_CHATS).insert([{
+      idea_id:     ideaId,
+      user_id:     getActiveUserId(),
+      author_id:   currentUser?.id,
+      author_name: myName,
+      testo,
+    }]);
+    if (error) { console.error('ADV chat send error:', error); toast('Errore invio messaggio', 'err'); return; }
     inp.value = '';
-    advSave();
+    // Ricarica chat da Supabase
+    const { data: msgs } = await sb.from(T_CHATS).select('*').eq('idea_id', ideaId).order('created_at');
+    advChats[ideaId] = (msgs || []).map(m => ({ id: m.id, author: m.author_name, author_id: m.author_id, testo: m.testo, at: m.created_at }));
     advRenderChatMessages(ideaId);
-    advRenderIdee(); // update chat count
+    advRenderIdee();
     // re-show chat panel
     const panel = document.getElementById('advChat_' + ideaId);
     if (panel) { panel.style.display = 'block'; advRenderChatMessages(ideaId); }
-    // Notifica: invia notifica a tutti gli utenti coinvolti (admin/collaboratori)
+    // Notifica: invia notifica agli utenti coinvolti
     const idea = advIdeas.find(i => i.id === ideaId);
     const ideaTitle = idea?.titolo || 'Idea ADV';
     const preview = testo.length > 60 ? testo.slice(0,60) + '…' : testo;
     if (typeof viewingUserId !== 'undefined' && viewingUserId && viewingUserId !== currentUser?.id) {
       createNotification(viewingUserId, myName, 'ha scritto nella chat ADV "' + ideaTitle.slice(0,30) + '"', preview, null, null);
-    }
-    if (typeof currentUser !== 'undefined' && currentUser?.id && typeof viewingUserId !== 'undefined' && viewingUserId && viewingUserId !== currentUser?.id) {
-      // Notifica anche a sé stessi se si sta guardando il calendario di un altro
     } else if (typeof currentProfile !== 'undefined' && currentProfile?.ruolo_app === 'collaborator') {
-      // Collaboratore: notifica l'admin
       const assignments = currentProfile?._assignments || [];
       assignments.forEach(a => {
         if (a.client_id && a.client_id !== currentUser?.id) {
@@ -4710,17 +4715,21 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
   };
 
   /* ─── Delete ─── */
-  window.advConfirmDel = function(e, type, id) {
+  window.advConfirmDel = async function(e, type, id) {
     e.stopPropagation();
     if (!confirm('Eliminare questo elemento?')) return;
+    let error;
     if (type === 'camp') {
-      advCampaigns = advCampaigns.filter(c => c.id !== id);
+      ({ error } = await sb.from(T_CAMPS).delete().eq('id', id));
     } else {
-      advIdeas = advIdeas.filter(i => i.id !== id);
-      delete advChats[id];
+      // Elimina anche i messaggi chat associati
+      await sb.from(T_CHATS).delete().eq('idea_id', id);
+      ({ error } = await sb.from(T_IDEAS).delete().eq('id', id));
     }
-    advSave();
+    if (error) { console.error('ADV delete error:', error); toast('Errore eliminazione', 'err'); return; }
+    await advLoad();
     advRenderStats(); advRenderFilters(); advRenderCards(); advRenderIdee();
+    toast('Eliminato ✓', 'ok');
   };
 
   /* ─── Campaign Modal ─── */
@@ -4833,12 +4842,12 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
     if (el) el.value = (b > 0 && c > 0) ? (b/c).toFixed(2) : '';
   };
 
-  window.advSaveCamp = function() {
+  window.advSaveCamp = async function() {
     const titolo = document.getElementById('ac-titolo')?.value.trim();
     if (!titolo) { alert('Inserisci un titolo'); return; }
     const piattaforme = ['ig','fb','yt','google','tk','li'].filter(p => document.getElementById('ac-'+p)?.checked);
-    const n = {
-      id:          advEditingCampId || (Date.now()),
+    const payload = {
+      user_id:     getActiveUserId(),
       titolo,
       formato:     document.getElementById('ac-formato').value,
       stato:       document.getElementById('ac-stato').value,
@@ -4861,15 +4870,17 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
       neg:         document.getElementById('ac-neg').value||'',
       tags:        document.getElementById('ac-tags').value||'',
     };
+    let error;
     if (advEditingCampId) {
-      const idx = advCampaigns.findIndex(c => c.id === advEditingCampId);
-      if (idx >= 0) advCampaigns[idx] = n;
+      ({ error } = await sb.from(T_CAMPS).update(payload).eq('id', advEditingCampId));
     } else {
-      advCampaigns.unshift(n);
+      ({ error } = await sb.from(T_CAMPS).insert([payload]));
     }
-    advSave();
+    if (error) { console.error('ADV save camp error:', error); toast('Errore salvataggio campagna', 'err'); return; }
     advCloseModal('advModalCamp');
+    await advLoad();
     advRenderStats(); advRenderFilters(); advRenderCards();
+    toast(advEditingCampId ? 'Campagna aggiornata ✓' : 'Campagna creata ✓', 'ok');
   };
 
   /* ─── Tab switching in modal ─── */
@@ -4902,25 +4913,27 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
     advShowModal('advModalIdea');
   };
 
-  window.advSaveIdea = function() {
+  window.advSaveIdea = async function() {
     const titolo = document.getElementById('ai-titolo')?.value.trim();
     if (!titolo) { alert('Inserisci un titolo'); return; }
+    const payload = {
+      user_id:    getActiveUserId(),
+      titolo,
+      contenuto:  document.getElementById('ai-contenuto').value,
+      link:       document.getElementById('ai-link').value||'',
+    };
+    let error;
     if (advEditingIdeaId) {
-      const idea = advIdeas.find(i => i.id === advEditingIdeaId);
-      if (idea) {
-        idea.titolo    = titolo;
-        idea.contenuto = document.getElementById('ai-contenuto').value;
-        idea.link      = document.getElementById('ai-link').value||'';
-      }
+      ({ error } = await sb.from(T_IDEAS).update(payload).eq('id', advEditingIdeaId));
     } else {
-      advIdeas.unshift({ id: Date.now(), titolo,
-        contenuto: document.getElementById('ai-contenuto').value,
-        link: document.getElementById('ai-link').value||'',
-        realizzata: false, createdAt: new Date().toISOString() });
+      payload.realizzata = false;
+      ({ error } = await sb.from(T_IDEAS).insert([payload]));
     }
-    advSave();
+    if (error) { console.error('ADV save idea error:', error); toast('Errore salvataggio idea', 'err'); return; }
     advCloseModal('advModalIdea');
+    await advLoad();
     advRenderIdee();
+    toast(advEditingIdeaId ? 'Idea aggiornata ✓' : 'Idea creata ✓', 'ok');
   };
 
   /* ─── Idea → Campaign ─── */
@@ -4938,10 +4951,11 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
     advShowModal('advModalCamp');
     // Mark idea as realizzata on save
     const origSave = window.advSaveCamp;
-    window.advSaveCamp = function() {
-      origSave();
-      const i = advIdeas.find(x => x.id === id);
-      if (i) { i.realizzata = true; advSave(); advRenderIdee(); }
+    window.advSaveCamp = async function() {
+      await origSave();
+      await sb.from(T_IDEAS).update({ realizzata: true }).eq('id', id);
+      await advLoad();
+      advRenderIdee();
       window.advSaveCamp = origSave;
     };
   };
