@@ -980,6 +980,121 @@
       gap: 6px; transition: opacity .15s; white-space: nowrap;
     }
     .btn-pdf:hover { opacity: .85; }
+
+    /* ── TAB PANE (shared) ── */
+    .tab-pane { display: none; }
+    .tab-pane.on { display: block; }
+    .tab-btn { padding:8px 14px; font-family:var(--font); font-size:12px; font-weight:600; border:none; background:none; cursor:pointer; color:var(--text-3); border-bottom:2px solid transparent; margin-bottom:-1px; }
+    .tab-btn.on { color:var(--text); border-bottom-color:var(--text); }
+
+    /* ── ADV NAV BUTTON ── */
+    .btn-adv-tab {
+      height: 36px; padding: 0 14px; background: rgba(245,158,11,.1); color: #92400e;
+      border: 1.5px solid rgba(245,158,11,.35); border-radius: var(--r-sm);
+      font-family: var(--font); font-size: 12px; font-weight: 700; cursor: pointer;
+      display: flex; align-items: center; gap: 6px; transition: all .15s; white-space: nowrap;
+    }
+    .btn-adv-tab:hover { background: rgba(245,158,11,.18); }
+    .btn-adv-tab.on    { background: #f59e0b; color: #fff; border-color: #f59e0b; }
+
+    /* ── ADV SECTION ── */
+    #advView { display: none; }
+    .adv-period-row { display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+    .adv-period-sel { display:flex; background:rgba(0,0,0,.05); border-radius:20px; padding:3px; gap:2px; }
+    .adv-period-opt { padding:5px 12px; border-radius:16px; border:none; font-family:var(--font); font-size:11px; font-weight:600; cursor:pointer; background:none; color:var(--text-3); transition:all .15s; }
+    .adv-period-opt.on { background:var(--card); color:var(--text); box-shadow:var(--sh-sm); }
+    .adv-custom-range { display:none; align-items:center; gap:6px; flex-wrap:wrap; }
+    .adv-custom-range.show { display:flex; }
+    .adv-custom-range input { height:30px; padding:0 10px; background:var(--card); border:1px solid var(--border); border-radius:var(--r-sm); font-family:var(--font); font-size:12px; color:var(--text); outline:none; width:130px; }
+    .adv-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+    .adv-view-tabs { display:flex; gap:4px; margin-bottom:16px; background:rgba(0,0,0,.05); border-radius:20px; padding:4px; width:fit-content; }
+    .adv-view-tab { padding:6px 16px; border-radius:16px; border:none; font-family:var(--font); font-size:12px; font-weight:600; cursor:pointer; background:none; color:var(--text-3); transition:all .15s; }
+    .adv-view-tab.on { background:var(--card); color:var(--text); box-shadow:var(--sh-sm); }
+
+    /* ADV Card */
+    .adv-card { background:var(--card); border-radius:var(--r); border:1px solid var(--border); box-shadow:var(--sh-sm); padding:16px; cursor:pointer; transition:box-shadow .15s,transform .15s; display:flex; flex-direction:column; gap:10px; }
+    .adv-card:hover { box-shadow:var(--sh); transform:translateY(-1px); }
+    .adv-card.confirming-delete { border-color:#fca5a5; background:#fff5f5; }
+    .adv-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+    .adv-card-badges { display:flex; gap:5px; flex-wrap:wrap; }
+    .adv-badge-fmt { background:rgba(0,0,0,.06); color:var(--text-2); padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; white-space:nowrap; }
+    .adv-s-idea { background:#f8fafc; color:#475569; border:1px solid #e2e8f0; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
+    .adv-s-lav  { background:#fff8ec; color:#7c3f06; border:1px solid #fde68a; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
+    .adv-s-pub  { background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
+    .adv-s-con  { background:#f4f6f8; color:#3d4f63; border:1px solid #e2e8f0; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
+    .adv-r-green { background:#ecfdf5; color:#065f46; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; white-space:nowrap; }
+    .adv-r-amber { background:#fffbeb; color:#92400e; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; white-space:nowrap; }
+    .adv-r-red   { background:#fef2f2; color:#991b1b; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; white-space:nowrap; }
+    .adv-card-title { font-size:14px; font-weight:600; line-height:1.4; }
+    .adv-card-plats { display:flex; gap:5px; flex-wrap:wrap; }
+    .adv-card-metrics { display:flex; gap:14px; }
+    .adv-metric { display:flex; flex-direction:column; gap:1px; }
+    .adv-metric-label { font-size:10px; color:var(--text-3); font-weight:600; text-transform:uppercase; letter-spacing:.3px; }
+    .adv-metric-value { font-size:17px; font-weight:700; letter-spacing:-.3px; }
+    .adv-no-data { font-size:12px; color:var(--text-3); }
+    .adv-card-foot { display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
+    .adv-btn-link { font-size:12px; font-weight:600; color:var(--text-2); background:none; border:none; cursor:pointer; padding:0; }
+    .adv-card-actions { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+    .adv-btn-replica { height:28px; padding:0 12px; background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; border-radius:20px; font-family:var(--font); font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:4px; }
+    .adv-btn-replica:hover { background:#d1fae5; }
+    .adv-btn-edit-sm { height:28px; padding:0 11px; background:rgba(0,0,0,.04); color:var(--text-2); border:1px solid var(--border); border-radius:20px; font-family:var(--font); font-size:11px; font-weight:600; cursor:pointer; }
+    .adv-btn-edit-sm:hover { color:var(--text); border-color:rgba(0,0,0,.2); }
+    .adv-btn-del-sm { height:28px; padding:0 10px; background:none; color:var(--text-3); border:1px solid var(--border); border-radius:20px; font-family:var(--font); font-size:11px; font-weight:600; cursor:pointer; }
+    .adv-btn-del-sm:hover { color:#991b1b; border-color:#fca5a5; background:#fef2f2; }
+    /* ADV Idea card */
+    .adv-idea-card { background:var(--card); border-radius:var(--r); border:1px solid var(--border); box-shadow:var(--sh-sm); padding:16px; display:flex; flex-direction:column; gap:10px; }
+    .adv-idea-card.realizzata { border-color:#a7f3d0; background:#f0fdf9; }
+    .adv-idea-title { font-size:14px; font-weight:600; line-height:1.4; }
+    .adv-idea-body { font-size:13px; color:var(--text-2); line-height:1.5; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+    .adv-idea-foot { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; }
+    .adv-idea-meta { font-size:11px; color:var(--text-3); }
+    .adv-badge-real { padding:2px 9px; border-radius:20px; background:#ecfdf5; color:#065f46; font-size:11px; font-weight:700; }
+    .adv-btn-to-camp { height:28px; padding:0 12px; background:var(--text); color:#fff; border:none; border-radius:20px; font-family:var(--font); font-size:11px; font-weight:700; cursor:pointer; }
+    .adv-btn-to-camp:hover { opacity:.85; }
+    /* ADV Platform badges */
+    .adv-plt { padding:2px 8px; border-radius:6px; font-size:10px; font-weight:700; }
+    .adv-plt-ig { background:#fce7f3; color:#9d174d; }
+    .adv-plt-fb { background:#eff6ff; color:#1d4ed8; }
+    .adv-plt-yt { background:#fef2f2; color:#991b1b; }
+    .adv-plt-google { background:#fff7ed; color:#9a3412; }
+    .adv-plt-tk { background:#f0fdf4; color:#14532d; }
+    .adv-plt-li { background:#eff6ff; color:#1e40af; }
+    /* ADV Rating selector */
+    .adv-rating-sel { display:flex; gap:8px; }
+    .adv-rating-opt { flex:1; padding:10px 6px; border-radius:var(--r-sm); border:2px solid var(--border); text-align:center; cursor:pointer; font-size:12px; font-weight:600; transition:all .15s; }
+    .adv-rating-opt.on-green { background:#ecfdf5; border-color:#6ee7b7; color:#065f46; }
+    .adv-rating-opt.on-amber { background:#fffbeb; border-color:#fcd34d; color:#92400e; }
+    .adv-rating-opt.on-red   { background:#fef2f2; border-color:#fca5a5; color:#991b1b; }
+    /* ADV Obj selector */
+    .adv-obj-sel { display:flex; flex-wrap:wrap; gap:7px; }
+    .adv-obj-opt { padding:6px 12px; border-radius:20px; border:1px solid var(--border); font-size:12px; font-weight:600; cursor:pointer; background:rgba(0,0,0,.03); transition:all .15s; }
+    .adv-obj-opt.on { background:var(--text); color:#fff; border-color:var(--text); }
+    /* ADV plt checkboxes */
+    .adv-plt-groups { display:flex; flex-direction:column; gap:10px; }
+    .adv-plt-group { background:rgba(0,0,0,.03); border-radius:var(--r-sm); padding:10px 12px; border:1px solid var(--border); }
+    .adv-plt-group-name { font-size:11px; font-weight:700; color:var(--text-2); margin-bottom:8px; text-transform:uppercase; letter-spacing:.4px; }
+    .adv-plt-subs { display:flex; gap:14px; flex-wrap:wrap; }
+    .adv-plt-check { display:flex; align-items:center; gap:6px; cursor:pointer; font-size:13px; font-weight:500; }
+    .adv-plt-check input { width:16px; height:16px; cursor:pointer; accent-color:var(--text); }
+    /* ADV Chat (reuse note-chat styles) */
+    .adv-idea-chat { border-top:1px solid var(--border); margin-top:8px; padding-top:10px; }
+    .adv-chat-list { display:flex; flex-direction:column; gap:8px; max-height:200px; overflow-y:auto; margin-bottom:10px; }
+    .adv-chat-bubble { display:flex; gap:7px; }
+    .adv-chat-bubble.mine { flex-direction:row-reverse; }
+    .adv-chat-avatar { width:24px; height:24px; border-radius:50%; background:linear-gradient(135deg,#f59e0b,#8b5cf6); display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; color:#fff; flex-shrink:0; }
+    .adv-chat-content { background:#f1f5f9; border-radius:0 8px 8px 8px; padding:6px 10px; max-width:80%; }
+    .adv-chat-bubble.mine .adv-chat-content { background:#1a1a1a; color:#fff; border-radius:8px 0 8px 8px; }
+    .adv-chat-author { font-size:10px; font-weight:700; color:var(--text-2); }
+    .adv-chat-bubble.mine .adv-chat-author { color:rgba(255,255,255,.7); }
+    .adv-chat-text { font-size:12px; line-height:1.4; margin-top:2px; }
+    .adv-chat-time { font-size:10px; color:var(--text-3); margin-top:2px; }
+    .adv-chat-bubble.mine .adv-chat-time { color:rgba(255,255,255,.5); }
+    .adv-chat-input-row { display:flex; gap:8px; }
+    .adv-chat-inp { flex:1; height:32px; border:1px solid var(--border); border-radius:8px; padding:0 10px; font-family:var(--font); font-size:13px; outline:none; }
+    .adv-chat-inp:focus { border-color:var(--text); }
+    .adv-chat-send { height:32px; padding:0 12px; background:var(--text); color:#fff; border:none; border-radius:8px; font-family:var(--font); font-size:12px; font-weight:600; cursor:pointer; }
+    /* Sidebar ADV icon */
+    #navAdv { display: block; }
   </style>
 </head>
 <body>
@@ -1023,6 +1138,10 @@
       <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a2 2 0 0 1 2 2v1H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2V4a2 2 0 0 0-2-2z"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="13" y2="15"/></svg>
       <span class="sb-tip">Idee</span>
     </button>
+    <button class="sb-btn" id="navAdv">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      <span class="sb-tip">ADV</span>
+    </button>
     <button class="sb-btn" id="navAdmin" style="display:none">
       <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       <span class="sb-tip">Clienti</span>
@@ -1051,6 +1170,10 @@
         <h1><span class="logo-cal">cal</span><span class="logo-enda">enda</span><span class="logo-enda" style="color:#f59e0b">.</span></h1>
         <p id="subtitleEl">Gestisci il tuo flusso di contenuti</p>
       </div>
+      <button class="btn-adv-tab" id="advTabBtn">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        ADV
+      </button>
       <button class="btn-new" id="newBtn">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
         Nuovo
@@ -1290,6 +1413,73 @@
         <p>Nessuna nota ancora. Crea la prima!</p>
       </div>
     </div>
+
+    <!-- ADV VIEW -->
+    <div id="advView">
+      <!-- View tabs: Campagne / Idee ADV -->
+      <div class="adv-view-tabs">
+        <button class="adv-view-tab on" id="advTabCamp" onclick="advSetMainView('campagne')">Campagne</button>
+        <button class="adv-view-tab" id="advTabIdee" onclick="advSetMainView('idee')">Idee ADV</button>
+      </div>
+
+      <!-- CAMPAGNE VIEW -->
+      <div id="advCampagneView">
+        <div class="adv-period-row">
+          <div class="adv-period-sel">
+            <button class="adv-period-opt on" id="advPo-all"    onclick="advSetPeriod('all')">Tutto</button>
+            <button class="adv-period-opt"    id="advPo-7"      onclick="advSetPeriod(7)">7g</button>
+            <button class="adv-period-opt"    id="advPo-30"     onclick="advSetPeriod(30)">30g</button>
+            <button class="adv-period-opt"    id="advPo-custom" onclick="advSetPeriod('custom')">Custom</button>
+          </div>
+          <div class="adv-custom-range" id="advCustomRange">
+            <input type="date" id="advPeriodFrom">
+            <span style="color:var(--text-3);font-size:12px">→</span>
+            <input type="date" id="advPeriodTo">
+            <button style="height:30px;padding:0 12px;background:var(--text);color:#fff;border:none;border-radius:var(--r-sm);font-family:var(--font);font-size:11px;font-weight:600;cursor:pointer" onclick="advRenderStats()">Applica</button>
+          </div>
+        </div>
+        <div class="adv-stats">
+          <div class="stat-card">
+            <div class="stat-label">Budget speso</div>
+            <div class="stat-value">€<span id="advSBudget">0</span></div>
+            <div class="stat-unit" id="advSPeriodLabel">totale</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Concluse</div>
+            <div class="stat-value"><span id="advSConcl">0</span></div>
+            <div class="stat-unit">campagne</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">✅ Da replicare</div>
+            <div class="stat-value"><span id="advSGreen">0</span></div>
+            <div class="stat-unit">campagne</div>
+          </div>
+        </div>
+        <div class="chips" style="margin-bottom:16px;position:relative">
+          <button class="filter-btn" id="advFilterBtn" onclick="advToggleFilterPanel(event)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+            Filtri
+          </button>
+          <div class="filter-panel" id="advFilterPanel">
+            <div class="filter-group"><div class="filter-group-label">Stato</div><div class="filter-group-chips" id="advFcStato"></div></div>
+            <div class="filter-group"><div class="filter-group-label">Rating</div><div class="filter-group-chips" id="advFcRating"></div></div>
+            <div class="filter-group"><div class="filter-group-label">Piattaforma</div><div class="filter-group-chips" id="advFcPiatt"></div></div>
+          </div>
+        </div>
+        <div class="cards-grid" id="advCardsGrid"></div>
+        <div style="text-align:center;padding:60px 20px;color:var(--text-3);display:none" id="advEmptyEl">
+          <p style="font-size:14px">Nessuna campagna trovata</p>
+        </div>
+      </div>
+
+      <!-- IDEE ADV -->
+      <div id="advIdeeView" style="display:none">
+        <div class="cards-grid" id="advIdeeGrid"></div>
+        <div style="text-align:center;padding:60px 20px;color:var(--text-3);display:none" id="advIdeaEmptyEl">
+          <p style="font-size:14px">Nessuna idea ADV ancora.</p>
+        </div>
+      </div>
+    </div><!-- /advView -->
 
   </div><!-- /content -->
 </div><!-- /app -->
@@ -1630,6 +1820,214 @@
   </div>
 </div>
 
+<!-- ══ MODAL ADV CAMPAGNA ══ -->
+<div id="advModalCamp" onclick="if(event.target===this)advCloseModal('advModalCamp')" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:flex-end;justify-content:center">
+  <div style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+      <span style="font-size:16px;font-weight:700" id="advCampModalTitle">Nuova campagna ADV</span>
+      <button onclick="advCloseModal('advModalCamp')" style="width:28px;height:28px;border-radius:50%;border:none;background:rgba(0,0,0,.06);cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div style="display:flex;padding:12px 20px 0;flex-shrink:0;border-bottom:1px solid var(--border)">
+      <button class="tab-btn on" data-adv-tab="ac-idea"      onclick="advSwitchTab('idea')">Idea</button>
+      <button class="tab-btn"    data-adv-tab="ac-copy"      onclick="advSwitchTab('copy')">Copy</button>
+      <button class="tab-btn"    data-adv-tab="ac-risultati" onclick="advSwitchTab('risultati')">Risultati</button>
+      <button class="tab-btn"    data-adv-tab="ac-note"      onclick="advSwitchTab('note')">Note</button>
+    </div>
+    <div style="padding:18px 20px;overflow-y:auto;flex:1">
+      <!-- TAB IDEA -->
+      <div class="tab-pane on" id="ac-idea">
+        <div class="form-group">
+          <label class="form-label">Hook / Titolo campagna</label>
+          <input class="form-inp" id="ac-titolo" placeholder="Es. Hai 70k follower ma nessuno compra?">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Formato</label>
+            <select class="form-sel" id="ac-formato">
+              <option value="">—</option>
+              <option>Video</option><option>Reel</option><option>Grafico</option>
+              <option>Carosello</option><option>Stories</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Stato</label>
+            <select class="form-sel" id="ac-stato">
+              <option value="idea">Idea</option>
+              <option value="lav">In lavorazione</option>
+              <option value="pub">Pubblicato</option>
+              <option value="con">Concluso</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Obiettivo campagna</label>
+          <div class="adv-obj-sel" id="advObjSel">
+            <div class="adv-obj-opt" onclick="advSelObj(this,'Awareness')">Awareness</div>
+            <div class="adv-obj-opt" onclick="advSelObj(this,'Traffico')">Traffico</div>
+            <div class="adv-obj-opt" onclick="advSelObj(this,'Conversioni')">Conversioni</div>
+            <div class="adv-obj-opt" onclick="advSelObj(this,'Lead')">Lead</div>
+            <div class="adv-obj-opt" onclick="advSelObj(this,'Vendite')">Vendite</div>
+          </div>
+          <input type="hidden" id="ac-obiettivo">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Piattaforme ADV</label>
+          <div class="adv-plt-groups">
+            <div class="adv-plt-group">
+              <div class="adv-plt-group-name">Meta Ads</div>
+              <div class="adv-plt-subs">
+                <label class="adv-plt-check"><input type="checkbox" id="ac-ig"><span>Instagram</span></label>
+                <label class="adv-plt-check"><input type="checkbox" id="ac-fb"><span>Facebook</span></label>
+              </div>
+            </div>
+            <div class="adv-plt-group">
+              <div class="adv-plt-group-name">Google Ads</div>
+              <div class="adv-plt-subs">
+                <label class="adv-plt-check"><input type="checkbox" id="ac-google"><span>Google</span></label>
+                <label class="adv-plt-check"><input type="checkbox" id="ac-yt"><span>YouTube</span></label>
+              </div>
+            </div>
+            <div class="adv-plt-group">
+              <div class="adv-plt-group-name">TikTok</div>
+              <div class="adv-plt-subs">
+                <label class="adv-plt-check"><input type="checkbox" id="ac-tk"><span>TikTok</span></label>
+              </div>
+            </div>
+            <div class="adv-plt-group">
+              <div class="adv-plt-group-name">LinkedIn</div>
+              <div class="adv-plt-subs">
+                <label class="adv-plt-check"><input type="checkbox" id="ac-li"><span>LinkedIn</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Data lancio</label>
+            <input class="form-inp" id="ac-lancio" type="date">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Data fine</label>
+            <input class="form-inp" id="ac-fine" type="date">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Link contenuto</label>
+          <input class="form-inp" id="ac-link" type="url" placeholder="https://…">
+        </div>
+      </div>
+      <!-- TAB COPY -->
+      <div class="tab-pane" id="ac-copy">
+        <div class="form-group">
+          <label class="form-label">Script / Copy annuncio</label>
+          <textarea class="form-ta" id="ac-script" style="min-height:120px" placeholder="Testo dello script o copy dell'ad…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Headline</label>
+          <input class="form-inp" id="ac-headline" placeholder="Titolo principale dell'annuncio">
+        </div>
+        <div class="form-group">
+          <label class="form-label">CTA (Call to Action)</label>
+          <input class="form-inp" id="ac-cta" placeholder="Es. Scopri di più, Iscriviti ora…">
+        </div>
+      </div>
+      <!-- TAB RISULTATI -->
+      <div class="tab-pane" id="ac-risultati">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Budget speso (€)</label>
+            <input class="form-inp" id="ac-budget" type="number" min="0" placeholder="0" oninput="advCalcCpr()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Impression</label>
+            <input class="form-inp" id="ac-imp" type="number" min="0" placeholder="0">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Click</label>
+            <input class="form-inp" id="ac-click" type="number" min="0" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label">CTR (%)</label>
+            <input class="form-inp" id="ac-ctr" type="number" min="0" step="0.1" placeholder="0.0">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Conversioni</label>
+            <input class="form-inp" id="ac-conv" type="number" min="0" placeholder="0" oninput="advCalcCpr()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Costo / Risultato (€)</label>
+            <input class="form-inp" id="ac-cpr" type="number" step="0.01" placeholder="Auto" readonly style="background:rgba(0,0,0,.03);color:var(--text-2)">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Rating campagna</label>
+          <div class="adv-rating-sel">
+            <div class="adv-rating-opt" id="advR-green" onclick="advSelRating('green')">🟢 Replica</div>
+            <div class="adv-rating-opt" id="advR-amber" onclick="advSelRating('amber')">🟡 Ottimizza</div>
+            <div class="adv-rating-opt" id="advR-red"   onclick="advSelRating('red')">🔴 Stop</div>
+          </div>
+          <input type="hidden" id="ac-rating">
+        </div>
+      </div>
+      <!-- TAB NOTE -->
+      <div class="tab-pane" id="ac-note">
+        <div class="form-group">
+          <label class="form-label">Cosa ha funzionato</label>
+          <textarea class="form-ta" id="ac-pos" style="min-height:80px" placeholder="Punti di forza di questa campagna…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cosa migliorare</label>
+          <textarea class="form-ta" id="ac-neg" style="min-height:80px" placeholder="Cosa cambieresti nella prossima…"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tag / etichette</label>
+          <input class="form-inp" id="ac-tags" placeholder="Es. corso, prodotto, lancio…">
+        </div>
+      </div>
+    </div>
+    <div style="padding:14px 20px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:10px">
+      <button class="btn-cancel" onclick="advCloseModal('advModalCamp')">Annulla</button>
+      <button class="btn-submit" style="flex:1" onclick="advSaveCamp()">Salva campagna</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL ADV IDEA ══ -->
+<div id="advModalIdea" onclick="if(event.target===this)advCloseModal('advModalIdea')" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1100;align-items:flex-end;justify-content:center">
+  <div style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:92vh;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+      <span style="font-size:16px;font-weight:700" id="advIdeaModalTitle">Nuova idea ADV</span>
+      <button onclick="advCloseModal('advModalIdea')" style="width:28px;height:28px;border-radius:50%;border:none;background:rgba(0,0,0,.06);cursor:pointer;display:flex;align-items:center;justify-content:center">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div style="padding:18px 20px;overflow-y:auto;flex:1">
+      <div class="form-group">
+        <label class="form-label">Titolo / Hook</label>
+        <input class="form-inp" id="ai-titolo" placeholder="Idea per la prossima campagna…">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descrizione</label>
+        <textarea class="form-ta" id="ai-contenuto" style="min-height:80px" placeholder="Descrivi l'idea, il formato, il target…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Link di riferimento</label>
+        <input class="form-inp" id="ai-link" type="url" placeholder="https://…">
+      </div>
+    </div>
+    <div style="padding:14px 20px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:10px">
+      <button class="btn-cancel" onclick="advCloseModal('advModalIdea')">Annulla</button>
+      <button class="btn-submit" style="flex:1" onclick="advSaveIdea()">Salva idea</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════════════════════════════════════
      JAVASCRIPT
 ══════════════════════════════════════════ -->
@@ -1856,11 +2254,11 @@ function buildCard(r) {
   ].join('');
   const next = nextSt(st), prev = prevSt(st);
   const caps = [
-    hasPl(r,'ig')       && r.did_ig      ? {cls:'p-ig', label:'Instagram',  val:r.did_ig}      : null,
-    hasPl(r,'tk')       && r.did_tk      ? {cls:'p-tk', label:'TikTok',     val:r.did_tk}      : null,
-    hasPl(r,'yt_long')  && r.did_yt_long ? {cls:'p-yt', label:'YouTube',    val:r.did_yt_long} : null,
-    hasPl(r,'shorts')   && r.did_shorts  ? {cls:'p-sh', label:'YT Shorts',  val:r.did_shorts}  : null,
-    hasPl(r,'linkedin') && r.did_li      ? {cls:'p-li', label:'LinkedIn',   val:r.did_li}      : null,
+    hasPl(r,'ig')       ? {cls:'p-ig', label:'Instagram',  val:r.did_ig      || ''} : null,
+    hasPl(r,'tk')       ? {cls:'p-tk', label:'TikTok',     val:r.did_tk      || ''} : null,
+    hasPl(r,'yt_long')  ? {cls:'p-yt', label:'YouTube',    val:r.did_yt_long || ''} : null,
+    hasPl(r,'shorts')   ? {cls:'p-sh', label:'YT Shorts',  val:r.did_shorts  || ''} : null,
+    hasPl(r,'linkedin') ? {cls:'p-li', label:'LinkedIn',   val:r.did_li      || ''} : null,
   ].filter(Boolean);
 
   return `
@@ -1906,7 +2304,7 @@ function buildCard(r) {
                 Copia
               </button>
             </div>
-            <div class="cap-text">${escH(c.val)}</div>
+            <div class="cap-text">${c.val ? escH(c.val) : '<em style="color:var(--text-3);font-size:11px">Nessuna caption inserita</em>'}</div>
           </div>`).join('')}
         </div>
       </div>` : ''}
@@ -2270,19 +2668,23 @@ function setView(v) {
   const noteEl   = document.getElementById('noteView');
   const adminEl  = document.getElementById('adminView');
   const notifEl  = document.getElementById('notifView');
+  const advEl    = document.getElementById('advView');
   const navNote  = document.getElementById('navNote');
   const navAdmin = document.getElementById('navAdmin');
   const navNotif = document.getElementById('navNotif');
+  const navAdv   = document.getElementById('navAdv');
   const bnNote   = document.getElementById('bnNote');
   const bnAdmin  = document.getElementById('bnAdmin');
+  const advTabBtn = document.getElementById('advTabBtn');
 
   // Reset tutti
-  [navGrid, navNote, navAdmin, navNotif].forEach(b => b && b.classList.remove('on'));
+  [navGrid, navNote, navAdmin, navNotif, navAdv].forEach(b => b && b.classList.remove('on'));
   [nbGrid, bnNote, bnAdmin].forEach(b => b && b.classList.remove('on'));
+  if (advTabBtn) advTabBtn.classList.remove('on');
   vGrid.classList.remove('on'); vCal.classList.remove('on');
   gridEl.style.display = 'none'; calEl.classList.remove('visible');
   noteEl.style.display = 'none'; adminEl.style.display = 'none';
-  notifEl.style.display = 'none';
+  notifEl.style.display = 'none'; advEl.style.display = 'none';
   document.getElementById('chipsEl').style.display = 'none';
   document.getElementById('statsEl').style.display = 'none';
   document.querySelector('.sec-row').style.display = 'none';
@@ -2341,6 +2743,14 @@ function setView(v) {
     document.querySelector('.sec-row').style.display = 'flex';
     if (newBtn) newBtn.style.display = 'none';
     loadNotifications();
+  } else if (v === 'adv') {
+    advEl.style.display = 'block';
+    navAdv && navAdv.classList.add('on');
+    if (advTabBtn) advTabBtn.classList.add('on');
+    secTitle.textContent = 'ADV';
+    document.querySelector('.sec-row').style.display = 'flex';
+    if (newBtn) newBtn.style.display = 'none';
+    advRenderAll();
   }
 }
 
@@ -2348,8 +2758,10 @@ document.getElementById('vGrid').addEventListener('click', () => setView('grid')
 document.getElementById('vCal').addEventListener('click',  () => setView('cal'));
 document.getElementById('navGrid') && document.getElementById('navGrid').addEventListener('click', () => setView('grid'));
 document.getElementById('navNote') && document.getElementById('navNote').addEventListener('click', () => setView('notes'));
+document.getElementById('navAdv')  && document.getElementById('navAdv').addEventListener('click',  () => setView('adv'));
 document.getElementById('bnGrid')  && document.getElementById('bnGrid').addEventListener('click',  () => setView('grid'));
 document.getElementById('bnNote')  && document.getElementById('bnNote').addEventListener('click',  () => setView('notes'));
+document.getElementById('advTabBtn') && document.getElementById('advTabBtn').addEventListener('click', () => setView('adv'));
 
 // ─── REFRESH ─────────────────────────────────
 function doRefresh() {
@@ -3959,6 +4371,559 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
     document.getElementById('loginScreen').classList.add('visible');
   }
 })();
+
+// ═══════════════════════════════════════════════
+// ── ADV MODULE ──────────────────────────────────
+// ═══════════════════════════════════════════════
+(function() {
+  /* ─── Constants ─── */
+  const ADV_STATI = { idea:'Idea', lav:'In lavorazione', pub:'Pubblicato', con:'Concluso' };
+  const ADV_STATI_CLS = { idea:'adv-s-idea', lav:'adv-s-lav', pub:'adv-s-pub', con:'adv-s-con' };
+  const ADV_RATING_LBL = { green:'🟢 Replica', amber:'🟡 Ottimizza', red:'🔴 Stop' };
+  const ADV_RATING_CLS = { green:'adv-r-green', amber:'adv-r-amber', red:'adv-r-red' };
+  const ADV_PLT_LBL = { ig:'IG', fb:'FB', yt:'YT', google:'Goo', tk:'TK', li:'LI' };
+  const ADV_PLT_CLS = { ig:'adv-plt-ig', fb:'adv-plt-fb', yt:'adv-plt-yt', google:'adv-plt-google', tk:'adv-plt-tk', li:'adv-plt-li' };
+  const LS_CAMPS  = 'calenda_adv_campaigns';
+  const LS_IDEAS  = 'calenda_adv_ideas';
+  const LS_CHATS  = 'calenda_adv_chats';
+
+  /* ─── State ─── */
+  let advCampaigns = [], advIdeas = [], advChats = {};
+  let advEditingCampId = null, advEditingIdeaId = null;
+  let advCurrentRating = null;
+  let advMainView = 'campagne';
+  let advCurrentPeriod = 'all';
+  let advFStato = 'all', advFRating = 'all', advFPiatt = 'all';
+
+  /* ─── Persistence ─── */
+  function advLoad() {
+    try {
+      advCampaigns = JSON.parse(localStorage.getItem(LS_CAMPS) || '[]');
+      advIdeas     = JSON.parse(localStorage.getItem(LS_IDEAS) || '[]');
+      advChats     = JSON.parse(localStorage.getItem(LS_CHATS) || '{}');
+    } catch(e) { advCampaigns = []; advIdeas = []; advChats = {}; }
+    // Seed mock data se vuoti
+    if (!advCampaigns.length && !advIdeas.length) advSeedMock();
+  }
+  function advSave() {
+    localStorage.setItem(LS_CAMPS, JSON.stringify(advCampaigns));
+    localStorage.setItem(LS_IDEAS, JSON.stringify(advIdeas));
+    localStorage.setItem(LS_CHATS, JSON.stringify(advChats));
+  }
+  function advSeedMock() {
+    const now = new Date();
+    const d = (daysAgo) => { const d = new Date(now); d.setDate(d.getDate()-daysAgo); return d.toISOString().slice(0,10); };
+    advCampaigns = [
+      { id: 1001, titolo:'Hai 70k follower ma nessuno compra?', formato:'Video', stato:'con', piattaforme:['ig','fb'], obiettivo:'Conversioni', lancio:d(30), fine:d(23), budget:120, imp:45000, click:1800, ctr:4, conv:38, cpr:3.16, rating:'green', script:'Hook: Stai investendo ore sui social ma i tuoi follower non comprano nulla?\nAgita: Il problema non sono i follower, è il messaggio sbagliato.\nSoluzione: In questo video ti mostro come trasformare follower in clienti con 3 cambiamenti nel copy.', headline:'Trasforma follower in clienti', cta:'Scopri come', pos:'Ottimo CPR, hook molto forte', neg:'Testare audience fredda', tags:'corso, copy' },
+      { id: 1002, titolo:'Errore #1 degli imprenditori sui social', formato:'Video', stato:'con', piattaforme:['ig'], obiettivo:'Traffico', lancio:d(20), fine:d(13), budget:80, imp:22000, click:880, ctr:4, conv:0, cpr:null, rating:'amber', script:'Hook: Se stai facendo questo errore, stai buttando soldi in ADV.', headline:'Smetti di fare questo errore', cta:'Leggi di più', pos:'Buone impression', neg:'CTR basso, copy da rivedere', tags:'social, errori' },
+      { id: 1003, titolo:'3 tool che uso ogni giorno per crescere', formato:'Grafico', stato:'pub', piattaforme:['google','yt'], obiettivo:'Lead', lancio:d(7), fine:null, budget:60, imp:0, click:0, ctr:0, conv:0, cpr:null, rating:null, script:'', headline:'I miei 3 tool segreti', cta:'Scarica la lista', pos:'', neg:'', tags:'tool, produttività' },
+      { id: 1004, titolo:'Offerta lancio — corso pricing', formato:'Video', stato:'idea', piattaforme:['tk'], obiettivo:'Vendite', lancio:null, fine:null, budget:0, imp:0, click:0, ctr:0, conv:0, cpr:null, rating:null, script:'', headline:'', cta:'', pos:'', neg:'', tags:'' },
+    ];
+    advIdeas = [
+      { id: 2001, titolo:'Ad con testimonianza cliente', contenuto:'Usare il video di Marco che racconta la sua trasformazione. Obiettivo: awareness + conversioni. Target: imprenditori 25-45.', link:'', realizzata:false, createdAt:new Date(now.getTime()-86400000*3).toISOString() },
+      { id: 2002, titolo:'Carousel "5 motivi per cui non vendi"', contenuto:'Carosello IG con 5 slide. Ogni slide un errore comune. CTA finale: prenota una call.', link:'', realizzata:false, createdAt:new Date(now.getTime()-86400000*7).toISOString() },
+    ];
+    advSave();
+  }
+
+  /* ─── Init ─── */
+  window.advRenderAll = function() {
+    advLoad();
+    advRenderStats();
+    advRenderFilters();
+    advRenderCards();
+    advRenderIdee();
+  };
+
+  /* ─── Main view toggle ─── */
+  window.advSetMainView = function(view) {
+    advMainView = view;
+    document.getElementById('advCampagneView').style.display = view === 'campagne' ? 'block' : 'none';
+    document.getElementById('advIdeeView').style.display = view === 'idee' ? 'block' : 'none';
+    document.getElementById('advTabCamp').classList.toggle('on', view === 'campagne');
+    document.getElementById('advTabIdee').classList.toggle('on', view === 'idee');
+    const newBtn = document.getElementById('newBtn');
+    if (newBtn) {
+      newBtn.style.display = 'flex';
+      newBtn.textContent = view === 'campagne' ? '+ Campagna' : '+ Idea ADV';
+      newBtn.onclick = view === 'campagne' ? advOpenNewCamp : advOpenNewIdea;
+    }
+  };
+
+  /* ─── Period ─── */
+  window.advSetPeriod = function(p) {
+    advCurrentPeriod = p;
+    ['all','7','30','custom'].forEach(k => {
+      const el = document.getElementById('advPo-' + k);
+      if (el) el.classList.toggle('on', String(p) === k);
+    });
+    const cr = document.getElementById('advCustomRange');
+    if (cr) cr.classList.toggle('show', p === 'custom');
+    advRenderStats();
+  };
+
+  function advGetCampsInPeriod() {
+    if (advCurrentPeriod === 'all') return advCampaigns;
+    const now = new Date();
+    let from, to = now;
+    if (advCurrentPeriod === 'custom') {
+      const f = document.getElementById('advPeriodFrom')?.value;
+      const t = document.getElementById('advPeriodTo')?.value;
+      if (!f || !t) return advCampaigns;
+      from = new Date(f); to = new Date(t); to.setHours(23,59,59);
+    } else {
+      from = new Date(now.getTime() - advCurrentPeriod * 86400000);
+    }
+    return advCampaigns.filter(c => {
+      if (!c.lancio) return false;
+      const d = new Date(c.lancio);
+      return d >= from && d <= to;
+    });
+  }
+
+  /* ─── Stats ─── */
+  window.advRenderStats = function() {
+    const inPeriod = advGetCampsInPeriod();
+    const budget = inPeriod.filter(i => i.budget).reduce((s, i) => s + (parseFloat(i.budget) || 0), 0);
+    const concl  = advCampaigns.filter(i => i.stato === 'con').length;
+    const green  = advCampaigns.filter(i => i.rating === 'green').length;
+    const sBudget = document.getElementById('advSBudget');
+    const sConcl  = document.getElementById('advSConcl');
+    const sGreen  = document.getElementById('advSGreen');
+    const sPeriod = document.getElementById('advSPeriodLabel');
+    if (sBudget) sBudget.textContent = budget;
+    if (sConcl)  sConcl.textContent  = concl;
+    if (sGreen)  sGreen.textContent  = green;
+    const periodLabels = { all:'totale', 7:'ultimi 7g', 30:'ultimi 30g', custom:'periodo selezionato' };
+    if (sPeriod) sPeriod.textContent = periodLabels[advCurrentPeriod] || 'periodo';
+  };
+
+  /* ─── Filters ─── */
+  window.advRenderFilters = function() {
+    const so = [['all','Tutte'], ...Object.entries(ADV_STATI)];
+    const fcS = document.getElementById('advFcStato');
+    if (fcS) fcS.innerHTML = so.map(([k,l]) => `<div class="chip${advFStato===k?' on':''}" style="cursor:pointer" onclick="advSetF('stato','${k}')">${l}</div>`).join('');
+    const ro = [['all','Tutti'],['green','🟢'],['amber','🟡'],['red','🔴']];
+    const fcR = document.getElementById('advFcRating');
+    if (fcR) fcR.innerHTML = ro.map(([k,l]) => `<div class="chip${advFRating===k?' on':''}" style="cursor:pointer" onclick="advSetF('rating','${k}')">${l}</div>`).join('');
+    const po = [['all','Tutte'],['ig','IG'],['fb','FB'],['yt','YT'],['google','Google'],['tk','TK'],['li','LI']];
+    const fcP = document.getElementById('advFcPiatt');
+    if (fcP) fcP.innerHTML = po.map(([k,l]) => `<div class="chip${advFPiatt===k?' on':''}" style="cursor:pointer" onclick="advSetF('piatt','${k}')">${l}</div>`).join('');
+    const btn = document.getElementById('advFilterBtn');
+    if (btn) btn.classList.toggle('active', advFStato !== 'all' || advFRating !== 'all' || advFPiatt !== 'all');
+  };
+  window.advSetF = function(t, v) {
+    if (t === 'stato')  advFStato  = advFStato  === v ? 'all' : v;
+    if (t === 'rating') advFRating = advFRating === v ? 'all' : v;
+    if (t === 'piatt')  advFPiatt  = advFPiatt  === v ? 'all' : v;
+    advRenderFilters(); advRenderCards();
+  };
+  window.advToggleFilterPanel = function(e) {
+    e.stopPropagation();
+    document.getElementById('advFilterPanel')?.classList.toggle('open');
+  };
+  document.addEventListener('click', e => {
+    const p = document.getElementById('advFilterPanel');
+    if (p && p.classList.contains('open') && !p.contains(e.target)) p.classList.remove('open');
+  });
+
+  /* ─── Campaign Cards ─── */
+  function advFiltered() {
+    return advCampaigns.filter(i => {
+      if (advFStato  !== 'all' && i.stato     !== advFStato)  return false;
+      if (advFRating !== 'all' && i.rating    !== advFRating) return false;
+      if (advFPiatt  !== 'all' && !i.piattaforme?.includes(advFPiatt)) return false;
+      return true;
+    });
+  }
+
+  window.advRenderCards = function() {
+    const list  = advFiltered();
+    const grid  = document.getElementById('advCardsGrid');
+    const empty = document.getElementById('advEmptyEl');
+    if (!grid) return;
+    if (!list.length) { grid.innerHTML = ''; if (empty) empty.style.display = 'block'; return; }
+    if (empty) empty.style.display = 'none';
+    grid.innerHTML = list.map(item => {
+      const plts = (item.piattaforme||[]).map(p => `<span class="adv-plt ${ADV_PLT_CLS[p]||''}">${ADV_PLT_LBL[p]||p}</span>`).join('');
+      const rb   = item.rating ? `<span class="${ADV_RATING_CLS[item.rating]}">${ADV_RATING_LBL[item.rating]}</span>` : '';
+      const hasData = item.budget || item.imp || item.conv;
+      const metrics = hasData ? `<div class="adv-card-metrics">
+        ${item.budget ? `<div class="adv-metric"><div class="adv-metric-label">Budget</div><div class="adv-metric-value">€${item.budget}</div></div>` : ''}
+        ${item.imp    ? `<div class="adv-metric"><div class="adv-metric-label">Imp.</div><div class="adv-metric-value">${(item.imp/1000).toFixed(0)}k</div></div>` : ''}
+        ${item.conv   ? `<div class="adv-metric"><div class="adv-metric-label">Conv.</div><div class="adv-metric-value">${item.conv}</div></div>` : ''}
+        ${item.cpr    ? `<div class="adv-metric"><div class="adv-metric-label">CPR</div><div class="adv-metric-value">€${item.cpr}</div></div>` : ''}
+      </div>` : `<div class="adv-no-data">Nessun dato ancora</div>`;
+      const replicaBtn = item.rating === 'green' ? `<button class="adv-btn-replica" onclick="advReplicaCamp(event,${item.id})">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V4h12"/></svg>Replica</button>` : '';
+      return `<div class="adv-card" onclick="advOpenDetail(event,${item.id})">
+        <div class="adv-card-top"><div class="adv-card-badges">
+          <span class="adv-badge-fmt">${item.formato||'—'}</span>
+          <span class="${ADV_STATI_CLS[item.stato]||''}">${ADV_STATI[item.stato]||item.stato}</span>
+        </div>${rb}</div>
+        <div class="adv-card-title">${item.titolo}</div>
+        <div class="adv-card-plats">${plts}</div>
+        ${metrics}
+        <div class="adv-card-foot">
+          <span class="adv-btn-link">Dettaglio →</span>
+          <div class="adv-card-actions">
+            ${replicaBtn}
+            <button class="adv-btn-del-sm" onclick="advConfirmDel(event,'camp',${item.id})">Elimina</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  };
+
+  /* ─── Idea Cards ─── */
+  window.advRenderIdee = function() {
+    const grid  = document.getElementById('advIdeeGrid');
+    const empty = document.getElementById('advIdeaEmptyEl');
+    if (!grid) return;
+    if (!advIdeas.length) { grid.innerHTML = ''; if (empty) empty.style.display = 'block'; return; }
+    if (empty) empty.style.display = 'none';
+    grid.innerHTML = advIdeas.map(idea => {
+      const ago = advTimeAgo(idea.createdAt);
+      const realBadge = idea.realizzata ? `<span class="adv-badge-real">✓ Realizzata</span>` : '';
+      const toCampBtn = !idea.realizzata ? `<button class="adv-btn-to-camp" onclick="advIdeaToCamp(event,${idea.id})">→ Campagna</button>` : '';
+      const chatCount = (advChats[idea.id] || []).length;
+      return `<div class="adv-idea-card${idea.realizzata?' realizzata':''}" id="advIdea_${idea.id}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px">
+          <div class="adv-idea-title">${idea.titolo}</div>
+          ${realBadge}
+        </div>
+        <div class="adv-idea-body">${idea.contenuto||''}</div>
+        ${idea.link ? `<a href="${idea.link}" target="_blank" style="font-size:12px;color:#1d4ed8;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:block">${idea.link.replace(/^https?:\/\//,'').slice(0,50)}</a>` : ''}
+        <div class="adv-idea-foot">
+          <span class="adv-idea-meta">${ago}</span>
+          <div class="adv-card-actions">
+            ${toCampBtn}
+            <button class="adv-btn-edit-sm" onclick="advOpenEditIdea(event,${idea.id})">Modifica</button>
+            <button class="note-btn" onclick="advToggleChat(event,${idea.id})" style="color:#6366f1;border-color:#c7d2fe">💬 ${chatCount||''} Chat</button>
+            <button class="adv-btn-del-sm" onclick="advConfirmDel(event,'idea',${idea.id})">Elimina</button>
+          </div>
+        </div>
+        <!-- CHAT -->
+        <div class="adv-idea-chat" id="advChat_${idea.id}" style="display:none">
+          <div class="adv-chat-list" id="advChatList_${idea.id}"></div>
+          <div class="adv-chat-input-row">
+            <input class="adv-chat-inp" id="advChatInp_${idea.id}" placeholder="Scrivi un messaggio…" type="text"
+              onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();advSendChat(${idea.id});}">
+            <button class="adv-chat-send" onclick="advSendChat(${idea.id})">Invia</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  };
+
+  /* ─── Chat ─── */
+  window.advToggleChat = function(e, ideaId) {
+    e.stopPropagation();
+    const panel = document.getElementById('advChat_' + ideaId);
+    if (!panel) return;
+    const isOpen = panel.style.display !== 'none';
+    panel.style.display = isOpen ? 'none' : 'block';
+    if (!isOpen) advRenderChatMessages(ideaId);
+  };
+
+  function advRenderChatMessages(ideaId) {
+    const msgs  = advChats[ideaId] || [];
+    const listEl = document.getElementById('advChatList_' + ideaId);
+    if (!listEl) return;
+    const myName = (typeof currentProfile !== 'undefined' && currentProfile?.nome) || 'Tu';
+    listEl.innerHTML = msgs.map(m => {
+      const isMine = m.author === myName;
+      const initials = (m.author||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+      return `<div class="adv-chat-bubble${isMine?' mine':''}">
+        <div class="adv-chat-avatar">${initials}</div>
+        <div class="adv-chat-content">
+          <div class="adv-chat-author">${m.author}</div>
+          <div class="adv-chat-text">${m.testo}</div>
+          <div class="adv-chat-time">${advTimeAgo(m.at)}</div>
+        </div>
+      </div>`;
+    }).join('');
+    listEl.scrollTop = listEl.scrollHeight;
+  }
+
+  window.advSendChat = function(ideaId) {
+    const inp = document.getElementById('advChatInp_' + ideaId);
+    const testo = inp?.value.trim();
+    if (!testo) return;
+    const myName = (typeof currentProfile !== 'undefined' && currentProfile?.nome) || 'Tu';
+    if (!advChats[ideaId]) advChats[ideaId] = [];
+    advChats[ideaId].push({ author: myName, testo, at: new Date().toISOString() });
+    inp.value = '';
+    advSave();
+    advRenderChatMessages(ideaId);
+    advRenderIdee(); // update chat count
+    // re-show chat panel
+    const panel = document.getElementById('advChat_' + ideaId);
+    if (panel) { panel.style.display = 'block'; advRenderChatMessages(ideaId); }
+  };
+
+  /* ─── Delete ─── */
+  window.advConfirmDel = function(e, type, id) {
+    e.stopPropagation();
+    if (!confirm('Eliminare questo elemento?')) return;
+    if (type === 'camp') {
+      advCampaigns = advCampaigns.filter(c => c.id !== id);
+    } else {
+      advIdeas = advIdeas.filter(i => i.id !== id);
+      delete advChats[id];
+    }
+    advSave();
+    advRenderStats(); advRenderFilters(); advRenderCards(); advRenderIdee();
+  };
+
+  /* ─── Campaign Modal ─── */
+  window.advOpenNewCamp = function() {
+    advEditingCampId = null; advCurrentRating = null;
+    advClearCampForm();
+    document.getElementById('advCampModalTitle').textContent = 'Nuova campagna ADV';
+    advShowModal('advModalCamp');
+  };
+
+  window.advOpenDetail = function(e, id) {
+    e.stopPropagation();
+    const c = advCampaigns.find(x => x.id === id);
+    if (!c) return;
+    advEditingCampId = id;
+    document.getElementById('advCampModalTitle').textContent = c.titolo;
+    document.getElementById('ac-titolo').value   = c.titolo||'';
+    document.getElementById('ac-formato').value  = c.formato||'';
+    document.getElementById('ac-stato').value    = c.stato||'idea';
+    document.getElementById('ac-obiettivo').value = c.obiettivo||'';
+    document.querySelectorAll('#advObjSel .adv-obj-opt').forEach(el => el.classList.toggle('on', el.textContent === c.obiettivo));
+    ['ig','fb','yt','google','tk','li'].forEach(p => {
+      const el = document.getElementById('ac-'+p);
+      if (el) el.checked = (c.piattaforme||[]).includes(p);
+    });
+    document.getElementById('ac-lancio').value   = c.lancio||'';
+    document.getElementById('ac-fine').value     = c.fine||'';
+    document.getElementById('ac-link').value     = c.link||'';
+    document.getElementById('ac-script').value   = c.script||'';
+    document.getElementById('ac-headline').value = c.headline||'';
+    document.getElementById('ac-cta').value      = c.cta||'';
+    document.getElementById('ac-budget').value   = c.budget||'';
+    document.getElementById('ac-imp').value      = c.imp||'';
+    document.getElementById('ac-click').value    = c.click||'';
+    document.getElementById('ac-ctr').value      = c.ctr||'';
+    document.getElementById('ac-conv').value     = c.conv||'';
+    document.getElementById('ac-cpr').value      = c.cpr||'';
+    document.getElementById('ac-pos').value      = c.pos||'';
+    document.getElementById('ac-neg').value      = c.neg||'';
+    document.getElementById('ac-tags').value     = c.tags||'';
+    advCurrentRating = c.rating||null;
+    ['green','amber','red'].forEach(r => {
+      const el = document.getElementById('advR-'+r);
+      if (el) el.className = 'adv-rating-opt' + (r === advCurrentRating ? ' on-'+r : '');
+    });
+    document.getElementById('ac-rating').value = advCurrentRating||'';
+    advShowModal('advModalCamp');
+  };
+
+  window.advReplicaCamp = function(e, id) {
+    e.stopPropagation();
+    const c = advCampaigns.find(x => x.id === id);
+    if (!c) return;
+    advEditingCampId = null; advCurrentRating = null;
+    document.getElementById('advCampModalTitle').textContent = 'Replica — ' + c.titolo;
+    document.getElementById('ac-titolo').value   = c.titolo + ' (replica)';
+    document.getElementById('ac-formato').value  = c.formato||'';
+    document.getElementById('ac-stato').value    = 'idea';
+    document.getElementById('ac-obiettivo').value = c.obiettivo||'';
+    document.querySelectorAll('#advObjSel .adv-obj-opt').forEach(el => el.classList.toggle('on', el.textContent === c.obiettivo));
+    ['ig','fb','yt','google','tk','li'].forEach(p => {
+      const el = document.getElementById('ac-'+p);
+      if (el) el.checked = (c.piattaforme||[]).includes(p);
+    });
+    ['ac-lancio','ac-fine','ac-link','ac-budget','ac-imp','ac-click','ac-ctr','ac-conv','ac-cpr','ac-pos','ac-neg'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    document.getElementById('ac-script').value   = c.script||'';
+    document.getElementById('ac-headline').value = c.headline||'';
+    document.getElementById('ac-cta').value      = c.cta||'';
+    document.getElementById('ac-tags').value     = c.tags||'';
+    ['green','amber','red'].forEach(r => { const el = document.getElementById('advR-'+r); if(el) el.className='adv-rating-opt'; });
+    document.getElementById('ac-rating').value = '';
+    advShowModal('advModalCamp');
+  };
+
+  function advClearCampForm() {
+    ['ac-titolo','ac-formato','ac-stato','ac-obiettivo','ac-lancio','ac-fine','ac-link',
+     'ac-script','ac-headline','ac-cta','ac-budget','ac-imp','ac-click','ac-ctr','ac-conv','ac-cpr',
+     'ac-pos','ac-neg','ac-tags','ac-rating'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    ['ig','fb','yt','google','tk','li'].forEach(p => {
+      const el = document.getElementById('ac-'+p); if (el) el.checked = false;
+    });
+    document.querySelectorAll('#advObjSel .adv-obj-opt').forEach(el => el.classList.remove('on'));
+    ['green','amber','red'].forEach(r => { const el = document.getElementById('advR-'+r); if(el) el.className='adv-rating-opt'; });
+    document.getElementById('ac-stato').value = 'idea';
+  }
+
+  window.advSelObj = function(el, val) {
+    document.querySelectorAll('#advObjSel .adv-obj-opt').forEach(e => e.classList.remove('on'));
+    el.classList.add('on');
+    document.getElementById('ac-obiettivo').value = val;
+  };
+
+  window.advSelRating = function(r) {
+    advCurrentRating = r;
+    ['green','amber','red'].forEach(k => {
+      const el = document.getElementById('advR-'+k);
+      if (el) el.className = 'adv-rating-opt' + (k === r ? ' on-'+k : '');
+    });
+    document.getElementById('ac-rating').value = r;
+  };
+
+  window.advCalcCpr = function() {
+    const b = parseFloat(document.getElementById('ac-budget')?.value)||0;
+    const c = parseInt(document.getElementById('ac-conv')?.value)||0;
+    const el = document.getElementById('ac-cpr');
+    if (el) el.value = (b > 0 && c > 0) ? (b/c).toFixed(2) : '';
+  };
+
+  window.advSaveCamp = function() {
+    const titolo = document.getElementById('ac-titolo')?.value.trim();
+    if (!titolo) { alert('Inserisci un titolo'); return; }
+    const piattaforme = ['ig','fb','yt','google','tk','li'].filter(p => document.getElementById('ac-'+p)?.checked);
+    const n = {
+      id:          advEditingCampId || (Date.now()),
+      titolo,
+      formato:     document.getElementById('ac-formato').value,
+      stato:       document.getElementById('ac-stato').value,
+      obiettivo:   document.getElementById('ac-obiettivo').value,
+      piattaforme,
+      lancio:      document.getElementById('ac-lancio').value||null,
+      fine:        document.getElementById('ac-fine').value||null,
+      link:        document.getElementById('ac-link').value||'',
+      script:      document.getElementById('ac-script').value||'',
+      headline:    document.getElementById('ac-headline').value||'',
+      cta:         document.getElementById('ac-cta').value||'',
+      budget:      parseFloat(document.getElementById('ac-budget').value)||0,
+      imp:         parseInt(document.getElementById('ac-imp').value)||0,
+      click:       parseInt(document.getElementById('ac-click').value)||0,
+      ctr:         parseFloat(document.getElementById('ac-ctr').value)||0,
+      conv:        parseInt(document.getElementById('ac-conv').value)||0,
+      cpr:         parseFloat(document.getElementById('ac-cpr').value)||null,
+      rating:      document.getElementById('ac-rating').value||null,
+      pos:         document.getElementById('ac-pos').value||'',
+      neg:         document.getElementById('ac-neg').value||'',
+      tags:        document.getElementById('ac-tags').value||'',
+    };
+    if (advEditingCampId) {
+      const idx = advCampaigns.findIndex(c => c.id === advEditingCampId);
+      if (idx >= 0) advCampaigns[idx] = n;
+    } else {
+      advCampaigns.unshift(n);
+    }
+    advSave();
+    advCloseModal('advModalCamp');
+    advRenderStats(); advRenderFilters(); advRenderCards();
+  };
+
+  /* ─── Tab switching in modal ─── */
+  window.advSwitchTab = function(tab) {
+    ['idea','copy','risultati','note'].forEach(t => {
+      const pane = document.getElementById('ac-' + t);
+      const btn  = document.querySelector(`[data-adv-tab="ac-${t}"]`);
+      if (pane) pane.classList.toggle('on', t === tab);
+      if (btn)  btn.classList.toggle('on', t === tab);
+    });
+  };
+
+  /* ─── Idea Modal ─── */
+  window.advOpenNewIdea = function() {
+    advEditingIdeaId = null;
+    ['ai-titolo','ai-contenuto','ai-link'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    document.getElementById('advIdeaModalTitle').textContent = 'Nuova idea ADV';
+    advShowModal('advModalIdea');
+  };
+
+  window.advOpenEditIdea = function(e, id) {
+    e.stopPropagation();
+    const idea = advIdeas.find(i => i.id === id);
+    if (!idea) return;
+    advEditingIdeaId = id;
+    document.getElementById('ai-titolo').value   = idea.titolo||'';
+    document.getElementById('ai-contenuto').value = idea.contenuto||'';
+    document.getElementById('ai-link').value     = idea.link||'';
+    document.getElementById('advIdeaModalTitle').textContent = 'Modifica idea';
+    advShowModal('advModalIdea');
+  };
+
+  window.advSaveIdea = function() {
+    const titolo = document.getElementById('ai-titolo')?.value.trim();
+    if (!titolo) { alert('Inserisci un titolo'); return; }
+    if (advEditingIdeaId) {
+      const idea = advIdeas.find(i => i.id === advEditingIdeaId);
+      if (idea) {
+        idea.titolo    = titolo;
+        idea.contenuto = document.getElementById('ai-contenuto').value;
+        idea.link      = document.getElementById('ai-link').value||'';
+      }
+    } else {
+      advIdeas.unshift({ id: Date.now(), titolo,
+        contenuto: document.getElementById('ai-contenuto').value,
+        link: document.getElementById('ai-link').value||'',
+        realizzata: false, createdAt: new Date().toISOString() });
+    }
+    advSave();
+    advCloseModal('advModalIdea');
+    advRenderIdee();
+  };
+
+  /* ─── Idea → Campaign ─── */
+  window.advIdeaToCamp = function(e, id) {
+    e.stopPropagation();
+    const idea = advIdeas.find(i => i.id === id);
+    if (!idea) return;
+    advEditingCampId = null; advCurrentRating = null;
+    advClearCampForm();
+    document.getElementById('advCampModalTitle').textContent = 'Da idea: ' + idea.titolo;
+    document.getElementById('ac-titolo').value  = idea.titolo;
+    document.getElementById('ac-script').value  = idea.contenuto||'';
+    document.getElementById('ac-link').value    = idea.link||'';
+    advCloseModal('advModalIdea');
+    advShowModal('advModalCamp');
+    // Mark idea as realizzata on save
+    const origSave = window.advSaveCamp;
+    window.advSaveCamp = function() {
+      origSave();
+      const i = advIdeas.find(x => x.id === id);
+      if (i) { i.realizzata = true; advSave(); advRenderIdee(); }
+      window.advSaveCamp = origSave;
+    };
+  };
+
+  /* ─── Modal helpers ─── */
+  window.advShowModal = function(id) {
+    const el = document.getElementById(id);
+    if (el) { el.style.display = 'flex'; }
+  };
+  window.advCloseModal = function(id) {
+    const el = document.getElementById(id);
+    if (el) { el.style.display = 'none'; }
+  };
+
+  /* ─── Helper: time ago ─── */
+  function advTimeAgo(iso) {
+    if (!iso) return '';
+    const diff = Date.now() - new Date(iso).getTime();
+    const m = Math.floor(diff/60000), h = Math.floor(m/60), d = Math.floor(h/24);
+    if (d > 0)  return d === 1 ? 'ieri' : d + ' giorni fa';
+    if (h > 0)  return h + 'h fa';
+    if (m > 0)  return m + 'min fa';
+    return 'adesso';
+  }
+
+  /* ─── Escape for Keyword ─── */
+  window.advEsc = function(s) { return String(s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;'); };
+
+})(); // end ADV module
 </script>
 </body>
 </html>
