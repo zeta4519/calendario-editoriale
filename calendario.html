@@ -2089,7 +2089,7 @@ const getSt  = r  => getOverrides()[r.id] || normalizeStato(r.stato) || 'Da Regi
 const stInfo = k  => STS.find(s => s.key === k) || STS[0];
 const nextSt = k  => { const i = STS.findIndex(s => s.key === k); return i < STS.length-1 ? STS[i+1].key : null; };
 const prevSt = k  => { const i = STS.findIndex(s => s.key === k); return i > 0 ? STS[i-1].key : null; };
-const hasPl  = (r,p) => { const v = r[p]; if (v === true) return true; if (!v) return false; return ['sì','si','1','x','yes','✓','v','true'].includes(String(v).toLowerCase().trim()); };
+const hasPl  = (r,p) => { const v = r[p]; if (v === true || v === 'true') return true; if (!v) return false; return ['sì','si','1','x','yes','✓','v','true'].includes(String(v).toLowerCase().trim()); };
 const escH   = s  => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const escA   = s  => (s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 
@@ -2688,7 +2688,12 @@ function setView(v) {
   document.getElementById('chipsEl').style.display = 'none';
   document.getElementById('statsEl').style.display = 'none';
   document.querySelector('.sec-row').style.display = 'none';
+  document.getElementById('viewToggle').style.display = '';
   const newBtn = document.getElementById('newBtn');
+  if (newBtn) {
+    newBtn.onclick = null;
+    newBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg> Nuovo';
+  }
 
   if (v === 'grid') {
     gridEl.style.display = 'block';
@@ -2726,6 +2731,7 @@ function setView(v) {
     bnNote && bnNote.classList.add('on');
     secTitle.textContent = 'Idee';
     document.querySelector('.sec-row').style.display = 'flex';
+    document.getElementById('viewToggle').style.display = 'none';
     if (newBtn) newBtn.style.display = 'none';
     renderNotes();
   } else if (v === 'admin') {
@@ -2734,6 +2740,7 @@ function setView(v) {
     bnAdmin && bnAdmin.classList.add('on');
     secTitle.textContent = 'Gestione Clienti';
     document.querySelector('.sec-row').style.display = 'flex';
+    document.getElementById('viewToggle').style.display = 'none';
     if (newBtn) newBtn.style.display = 'none';
     loadClients();
   } else if (v === 'notif') {
@@ -2741,6 +2748,7 @@ function setView(v) {
     navNotif && navNotif.classList.add('on');
     secTitle.textContent = 'Notifiche';
     document.querySelector('.sec-row').style.display = 'flex';
+    document.getElementById('viewToggle').style.display = 'none';
     if (newBtn) newBtn.style.display = 'none';
     loadNotifications();
   } else if (v === 'adv') {
@@ -2748,8 +2756,8 @@ function setView(v) {
     navAdv && navAdv.classList.add('on');
     if (advTabBtn) advTabBtn.classList.add('on');
     secTitle.textContent = 'ADV';
-    document.querySelector('.sec-row').style.display = 'flex';
-    if (newBtn) newBtn.style.display = 'none';
+    document.querySelector('.sec-row').style.display = 'none';
+    document.getElementById('viewToggle').style.display = 'none';
     advRenderAll();
   }
 }
@@ -2857,7 +2865,12 @@ function syncCapGroups(prefix) {
   document.getElementById(id)?.addEventListener('change', () => syncCapGroups('ed'));
 });
 
-document.getElementById('newBtn').addEventListener('click', openNewModal);
+document.getElementById('newBtn').addEventListener('click', function() {
+  // Se siamo in vista ADV, non aprire il modal contenuti (il onclick dinamico gestisce l'ADV)
+  const advEl = document.getElementById('advView');
+  if (advEl && advEl.style.display === 'block') return;
+  openNewModal();
+});
 document.getElementById('modalNewClose').addEventListener('click', closeNewModal);
 document.getElementById('modalNewCancel').addEventListener('click', closeNewModal);
 document.getElementById('modalNew').addEventListener('click', e => {
@@ -3726,7 +3739,7 @@ async function generateNextId() {
 
 function sbBool(v) {
   if (v === true) return 'Sì';
-  if (typeof v === 'string' && ['sì','si','1','x','yes','✓','v','true'].includes(v.toLowerCase().trim())) return 'Sì';
+  if (typeof v === 'string' && ['sì','si','1','x','yes','✓','v','true','t'].includes(v.toLowerCase().trim())) return 'Sì';
   return '';
 }
 
@@ -3827,9 +3840,18 @@ async function loadClients() {
     const { data } = await sb.from('profiles').select('*').eq('ruolo', 'client').order('created_at');
     clients = (data || []).map(c => ({ ...c, _ruolo: 'editor' }));
   } else if (currentProfile?.ruolo_app === 'collaborator') {
-    // Collaboratore: mostra solo i clienti assegnati
+    // Collaboratore: mostra i clienti assegnati + l'admin (scambio completo)
     const assignments = currentProfile._assignments || [];
     clients = assignments.map(a => ({ ...a.client, _ruolo: a.ruolo }));
+    // Aggiungi l'admin per dare visibilità completa al collaboratore
+    const { data: admins } = await sb.from('profiles').select('*').or('ruolo.eq.admin,ruolo_app.eq.admin');
+    if (admins && admins.length) {
+      admins.forEach(a => {
+        if (a.id !== currentUser.id && !clients.find(c => c.id === a.id)) {
+          clients.unshift({ ...a, _ruolo: 'editor', _isAdmin: true });
+        }
+      });
+    }
   }
 
   if (clients.length === 0) {
@@ -3838,8 +3860,8 @@ async function loadClients() {
   }
   list.innerHTML = clients.map(c => {
     const initials = (c.nome || c.email || '?').split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
-    const ruoloLabel = c._ruolo === 'editor' ? '' : ' <span style="font-size:10px;color:var(--text-3)">(solo lettura)</span>';
-    const convertBtn = isAdmin ? `<button class="note-btn" data-convert="${escA(c.id)}" title="Converti in collaboratore">🤝</button>` : '';
+    const ruoloLabel = c._isAdmin ? ' <span style="font-size:10px;color:#f59e0b;font-weight:600">👑 Admin</span>' : (c._ruolo === 'editor' ? '' : ' <span style="font-size:10px;color:var(--text-3)">(solo lettura)</span>');
+    const convertBtn = isAdmin && !c._isAdmin ? `<button class="note-btn" data-convert="${escA(c.id)}" title="Converti in collaboratore">🤝</button>` : '';
     return `
     <div class="client-row">
       <div class="client-avatar">${initials}</div>
@@ -4069,12 +4091,18 @@ async function onLogin(user) {
   const initials = (profile?.nome || user.email || '?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   document.getElementById('sbAvatar').textContent = initials;
 
-  // Mostra bottone admin se admin
+  // Mostra bottone admin se admin o collaboratore (non clienti)
   const isAdmin = profile?.ruolo === 'admin' || profile?.ruolo_app === 'admin';
   const isCollaborator = profile?.ruolo_app === 'collaborator';
+  const isClient = !isAdmin && !isCollaborator;
   if (isAdmin || isCollaborator) {
     document.getElementById('navAdmin').style.display = 'flex';
     document.getElementById('bnAdmin') && (document.getElementById('bnAdmin').style.display = 'flex');
+  }
+  // Clienti: nasconde la sezione "Clienti" (sono già clienti)
+  if (isClient) {
+    document.getElementById('navAdmin').style.display = 'none';
+    document.getElementById('bnAdmin') && (document.getElementById('bnAdmin').style.display = 'none');
   }
 
   // Se collaboratore, carica i clienti assegnati
@@ -4429,6 +4457,7 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
   /* ─── Init ─── */
   window.advRenderAll = function() {
     advLoad();
+    advSetMainView(advMainView);
     advRenderStats();
     advRenderFilters();
     advRenderCards();
@@ -4660,6 +4689,24 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
     // re-show chat panel
     const panel = document.getElementById('advChat_' + ideaId);
     if (panel) { panel.style.display = 'block'; advRenderChatMessages(ideaId); }
+    // Notifica: invia notifica a tutti gli utenti coinvolti (admin/collaboratori)
+    const idea = advIdeas.find(i => i.id === ideaId);
+    const ideaTitle = idea?.titolo || 'Idea ADV';
+    const preview = testo.length > 60 ? testo.slice(0,60) + '…' : testo;
+    if (typeof viewingUserId !== 'undefined' && viewingUserId && viewingUserId !== currentUser?.id) {
+      createNotification(viewingUserId, myName, 'ha scritto nella chat ADV "' + ideaTitle.slice(0,30) + '"', preview, null, null);
+    }
+    if (typeof currentUser !== 'undefined' && currentUser?.id && typeof viewingUserId !== 'undefined' && viewingUserId && viewingUserId !== currentUser?.id) {
+      // Notifica anche a sé stessi se si sta guardando il calendario di un altro
+    } else if (typeof currentProfile !== 'undefined' && currentProfile?.ruolo_app === 'collaborator') {
+      // Collaboratore: notifica l'admin
+      const assignments = currentProfile?._assignments || [];
+      assignments.forEach(a => {
+        if (a.client_id && a.client_id !== currentUser?.id) {
+          createNotification(a.client_id, myName, 'ha scritto nella chat ADV "' + ideaTitle.slice(0,30) + '"', preview, null, null);
+        }
+      });
+    }
   };
 
   /* ─── Delete ─── */
