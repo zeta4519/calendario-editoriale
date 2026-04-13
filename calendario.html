@@ -1845,7 +1845,7 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Formato</label>
-            <select class="form-sel" id="ac-formato">
+            <select class="form-select" id="ac-formato">
               <option value="">—</option>
               <option>Video</option><option>Reel</option><option>Grafico</option>
               <option>Carosello</option><option>Stories</option>
@@ -1853,7 +1853,7 @@
           </div>
           <div class="form-group">
             <label class="form-label">Stato</label>
-            <select class="form-sel" id="ac-stato">
+            <select class="form-select" id="ac-stato">
               <option value="idea">Idea</option>
               <option value="lav">In lavorazione</option>
               <option value="pub">Pubblicato</option>
@@ -2035,7 +2035,10 @@
 'use strict';
 
 // ─── CONFIG ──────────────────────────────────
-const LS_KEY = 'calEdStatusOverrides';
+function getOverrideKey() {
+  const uid = (typeof currentUser !== 'undefined' && currentUser?.id) ? currentUser.id : 'anon';
+  return 'calEdStatusOverrides_' + uid;
+}
 
 // ─── SUPABASE CLIENT ─────────────────────────
 const { createClient } = supabase;
@@ -2055,13 +2058,13 @@ const STS = [
 
 // ─── OVERRIDES (localStorage — sopravvivono al refresh) ──────
 function getOverrides() {
-  try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch { return {}; }
+  try { return JSON.parse(localStorage.getItem(getOverrideKey()) || '{}'); } catch { return {}; }
 }
 function saveOverride(id, stato) {
-  const o = getOverrides(); o[id] = stato; localStorage.setItem(LS_KEY, JSON.stringify(o));
+  const o = getOverrides(); o[id] = stato; localStorage.setItem(getOverrideKey(), JSON.stringify(o));
 }
 function clearOverride(id) {
-  const o = getOverrides(); delete o[id]; localStorage.setItem(LS_KEY, JSON.stringify(o));
+  const o = getOverrides(); delete o[id]; localStorage.setItem(getOverrideKey(), JSON.stringify(o));
 }
 
 // ─── STATE ───────────────────────────────────
@@ -2618,9 +2621,11 @@ function openCalDetail(key, dayRows) {
   document.getElementById('calDetItems').innerHTML = dayRows.map(r => {
     const si = stInfo(getSt(r));
     const plats = [
-      hasPl(r,'ig') ? '<span class="plat p-ig">IG</span>' : '',
-      hasPl(r,'tk') ? '<span class="plat p-tk">TK</span>' : '',
-      hasPl(r,'yt') ? '<span class="plat p-yt">YT</span>' : '',
+      hasPl(r,'ig')       ? '<span class="plat p-ig">IG</span>'     : '',
+      hasPl(r,'tk')       ? '<span class="plat p-tk">TK</span>'     : '',
+      hasPl(r,'yt_long')  ? '<span class="plat p-yt">YT</span>'    : '',
+      hasPl(r,'shorts')   ? '<span class="plat p-sh">Shorts</span>' : '',
+      hasPl(r,'linkedin') ? '<span class="plat p-li">LI</span>'     : '',
     ].join('');
     return `
     <div class="cal-det-item">
@@ -2679,7 +2684,7 @@ function setView(v) {
 
   // Reset tutti
   [navGrid, navNote, navAdmin, navNotif, navAdv].forEach(b => b && b.classList.remove('on'));
-  [nbGrid, bnNote, bnAdmin].forEach(b => b && b.classList.remove('on'));
+  [nbGrid, bnNote, bnAdmin, document.getElementById('bnNotif')].forEach(b => b && b.classList.remove('on'));
   if (advTabBtn) advTabBtn.classList.remove('on');
   vGrid.classList.remove('on'); vCal.classList.remove('on');
   gridEl.style.display = 'none'; calEl.classList.remove('visible');
@@ -3040,10 +3045,11 @@ document.getElementById('modalEditSubmit').addEventListener('click', () => {
   }).eq('id', payload.id)
   .then(({ error }) => {
     if (!error) {
-      // Aggiorna localmente la riga
+      // Cattura stato originale PRIMA di sovrascrivere
+      const oldStato = getSt(r);
       Object.assign(r, payload);
-      // Se lo stato è cambiato, aggiorna anche l'override
-      if (newStato !== r.stato) saveOverride(editingId, newStato);
+      // Se lo stato è cambiato, aggiorna l'override
+      if (newStato !== oldStato) saveOverride(editingId, newStato);
       closeEditModal();
       renderStats(); renderChips(); renderCards();
       toast('Modifiche salvate ✓', 'ok');
@@ -3206,13 +3212,17 @@ function openNewEtModal(id) {
   // Render swatches
   const sw = document.getElementById('etColorSwatches');
   const selColor = et ? et.colore : ET_COLORS[0];
-  sw.innerHTML = ET_COLORS.map(c =>
+  // Clona per rimuovere listener precedente e evitare stacking
+  const freshSw = sw.cloneNode(false);
+  freshSw.id = sw.id;
+  freshSw.innerHTML = ET_COLORS.map(c =>
     `<div class="color-swatch${c===selColor?' on':''}" style="background:${c}" data-color="${c}"></div>`
   ).join('');
-  sw.addEventListener('click', e => {
+  sw.parentNode.replaceChild(freshSw, sw);
+  freshSw.addEventListener('click', e => {
     const s = e.target.closest('[data-color]');
     if (!s) return;
-    sw.querySelectorAll('.color-swatch').forEach(x => x.classList.remove('on'));
+    freshSw.querySelectorAll('.color-swatch').forEach(x => x.classList.remove('on'));
     s.classList.add('on');
   });
   document.getElementById('modalEt').classList.add('open');
@@ -3346,7 +3356,7 @@ function exportPdf() {
       hasPl(r,'linkedin') ? 'LinkedIn' : '',
     ].filter(Boolean).join(', ');
     const etichette = (r._etichette||[]).map(e =>
-      `<span style="background:${e.colore}22;color:${e.colore};padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600">${e.nome}</span>`
+      `<span style="background:${e.colore}22;color:${e.colore};padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600">${escH(e.nome)}</span>`
     ).join(' ');
     return `
     <div style="background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:16px;border:1px solid #e5e7eb;page-break-inside:avoid">
@@ -3764,6 +3774,7 @@ async function loadFromSupabase() {
   }
   rows = (data || []).map(r => ({
     id:           String(r.id || '').trim(),
+    user_id:      r.user_id || '',
     stato:        r.stato || '',
     data_pianif:  r.data_pianif || '',
     data_registr: r.data_registr || '',
@@ -3874,7 +3885,12 @@ async function loadClients() {
     </div>`;
   }).join('');
 
-  list.addEventListener('click', async e => {
+  // Rimuovi listener precedente per evitare stacking
+  const newList = list.cloneNode(false);
+  newList.id = list.id;
+  newList.innerHTML = list.innerHTML;
+  list.parentNode.replaceChild(newList, list);
+  newList.addEventListener('click', async e => {
     const enterBtn   = e.target.closest('[data-cid]');
     const convertBtn = e.target.closest('[data-convert]');
     if (enterBtn)   enterClientView(enterBtn.dataset.cid, enterBtn.dataset.cname, enterBtn.dataset.cruolo);
@@ -4006,7 +4022,7 @@ async function loadCollaboratorsTab() {
       <div class="client-row">
         <div class="client-info">
           <div class="client-name">${escH(c.collaborator?.nome || c.collaborator?.email || '?')}</div>
-          <div class="client-email">→ ${escH(c.client?.nome || c.client?.email || '?')} · <strong>${c.ruolo}</strong></div>
+          <div class="client-email">→ ${escH(c.client?.nome || c.client?.email || '?')} · <strong>${escH(c.ruolo)}</strong></div>
         </div>
         <button class="note-btn del" data-delcollab="${c.id}">Rimuovi</button>
       </div>`).join('')}
@@ -4015,9 +4031,12 @@ async function loadCollaboratorsTab() {
     html = '<p style="color:var(--text-3);font-size:13px;margin-top:8px">Nessun collaboratore ancora.</p>';
   }
 
-  listEl.innerHTML = html;
-
-  listEl.addEventListener('click', async e => {
+  // Rimuovi listener precedente per evitare stacking
+  const freshList = listEl.cloneNode(false);
+  freshList.id = listEl.id;
+  freshList.innerHTML = html;
+  listEl.parentNode.replaceChild(freshList, listEl);
+  freshList.addEventListener('click', async e => {
     const enterBtn = e.target.closest('[data-cid]');
     const delBtn   = e.target.closest('[data-delcollab]');
     if (enterBtn) { enterClientView(enterBtn.dataset.cid, enterBtn.dataset.cname, enterBtn.dataset.cruolo); return; }
@@ -4471,7 +4490,9 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
     const newBtn = document.getElementById('newBtn');
     if (newBtn) {
       newBtn.style.display = 'flex';
-      newBtn.textContent = view === 'campagne' ? '+ Campagna' : '+ Idea ADV';
+      newBtn.innerHTML = view === 'campagne'
+        ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg> Campagna'
+        : '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg> Idea ADV';
       newBtn.onclick = view === 'campagne' ? advOpenNewCamp : advOpenNewIdea;
     }
   };
@@ -4587,7 +4608,7 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
           <span class="adv-badge-fmt">${item.formato||'—'}</span>
           <span class="${ADV_STATI_CLS[item.stato]||''}">${ADV_STATI[item.stato]||item.stato}</span>
         </div>${rb}</div>
-        <div class="adv-card-title">${item.titolo}</div>
+        <div class="adv-card-title">${escH(item.titolo)}</div>
         <div class="adv-card-plats">${plts}</div>
         ${metrics}
         <div class="adv-card-foot">
@@ -4615,11 +4636,11 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
       const chatCount = (advChats[idea.id] || []).length;
       return `<div class="adv-idea-card${idea.realizzata?' realizzata':''}" id="advIdea_${idea.id}">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px">
-          <div class="adv-idea-title">${idea.titolo}</div>
+          <div class="adv-idea-title">${escH(idea.titolo)}</div>
           ${realBadge}
         </div>
-        <div class="adv-idea-body">${idea.contenuto||''}</div>
-        ${idea.link ? `<a href="${idea.link}" target="_blank" style="font-size:12px;color:#1d4ed8;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:block">${idea.link.replace(/^https?:\/\//,'').slice(0,50)}</a>` : ''}
+        <div class="adv-idea-body">${escH(idea.contenuto||'')}</div>
+        ${idea.link ? `<a href="${escA(idea.link)}" target="_blank" style="font-size:12px;color:#1d4ed8;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;display:block">${escH(idea.link.replace(/^https?:\/\//,'').slice(0,50))}</a>` : ''}
         <div class="adv-idea-foot">
           <span class="adv-idea-meta">${ago}</span>
           <div class="adv-card-actions">
@@ -4667,7 +4688,7 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
       return `<div class="adv-chat-bubble${isMine?' mine':''}">
         <div class="adv-chat-avatar">${initials}</div>
         <div class="adv-chat-content">
-          <div class="adv-chat-author">${m.author}</div>
+          <div class="adv-chat-author">${escH(m.author)}</div>
           <div class="adv-chat-text">${escH(m.testo)}</div>
           <div class="adv-chat-time">${advTimeAgo(m.at)}</div>
         </div>
@@ -4877,9 +4898,14 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
       ({ error } = await sb.from(T_CAMPS).insert([payload]));
     }
     if (error) { console.error('ADV save camp error:', error); toast('Errore salvataggio campagna', 'err'); return; }
+    // Se questa campagna nasce da un'idea, marcala come realizzata
+    if (advPendingIdeaId) {
+      await sb.from(T_IDEAS).update({ realizzata: true }).eq('id', advPendingIdeaId);
+      advPendingIdeaId = null;
+    }
     advCloseModal('advModalCamp');
     await advLoad();
-    advRenderStats(); advRenderFilters(); advRenderCards();
+    advRenderStats(); advRenderFilters(); advRenderCards(); advRenderIdee();
     toast(advEditingCampId ? 'Campagna aggiornata ✓' : 'Campagna creata ✓', 'ok');
   };
 
@@ -4937,11 +4963,14 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
   };
 
   /* ─── Idea → Campaign ─── */
+  let advPendingIdeaId = null; // flag: idea da marcare come realizzata dopo il salvataggio campagna
+
   window.advIdeaToCamp = function(e, id) {
     e.stopPropagation();
     const idea = advIdeas.find(i => i.id === id);
     if (!idea) return;
     advEditingCampId = null; advCurrentRating = null;
+    advPendingIdeaId = id; // salva l'id dell'idea sorgente
     advClearCampForm();
     document.getElementById('advCampModalTitle').textContent = 'Da idea: ' + idea.titolo;
     document.getElementById('ac-titolo').value  = idea.titolo;
@@ -4949,15 +4978,6 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
     document.getElementById('ac-link').value    = idea.link||'';
     advCloseModal('advModalIdea');
     advShowModal('advModalCamp');
-    // Mark idea as realizzata on save
-    const origSave = window.advSaveCamp;
-    window.advSaveCamp = async function() {
-      await origSave();
-      await sb.from(T_IDEAS).update({ realizzata: true }).eq('id', id);
-      await advLoad();
-      advRenderIdee();
-      window.advSaveCamp = origSave;
-    };
   };
 
   /* ─── Modal helpers ─── */
@@ -4968,6 +4988,8 @@ document.getElementById('noteView').addEventListener('keydown', function(e) {
   window.advCloseModal = function(id) {
     const el = document.getElementById(id);
     if (el) { el.style.display = 'none'; }
+    // Reset flag idea→campagna se si chiude il modal campagna senza salvare
+    if (id === 'advModalCamp') advPendingIdeaId = null;
   };
 
   /* ─── Helper: time ago ─── */
