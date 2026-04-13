@@ -2290,6 +2290,10 @@ function setView(v) {
 
   if (v === 'grid') {
     gridEl.style.display = 'block';
+    // Ripristina: contenuti sopra, calendario sotto
+    if (calEl.parentNode && gridEl.parentNode === calEl.parentNode) {
+      calEl.parentNode.insertBefore(gridEl, calEl);
+    }
     vGrid.classList.add('on');
     nbGrid && nbGrid.classList.add('on');
     navGrid.classList.add('on');
@@ -2302,6 +2306,10 @@ function setView(v) {
   } else if (v === 'cal') {
     gridEl.style.display = 'block';
     calEl.classList.add('visible');
+    // Calendario sopra, contenuti sotto
+    if (calEl.parentNode && gridEl.parentNode === calEl.parentNode) {
+      calEl.parentNode.insertBefore(calEl, gridEl);
+    }
     vCal.classList.add('on');
     navGrid.classList.add('on');
     nbGrid && nbGrid.classList.add('on');
