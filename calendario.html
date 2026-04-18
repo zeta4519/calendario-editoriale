@@ -3761,9 +3761,10 @@ async function loadFromSupabase() {
   document.getElementById('subtitleEl').textContent = 'Caricamento…';
   const uid = viewingUserId || (currentUser ? currentUser.id : null);
   let query = sb.from(TABLE).select('*').order('id');
-  if (uid && currentProfile && currentProfile.ruolo !== 'admin') {
-    query = query.eq('user_id', uid);
-  } else if (uid && viewingUserId) {
+  // Filtra sempre per user_id: ognuno vede solo i propri contenuti.
+  // Quando l'admin entra nel calendario di un cliente, viewingUserId è impostato
+  // e uid diventa l'id del cliente → i contenuti del cliente vengono caricati.
+  if (uid) {
     query = query.eq('user_id', uid);
   }
   const { data, error } = await query;
