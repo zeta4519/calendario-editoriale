@@ -235,8 +235,9 @@
     .card:hover { box-shadow: var(--sh); transform: translateY(-1px); }
     .card-head {
       padding: 14px 16px 10px;
-      display: flex; align-items: center; gap: 7px; overflow: hidden; min-width: 0;
+      display: flex; align-items: center; gap: 7px; flex-wrap: wrap; min-width: 0;
     }
+    .card-et-row { width: 100%; display: flex; flex-wrap: wrap; gap: 4px; padding-top: 2px; }
     .c-id { font-size: 10px; font-weight: 700; letter-spacing: .5px; color: var(--text-3); flex-shrink: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 45%; }
     .c-fmt { font-size: 10px; font-weight: 500; background: rgba(0,0,0,.05); color: var(--text-2); padding: 2px 8px; border-radius: 5px; flex-shrink: 0; }
     .c-pill { font-size: 10px; font-weight: 600; padding: 2px 9px; border-radius: 20px; }
@@ -2271,8 +2272,8 @@ function buildCard(r) {
       ${r.formato ? `<span class="c-fmt">${escH(r.formato)}</span>` : ''}
       <span class="c-pill" style="background:${si.bg};color:${si.tc}">${st}</span>
       <div class="c-plats">${plats}</div>
+      ${r._etichette && r._etichette.length ? `<div class="card-et-row">${r._etichette.map(e=>`<span class="etichetta-badge" style="background:${e.colore}22;color:${e.colore}"><span class="et-color-dot" style="background:${e.colore}"></span>${escH(e.nome)}</span>`).join('')}</div>` : ''}
     </div>
-    ${r._etichette && r._etichette.length ? `<div class="card-etichette">${r._etichette.map(e=>`<span class="etichetta-badge" style="background:${e.colore}22;color:${e.colore}"><span class="et-color-dot" style="background:${e.colore}"></span>${escH(e.nome)}</span>`).join('')}</div>` : ''}
     ${r.script ? `<div class="c-preview">${escH(r.script)}</div>` : ''}
     <div class="c-foot" data-expand="${escA(r.id)}">
       ${r.data_pianif  ? `<span class="c-date"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${escH(r.data_pianif)}</span>` : ''}
